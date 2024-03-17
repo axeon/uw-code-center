@@ -5,7 +5,7 @@ variables:
   APP_PORT: 1500
   APP_MEM: 800
   APP_NAME: uw-code-center
-  REGISTRY: "192.168.88.21:5000"
+  REGISTRY: "dev.xili.pub:5000"
 
 # 编译
 build:
