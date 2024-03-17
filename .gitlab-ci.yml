@@ -18,4 +18,4 @@ build:
     - APP_VERSION=`grep '<version>' pom.xml |awk -F'>' '{print $2}'|awk -F"<" '{print $1}'|head -n 1`
     - docker build --build-arg APP_NAME=${APP_NAME} -t ${REGISTRY}/${APP_NAME}:${APP_VERSION} .
     - docker push ${REGISTRY}/${APP_NAME}:${APP_VERSION}
-    - /home/gitlab-runner/bin/deploy-registry-app.sh ${REGISTRY} ${APP_NAME} ${APP_VERSION} ${APP_PORT} ${APP_MEM}
+    #- /home/gitlab-runner/bin/deploy-registry-app.sh ${REGISTRY} ${APP_NAME} ${APP_VERSION} ${APP_PORT} ${APP_MEM}
