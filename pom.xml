@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.umtone</groupId>
     <artifactId>uw-code-center</artifactId>
-    <version>1.0.20</version>
+    <version>1.0.21</version>
     <name>uw-code-center</name>
     <description>代码生成中心</description>
     <properties>
@@ -18,7 +18,7 @@
         <spring-cloud.alibaba.version>2023.0.0.0-RC1</spring-cloud.alibaba.version>
         <knife4j.version>4.5.0</knife4j.version>
         <uw-dao.version>5.1.5</uw-dao.version>
-        <uw-auth-service.version>6.0.58</uw-auth-service.version>
+        <uw-auth-service.version>6.0.59</uw-auth-service.version>
         <uw-logback-es.version>3.0.37</uw-logback-es.version>
         <uw-log-es.version>3.0.32</uw-log-es.version>
     </properties>
