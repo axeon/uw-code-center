@@ -17,7 +17,7 @@
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <spring-cloud.alibaba.version>2023.0.0.0-RC1</spring-cloud.alibaba.version>
         <knife4j.version>4.5.0</knife4j.version>
-        <uw-dao.version>5.1.6</uw-dao.version>
+        <uw-dao.version>5.1.8</uw-dao.version>
         <uw-auth-service.version>6.0.59</uw-auth-service.version>
         <uw-logback-es.version>3.0.37</uw-logback-es.version>
         <uw-log-es.version>3.0.32</uw-log-es.version>
