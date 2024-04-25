@@ -13,9 +13,9 @@
         <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <spring-boot.version>3.2.3</spring-boot.version>
+        <spring-boot.version>3.2.5</spring-boot.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
-        <spring-cloud.alibaba.version>2023.0.0.0-RC1</spring-cloud.alibaba.version>
+        <spring-cloud.alibaba.version>2023.0.1.0</spring-cloud.alibaba.version>
         <knife4j.version>4.5.0</knife4j.version>
         <uw-dao.version>5.1.8</uw-dao.version>
         <uw-auth-service.version>6.0.59</uw-auth-service.version>
@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
+        <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <dependencyManagement>
