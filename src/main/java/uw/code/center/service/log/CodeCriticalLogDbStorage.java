@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import uw.auth.service.log.AuthCriticalLogStorage;
 import uw.auth.service.vo.MscActionLog;
 import uw.code.center.entity.CodeCritLog;
 import uw.dao.DaoFactory;
@@ -15,9 +16,9 @@ import java.util.Date;
  */
 @Service
 @Primary
-public class AuthCriticalLogDbStorage implements uw.auth.service.log.AuthCriticalLogStorage {
+public class CodeCriticalLogDbStorage implements AuthCriticalLogStorage {
 
-    private static final Logger log = LoggerFactory.getLogger( AuthCriticalLogDbStorage.class );
+    private static final Logger log = LoggerFactory.getLogger( CodeCriticalLogDbStorage.class );
 
     private final static DaoFactory dao = DaoFactory.getInstance();
 
