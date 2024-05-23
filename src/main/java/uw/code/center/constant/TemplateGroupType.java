@@ -2,13 +2,12 @@ package uw.code.center.constant;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import uw.auth.service.dto.EnumStruct;
 
 /**
  * 模板组类型。
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@Schema(implementation = EnumStruct.class, title = "模板组类型", description = "模板组类型")
+@Schema(title = "模板组类型", description = "模板组类型")
 public enum TemplateGroupType {
 
     Database(1, "DataBase类型"),

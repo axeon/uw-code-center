@@ -9,7 +9,7 @@ import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.constant.ActionLog;
 import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
-import uw.auth.service.dto.ResponseData;
+import uw.common.dto.ResponseData;
 import uw.code.center.constant.TemplateType;
 import uw.code.center.dto.CodeTemplateQueryParam;
 import uw.code.center.entity.CodeTemplate;
