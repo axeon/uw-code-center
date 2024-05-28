@@ -105,7 +105,7 @@
         <dependency>
             <groupId>io.swagger.parser.v3</groupId>
             <artifactId>swagger-parser-v3</artifactId>
-            <version>2.1.19</version>
+            <version>2.1.21</version>
         </dependency>
 
         <dependency>
@@ -134,7 +134,7 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
+            <version>2.4.0-b180830.0359</version>
         </dependency>
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -176,5 +176,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
