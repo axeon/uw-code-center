@@ -120,10 +120,11 @@ public class DatabaseGenCodeController {
                         map.put("tableMeta", metaTableInfo);
                         // 获得主键列表
                         List<MetaPrimaryKeyInfo> pklist = dataMetaInterface.getPrimaryKey(metaTableInfo.getTableName());
-                        map.put("pkList", pklist);
                         // 获得列列表
                         List<MetaColumnInfo> columnlist = dataMetaInterface.getColumnList(metaTableInfo.getTableName(), pklist);
                         map.put("columnList", columnlist);
+                        //过滤生成主键
+                        map.put("pkList", columnlist.stream().filter( x->x.getIsPrimaryKey().equals("true") ).toList());
                         String fileName = TemplateHelper.buildTemplate(ct.getId() + "#filename", map);
                         String fileBody = TemplateHelper.buildTemplate(ct.getId() + "#body", map);
                         zipOutputStream.putNextEntry(new ZipEntry(fileName));
