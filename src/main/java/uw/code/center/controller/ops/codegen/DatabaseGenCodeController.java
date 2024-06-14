@@ -124,7 +124,7 @@ public class DatabaseGenCodeController {
                         List<MetaColumnInfo> columnlist = dataMetaInterface.getColumnList(metaTableInfo.getTableName(), pklist);
                         map.put("columnList", columnlist);
                         //过滤生成主键
-                        map.put("pkList", columnlist.stream().filter( x->x.getIsPrimaryKey().equals("true") ).toList());
+                        map.put("pkList", columnlist.stream().filter(x-> Boolean.parseBoolean( x.getIsPrimaryKey() ) ).toList());
                         String fileName = TemplateHelper.buildTemplate(ct.getId() + "#filename", map);
                         String fileBody = TemplateHelper.buildTemplate(ct.getId() + "#body", map);
                         zipOutputStream.putNextEntry(new ZipEntry(fileName));
