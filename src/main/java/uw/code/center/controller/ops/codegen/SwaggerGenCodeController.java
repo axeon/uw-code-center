@@ -81,7 +81,7 @@ public class SwaggerGenCodeController {
             map.put("messageList", swaggerParser.getMessageList());
             for (CodeTemplate ct : ctList) {
                 //对于页面类型，要特别处理。
-                if (ct.getTemplateType() == TemplateType.VuePage.getValue()) {
+                if (ct.getTemplateType() == TemplateType.VUE_PAGE.getValue()) {
                     for (ApiGroupInfo apiGroupInfo : swaggerParser.getApiGroupInfoList()) {
                         map.put("apiGroupInfo", apiGroupInfo);
                         map.remove("functionList");

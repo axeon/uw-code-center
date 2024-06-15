@@ -11,21 +11,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum TemplateType {
 
 
-    DbEntity(11, "DbEntity代码"),
+    DB_COMMON(10, "DB通用代码"),
 
-    DbCommon(19, "Db通用代码"),
+    DB_ENTITY(11, "DBEntity代码"),
 
-    VueApi(21, "vueApi代码"),
+    DB_CONTROLLER(12, "DBController代码"),
 
-    VueRouter(22, "vueRouter代码"),
+    DB_DTO(13, "DBDto代码"),
 
-    VuePage(23, "vuePage代码"),
+    VUE_COMMON(20, "vue通用代码"),
 
-    VueI18N(24, "VueI18N代码"),
+    VUE_API(21, "vueApi代码"),
 
-    VueCommon(29, "vue通用代码"),
+    VUE_ROUTER(22, "vueRouter代码"),
 
-    Jmeter(31, "jmeter模板");
+    VUE_PAGE(23, "vuePage代码"),
+
+    VUE_I18N(24, "VueI18N代码"),
+
+    JMETER(31, "Jmeter模板");
 
     /**
      * 参数值

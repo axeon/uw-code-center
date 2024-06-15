@@ -10,10 +10,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(title = "模板组类型", description = "模板组类型")
 public enum TemplateGroupType {
 
-    Database(1, "DataBase类型"),
+    DATABASE(1, "Database类型"),
 
-    Swagger(2, "Swagger类型");
-
+    SWAGGER(2, "Swagger类型");
 
     /**
      * 参数值
