@@ -83,7 +83,7 @@ public class TemplateController {
      */
     @Operation(summary = "保存模板记录", description = "保存模板记录")
     @PostMapping("/save")
-    @MscPermDeclare(type = UserType.OPS, log = ActionLog.ALL)
+    @MscPermDeclare(type = UserType.OPS, log = ActionLog.CRIT)
     public ResponseData<CodeTemplate> save(@RequestBody CodeTemplate codeTemplate) throws TransactionException {
         long id = dao.getSequenceId( CodeTemplate.class );
         AuthServiceHelper.logInfo( CodeTemplate.class, id, "保存模板记录" );
@@ -107,7 +107,7 @@ public class TemplateController {
      */
     @Operation(summary = "修改模板记录", description = "修改模板记录", operationId = "update")
     @PutMapping("/update")
-    @MscPermDeclare(type = UserType.OPS, log = ActionLog.ALL)
+    @MscPermDeclare(type = UserType.OPS, log = ActionLog.CRIT)
     public ResponseData<CodeTemplate> update(@RequestBody CodeTemplate codeTemplate, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo( CodeTemplate.class, codeTemplate.getId(), "修改代码模版!" + remark );
         CodeTemplate codeTemplateDb = dao.load( CodeTemplate.class, codeTemplate.getId() );

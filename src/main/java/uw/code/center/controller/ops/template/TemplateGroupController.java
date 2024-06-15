@@ -98,7 +98,7 @@ public class TemplateGroupController {
      * @return
      * @throws TransactionException
      */
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.ALL)
+    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
     @Operation(summary = "新增模板组", description = "新增模板组")
     @PostMapping("/save")
     public ResponseData<CodeTemplateGroup> save(@RequestBody CodeTemplateGroup codeTemplateGroup) throws TransactionException {
@@ -121,7 +121,7 @@ public class TemplateGroupController {
      * @return
      * @throws TransactionException
      */
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.ALL)
+    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
     @Operation(summary = "修改模板组", description = "修改模板组")
     @PutMapping("/update")
     public ResponseData<CodeTemplateGroup> update(@RequestBody CodeTemplateGroup codeTemplateGroup, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
