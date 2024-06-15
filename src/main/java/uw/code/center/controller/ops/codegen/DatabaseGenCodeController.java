@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.constant.ActionLog;
 import uw.auth.service.constant.UserType;
-import uw.code.center.constant.TemplateType;
 import uw.code.center.entity.CodeTemplate;
 import uw.code.center.entity.CodeTemplateGroup;
 import uw.code.center.service.dao.*;
@@ -64,8 +63,8 @@ public class DatabaseGenCodeController {
     public List<MetaTableInfo> getTableInfo(@Parameter(description = "connName", example = "test") @RequestParam String connName,
                                             @Parameter(description = "schemaName", example = "test") @RequestParam String schemaName,
                                             @Parameter(description = "过滤表名称", example = "filter_table_1,filter_table_2") @RequestParam Set<String> filterTableNames) {
-        DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface(connName, schemaName);
-        return dataMetaInterface.getTablesAndViews(filterTableNames);
+        DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface( connName, schemaName );
+        return dataMetaInterface.getTablesAndViews( filterTableNames );
     }
 
     /**
@@ -97,41 +96,41 @@ public class DatabaseGenCodeController {
                              @RequestParam() String schemaName,
                              @Parameter(description = "模板组Id", example = "1", required = false) @RequestParam long templateGroupId,
                              @Parameter(description = "过滤表集合(set)", example = "filter_table_1,filter_table_2", schema = @Schema(type = "string")) @RequestParam() Set<String> filterTableNames) throws TransactionException, IOException {
-        DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface(connName, schemaName);
-        List<MetaTableInfo> tablelist = dataMetaInterface.getTablesAndViews(filterTableNames);
-        CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, templateGroupId);
-        DataList<CodeTemplate> ctList = dao.list(CodeTemplate.class, "select * from code_template where group_id=? and state=1", new Object[]{templateGroupId});
+        DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface( connName, schemaName );
+        List<MetaTableInfo> tablelist = dataMetaInterface.getTablesAndViews( filterTableNames );
+        CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
+        DataList<CodeTemplate> ctList = dao.list( CodeTemplate.class, "select * from code_template where group_id=? and state=1", new Object[]{templateGroupId} );
         if (ctList.size() > 0 && tablelist.size() > 0) {
             //设置文件下载格式
-            response.setContentType("application/octet-stream;charset=UTF-8");
-            response.setHeader("Content-Disposition",
-                    "attachment; filename=" + URLEncoder.encode(codeTemplateGroup.getGroupName(), "utf-8") + "_" + System.currentTimeMillis() + ".zip");
-            response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+            response.setContentType( "application/octet-stream;charset=UTF-8" );
+            response.setHeader( "Content-Disposition",
+                    "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + System.currentTimeMillis() + ".zip" );
+            response.setHeader( "Access-Control-Expose-Headers", "Content-Disposition" );
             OutputStream outputStream = response.getOutputStream();
-            ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
+            ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );
             //拼参数
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("author", "axeon");
-            map.put("date", new Date());
+            map.put( "author", "axeon" );
+            map.put( "date", new Date() );
             for (CodeTemplate ct : ctList) {
                 //判定类型再输出。
-                if (ct.getTemplateType() == TemplateType.DbEntity.getValue()) {
-                    for (MetaTableInfo metaTableInfo : tablelist) {
-                        map.put("tableMeta", metaTableInfo);
-                        // 获得主键列表
-                        List<MetaPrimaryKeyInfo> pklist = dataMetaInterface.getPrimaryKey(metaTableInfo.getTableName());
-                        // 获得列列表
-                        List<MetaColumnInfo> columnlist = dataMetaInterface.getColumnList(metaTableInfo.getTableName(), pklist);
-                        map.put("columnList", columnlist);
-                        //过滤生成主键
-                        map.put("pkList", columnlist.stream().filter(x-> Boolean.parseBoolean( x.getIsPrimaryKey() ) ).toList());
-                        String fileName = TemplateHelper.buildTemplate(ct.getId() + "#filename", map);
-                        String fileBody = TemplateHelper.buildTemplate(ct.getId() + "#body", map);
-                        zipOutputStream.putNextEntry(new ZipEntry(fileName));
-                        zipOutputStream.write(fileBody.getBytes());
-                        zipOutputStream.closeEntry();
-                    }
+//                if (ct.getTemplateType()) {
+                for (MetaTableInfo metaTableInfo : tablelist) {
+                    map.put( "tableMeta", metaTableInfo );
+                    // 获得主键列表
+                    List<MetaPrimaryKeyInfo> pklist = dataMetaInterface.getPrimaryKey( metaTableInfo.getTableName() );
+                    // 获得列列表
+                    List<MetaColumnInfo> columnlist = dataMetaInterface.getColumnList( metaTableInfo.getTableName(), pklist );
+                    map.put( "columnList", columnlist );
+                    //过滤生成主键
+                    map.put( "pkList", columnlist.stream().filter( x -> Boolean.parseBoolean( x.getIsPrimaryKey() ) ).toList() );
+                    String fileName = TemplateHelper.buildTemplate( ct.getId() + "#filename", map );
+                    String fileBody = TemplateHelper.buildTemplate( ct.getId() + "#body", map );
+                    zipOutputStream.putNextEntry( new ZipEntry( fileName ) );
+                    zipOutputStream.write( fileBody.getBytes() );
+                    zipOutputStream.closeEntry();
                 }
+//                }
             }
             zipOutputStream.flush();
             zipOutputStream.finish();
