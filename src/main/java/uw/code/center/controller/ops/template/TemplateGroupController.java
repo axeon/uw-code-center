@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import uw.app.common.helper.SysDataHistoryHelper;
 import uw.auth.service.AuthServiceHelper;
 import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.constant.ActionLog;
@@ -13,7 +14,6 @@ import uw.common.dto.ResponseData;
 import uw.code.center.constant.TemplateGroupType;
 import uw.code.center.dto.CodeTemplateGroupQueryParam;
 import uw.code.center.entity.CodeTemplateGroup;
-import uw.code.center.service.CodeDataHistoryHelper;
 import uw.dao.DaoFactory;
 import uw.dao.DataList;
 import uw.dao.TransactionException;
@@ -110,7 +110,7 @@ public class TemplateGroupController {
         codeTemplateGroup.setState( 1 );
         dao.save( codeTemplateGroup );
         //保存历史记录
-        CodeDataHistoryHelper.saveHistory( codeTemplateGroup.getId(), codeTemplateGroup );
+        SysDataHistoryHelper.saveHistory( codeTemplateGroup.getId(), codeTemplateGroup,"模板组","新建模板组!" );
         return ResponseData.success( codeTemplateGroup );
     }
 
@@ -136,7 +136,7 @@ public class TemplateGroupController {
         //保存新记录。
         codeTemplateGroupDb.setModifyDate( new Date() );
         dao.update( codeTemplateGroupDb );
-        CodeDataHistoryHelper.saveHistory( codeTemplateGroupDb.getId(), codeTemplateGroupDb );
+        SysDataHistoryHelper.saveHistory( codeTemplateGroupDb.getId(), codeTemplateGroupDb,"模板组","修改代码模版组!" + remark  );
         return ResponseData.success( codeTemplateGroupDb );
     }
 

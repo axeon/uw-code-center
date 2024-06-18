@@ -4,17 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import uw.app.common.helper.SysDataHistoryHelper;
 import uw.auth.service.AuthServiceHelper;
 import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.constant.ActionLog;
 import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
-import uw.common.dto.ResponseData;
 import uw.code.center.constant.TemplateType;
 import uw.code.center.dto.CodeTemplateQueryParam;
 import uw.code.center.entity.CodeTemplate;
-import uw.code.center.service.CodeDataHistoryHelper;
 import uw.code.center.template.TemplateHelper;
+import uw.common.dto.ResponseData;
 import uw.dao.DaoFactory;
 import uw.dao.DataList;
 import uw.dao.TransactionException;
@@ -94,7 +94,7 @@ public class TemplateController {
         dao.save( codeTemplate );
         TemplateHelper.init();
         //保存历史记录
-        CodeDataHistoryHelper.saveHistory( codeTemplate.getId(), codeTemplate );
+        SysDataHistoryHelper.saveHistory( codeTemplate.getId(), codeTemplate, "模板", "新建模板" );
         return ResponseData.success( codeTemplate );
     }
 
@@ -124,7 +124,7 @@ public class TemplateController {
         codeTemplateDb.setModifyDate( new Date() );
         dao.update( codeTemplateDb );
         TemplateHelper.init();
-        CodeDataHistoryHelper.saveHistory( codeTemplateDb.getId(), codeTemplateDb );
+        SysDataHistoryHelper.saveHistory( codeTemplateDb.getId(), codeTemplateDb, "模板", "修改模板! " + remark );
         return ResponseData.success( codeTemplateDb );
     }
 
