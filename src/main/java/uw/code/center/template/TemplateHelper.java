@@ -5,7 +5,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uw.code.center.entity.CodeTemplate;
+import uw.code.center.entity.CodeTemplateInfo;
 import uw.dao.DaoFactory;
 import uw.dao.DataList;
 
@@ -42,10 +42,10 @@ public class TemplateHelper {
         cfg.setTemplateLoader(stringTemplateLoader);
         //加载模板。
         try {
-            DataList<CodeTemplate> list = dao.list(CodeTemplate.class, "select * from code_template where state=1");
-            for (CodeTemplate codeTemplate : list) {
-                stringTemplateLoader.putTemplate(String.valueOf(codeTemplate.getId() + "#filename"), codeTemplate.getTemplateFilename());
-                stringTemplateLoader.putTemplate(String.valueOf(codeTemplate.getId() + "#body"), codeTemplate.getTemplateBody());
+            DataList<CodeTemplateInfo> list = dao.list(CodeTemplateInfo.class, "select * from code_template where state=1");
+            for (CodeTemplateInfo CodeTemplateInfo : list) {
+                stringTemplateLoader.putTemplate(String.valueOf(CodeTemplateInfo.getId() + "#filename"), CodeTemplateInfo.getTemplateFilename());
+                stringTemplateLoader.putTemplate(String.valueOf(CodeTemplateInfo.getId() + "#body"), CodeTemplateInfo.getTemplateBody());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);

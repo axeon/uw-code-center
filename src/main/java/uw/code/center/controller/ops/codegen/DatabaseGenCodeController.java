@@ -14,8 +14,8 @@ import uw.auth.service.annotation.ResponseAdviceIgnore;
 import uw.auth.service.constant.ActionLog;
 import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
-import uw.code.center.entity.CodeTemplate;
 import uw.code.center.entity.CodeTemplateGroup;
+import uw.code.center.entity.CodeTemplateInfo;
 import uw.code.center.service.dao.*;
 import uw.code.center.template.TemplateHelper;
 import uw.dao.DaoFactory;
@@ -99,7 +99,7 @@ public class DatabaseGenCodeController {
         DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface( connName, schemaName );
         List<MetaTableInfo> tablelist = dataMetaInterface.getTablesAndViews( filterTableNames );
         CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
-        DataList<CodeTemplate> ctList = dao.list( CodeTemplate.class, "select * from code_template where group_id=? and state=1", new Object[]{templateGroupId} );
+        DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
         if (ctList.size() > 0 && tablelist.size() > 0) {
             //设置文件下载格式
             response.setContentType( "application/octet-stream;charset=UTF-8" );
@@ -112,7 +112,7 @@ public class DatabaseGenCodeController {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put( "author", "axeon" );
             map.put( "date", new Date() );
-            for (CodeTemplate ct : ctList) {
+            for (CodeTemplateInfo ct : ctList) {
                 //判定类型再输出。
 //                if (ct.getTemplateType()) {
                 for (MetaTableInfo metaTableInfo : tablelist) {

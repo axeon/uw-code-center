@@ -15,8 +15,8 @@ import uw.auth.service.constant.ActionLog;
 import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
 import uw.code.center.constant.TemplateInfoType;
-import uw.code.center.entity.CodeTemplate;
 import uw.code.center.entity.CodeTemplateGroup;
+import uw.code.center.entity.CodeTemplateInfo;
 import uw.code.center.service.swagger.ApiGroupInfo;
 import uw.code.center.service.swagger.ApiInfo;
 import uw.code.center.service.swagger.SchemaInfo;
@@ -55,7 +55,7 @@ public class SwaggerGenCodeController {
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public void downloadCodeForVue3(HttpServletResponse response, @Parameter(description = "模板组Id", example = "1") @RequestParam long templateGroupId, String swaggerUrl) throws IOException, TransactionException {
         CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
-        DataList<CodeTemplate> ctList = dao.list( CodeTemplate.class, "select * from code_template where group_id=? and state=1", new Object[]{templateGroupId} );
+        DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
 
         //设置文件下载格式
         response.setContentType( "application/octet-stream;charset=UTF-8" );
@@ -79,7 +79,7 @@ public class SwaggerGenCodeController {
             map.put( "apiGroupInfoList", swaggerParser.getApiGroupInfoList() );
             map.put( "apiCatalogInfoList", swaggerParser.getApiCatalogInfoList() );
             map.put( "messageList", swaggerParser.getMessageList() );
-            for (CodeTemplate ct : ctList) {
+            for (CodeTemplateInfo ct : ctList) {
                 //对于页面类型，要特别处理。
                 if (ct.getTemplateType() == TemplateInfoType.VUE_PAGE.getValue()) {
                     for (ApiGroupInfo apiGroupInfo : swaggerParser.getApiGroupInfoList()) {
@@ -176,7 +176,7 @@ public class SwaggerGenCodeController {
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public void downloadCodeForJmeter(HttpServletResponse response, @Parameter(description = "模板组Id", example = "1") @RequestParam long templateGroupId, String swaggerUrl) throws IOException, TransactionException {
         CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
-        DataList<CodeTemplate> ctList = dao.list( CodeTemplate.class, "select * from code_template where group_id=? and state=1", new Object[]{templateGroupId} );
+        DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
         //设置文件下载格式
         response.setContentType( "application/octet-stream;charset=UTF-8" );
         response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + System.currentTimeMillis() +
@@ -200,7 +200,7 @@ public class SwaggerGenCodeController {
             map.put( "apiGroupInfoList", swaggerParser.getApiGroupInfoList() );
             map.put( "apiCatalogInfoList", swaggerParser.getApiCatalogInfoList() );
             map.put( "messageList", swaggerParser.getMessageList() );
-            for (CodeTemplate ct : ctList) {
+            for (CodeTemplateInfo ct : ctList) {
                 String fileName = TemplateHelper.buildTemplate( ct.getId() + "#filename", map );
                 String fileBody = TemplateHelper.buildTemplate( ct.getId() + "#body", map );
                 zipOutputStream.putNextEntry( new ZipEntry( fileName ) );
