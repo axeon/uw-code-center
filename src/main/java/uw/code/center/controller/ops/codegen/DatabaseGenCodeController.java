@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uw.auth.service.annotation.MscPermDeclare;
+import uw.auth.service.annotation.ResponseAdviceIgnore;
 import uw.auth.service.constant.ActionLog;
+import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
 import uw.code.center.entity.CodeTemplate;
 import uw.code.center.entity.CodeTemplateGroup;
@@ -41,9 +43,9 @@ public class DatabaseGenCodeController {
      *
      * @return
      */
-    @Operation(summary = "获得数据库连接列表", description = "获得数据库连接列表")
     @GetMapping("/list")
-    @MscPermDeclare(type = UserType.OPS, log = ActionLog.REQUEST)
+    @Operation(summary = "获得数据库连接列表", description = "获得数据库连接列表")
+    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public List<String> getConnectionList() {
         return DaoConfigManager.getConnPoolNameList();
     }
@@ -57,12 +59,11 @@ public class DatabaseGenCodeController {
      * @param filterTableNames
      * @return
      */
-    @MscPermDeclare(type = UserType.OPS, log = ActionLog.REQUEST)
-    @Operation(summary = "获得数据库表列表", description = "获得数据库表列表")
     @GetMapping("/tableInfoList")
-    public List<MetaTableInfo> getTableInfo(@Parameter(description = "connName", example = "test") @RequestParam String connName,
-                                            @Parameter(description = "schemaName", example = "test") @RequestParam String schemaName,
-                                            @Parameter(description = "过滤表名称", example = "filter_table_1,filter_table_2") @RequestParam Set<String> filterTableNames) {
+    @Operation(summary = "获得数据库表列表", description = "获得数据库表列表")
+    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    public List<MetaTableInfo> getTableInfo(@Parameter(description = "connName", example = "test") @RequestParam String connName, @Parameter(description = "schemaName", example
+            = "test") @RequestParam String schemaName, @Parameter(description = "过滤表名称", example = "filter_table_1,filter_table_2") @RequestParam Set<String> filterTableNames) {
         DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface( connName, schemaName );
         return dataMetaInterface.getTablesAndViews( filterTableNames );
     }
@@ -74,9 +75,9 @@ public class DatabaseGenCodeController {
      * @param tableName
      * @return
      */
-    @MscPermDeclare(type = UserType.OPS, log = ActionLog.REQUEST)
-    @Operation(summary = "生成代码", description = "生成代码")
     @GetMapping("/genCode")
+    @Operation(summary = "生成代码", description = "生成代码")
+    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public String genCode(@Parameter(description = "模板Id", example = "1") @RequestParam long templateId,
                           @Parameter(description = "表名称", example = "1") @RequestParam String tableName) {
         return null;
@@ -88,14 +89,13 @@ public class DatabaseGenCodeController {
      * @param templateGroupId
      * @param filterTableNames
      */
-    @MscPermDeclare(type = UserType.OPS, log = ActionLog.REQUEST)
-    @Operation(summary = "批量下载代码", description = "批量下载代码")
+    @ResponseAdviceIgnore
     @GetMapping("/downloadCode")
-    public void downloadCode(HttpServletResponse response,
-                             @RequestParam() String connName,
-                             @RequestParam() String schemaName,
-                             @Parameter(description = "模板组Id", example = "1", required = false) @RequestParam long templateGroupId,
-                             @Parameter(description = "过滤表集合(set)", example = "filter_table_1,filter_table_2", schema = @Schema(type = "string")) @RequestParam() Set<String> filterTableNames) throws TransactionException, IOException {
+    @Operation(summary = "批量下载代码", description = "批量下载代码")
+    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    public void downloadCode(HttpServletResponse response, @RequestParam() String connName, @RequestParam() String schemaName, @Parameter(description = "模板组Id", example = "1",
+            required = false) @RequestParam long templateGroupId, @Parameter(description = "过滤表集合(set)", example = "filter_table_1,filter_table_2", schema = @Schema(type =
+            "string")) @RequestParam() Set<String> filterTableNames) throws TransactionException, IOException {
         DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface( connName, schemaName );
         List<MetaTableInfo> tablelist = dataMetaInterface.getTablesAndViews( filterTableNames );
         CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
