@@ -13,7 +13,7 @@ import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.annotation.ResponseAdviceIgnore;
 import uw.auth.service.constant.ActionLog;
 import uw.auth.service.constant.UserType;
-import uw.code.center.constant.TemplateType;
+import uw.code.center.constant.TemplateInfoType;
 import uw.code.center.entity.CodeTemplate;
 import uw.code.center.entity.CodeTemplateGroup;
 import uw.code.center.service.swagger.ApiGroupInfo;
@@ -81,7 +81,7 @@ public class SwaggerGenCodeController {
             map.put("messageList", swaggerParser.getMessageList());
             for (CodeTemplate ct : ctList) {
                 //对于页面类型，要特别处理。
-                if (ct.getTemplateType() == TemplateType.VUE_PAGE.getValue()) {
+                if (ct.getTemplateType() == TemplateInfoType.VUE_PAGE.getValue()) {
                     for (ApiGroupInfo apiGroupInfo : swaggerParser.getApiGroupInfoList()) {
                         map.put("apiGroupInfo", apiGroupInfo);
                         map.remove("functionList");

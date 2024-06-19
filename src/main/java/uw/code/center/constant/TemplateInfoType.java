@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @Schema(title = "模板类型", description = "模板组类型")
-public enum TemplateType {
+public enum TemplateInfoType {
 
 
     DB_COMMON(10, "DB通用代码"),
@@ -44,7 +44,7 @@ public enum TemplateType {
     private String label;
 
 
-    TemplateType(int value, String label) {
+    TemplateInfoType(int value, String label) {
         this.value = value;
         this.label = label;
     }
@@ -57,8 +57,8 @@ public enum TemplateType {
         return label;
     }
 
-    public static TemplateType findByValue(int value) {
-        for (TemplateType e : TemplateType.values()) {
+    public static TemplateInfoType findByValue(int value) {
+        for (TemplateInfoType e : TemplateInfoType.values()) {
             if (value == e.value) {
                 return e;
             }

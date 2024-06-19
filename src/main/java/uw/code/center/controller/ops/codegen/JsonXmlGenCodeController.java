@@ -106,7 +106,7 @@ public class JsonXmlGenCodeController {
      */
     @MscPermDeclare(type = UserType.OPS, log = ActionLog.REQUEST)
     @Operation(summary = "批量下载java的VO代码", description = "根据上传的文件批量生成后,打zip包下载java的VO代码")
-    @PostMapping("/genAndDownloadCode")
+    @PostMapping("/downloadCode")
     public void downloadCode(HttpServletResponse response,
                              @Parameter(name = "file", description = "json或者xml的文件的zip压缩包")
                              @RequestParam("file") MultipartFile file) throws TransactionException, IOException, ParserConfigurationException, SAXException {
