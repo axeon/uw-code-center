@@ -154,21 +154,19 @@ public class CodeTemplateGroupController {
     @PatchMapping("/enable")
     @Operation(summary = "启用代码模版组", description = "启用代码模版组")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData enable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id,
-                               @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
-        AuthServiceHelper.logInfo( CodeTemplateGroup.class, id, "启用代码模版组！操作备注：" + remark );
-        CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, id );
-        if (codeTemplateGroup != null) {
-            if (codeTemplateGroup.getState() != StateCommon.DISABLED.getValue()) {
-                return ResponseData.warnMsg( "启用代码模版组失败！当前状态不是禁用状态！" );
-            }
-            codeTemplateGroup.setModifyDate( new Date() );
-            codeTemplateGroup.setState( StateCommon.ENABLED.getValue() );
-            dao.update( codeTemplateGroup );
-            return ResponseData.successMsg( "启用代码模版组成功！" );
-        } else {
-            return ResponseData.warnMsg( "未找到指定id的代码模版组！" );
+    public ResponseData enable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+        AuthServiceHelper.logInfo(CodeTemplateGroup.class,id,"启用代码模版组！操作备注："+remark);
+        CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, id);
+        if (codeTemplateGroup == null) {
+            return ResponseData.warnMsg("未找到指定id的代码模版组！");
         }
+        if (codeTemplateGroup.getState()!=StateCommon.DISABLED.getValue()){
+            return ResponseData.warnMsg("启用代码模版组失败！当前状态不是禁用状态！");
+        }
+        codeTemplateGroup.setModifyDate(new Date());
+        codeTemplateGroup.setState(StateCommon.ENABLED.getValue());
+        dao.update(codeTemplateGroup);
+        return ResponseData.success();
     }
 
     /**
@@ -180,21 +178,19 @@ public class CodeTemplateGroupController {
     @PatchMapping("/disable")
     @Operation(summary = "禁用代码模版组", description = "禁用代码模版组")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData disable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id,
-                                @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
-        AuthServiceHelper.logInfo( CodeTemplateGroup.class, id, "禁用代码模版组！操作备注：" + remark );
-        CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, id );
-        if (codeTemplateGroup != null) {
-            if (codeTemplateGroup.getState() != StateCommon.ENABLED.getValue()) {
-                return ResponseData.warnMsg( "禁用代码模版组失败！当前状态不是启用状态！" );
-            }
-            codeTemplateGroup.setModifyDate( new Date() );
-            codeTemplateGroup.setState( StateCommon.DISABLED.getValue() );
-            dao.update( codeTemplateGroup );
-            return ResponseData.successMsg( "禁用代码模版组成功！" );
-        } else {
-            return ResponseData.warnMsg( "未找到指定id的代码模版组！" );
+    public ResponseData disable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+        AuthServiceHelper.logInfo(CodeTemplateGroup.class,id,"禁用代码模版组！操作备注："+remark);
+        CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, id);
+        if (codeTemplateGroup == null) {
+            return ResponseData.warnMsg("未找到指定id的代码模版组！");
         }
+        if (codeTemplateGroup.getState()!=StateCommon.ENABLED.getValue()){
+            return ResponseData.warnMsg("禁用代码模版组失败！当前状态不是启用状态！");
+        }
+        codeTemplateGroup.setModifyDate(new Date());
+        codeTemplateGroup.setState(StateCommon.DISABLED.getValue());
+        dao.update(codeTemplateGroup);
+        return ResponseData.success();
     }
 
     /**
@@ -206,21 +202,19 @@ public class CodeTemplateGroupController {
     @DeleteMapping("/delete")
     @Operation(summary = "删除代码模版组", description = "删除代码模版组")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData delete(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id,
-                               @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
-        AuthServiceHelper.logInfo( CodeTemplateGroup.class, id, "删除代码模版组！操作备注：" + remark );
-        CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, id );
-        if (codeTemplateGroup != null) {
-            if (codeTemplateGroup.getState() != StateCommon.DISABLED.getValue()) {
-                return ResponseData.warnMsg( "删除代码模版组失败！当前状态不是禁用状态！" );
-            }
-            codeTemplateGroup.setModifyDate( new Date() );
-            codeTemplateGroup.setState( StateCommon.DELETED.getValue() );
-            dao.update( codeTemplateGroup );
-            return ResponseData.successMsg( "删除代码模版组成功！" );
-        } else {
-            return ResponseData.warnMsg( "未找到指定id的代码模版组！" );
+    public ResponseData delete(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+        AuthServiceHelper.logInfo(CodeTemplateGroup.class,id,"删除代码模版组！操作备注："+remark);
+        CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, id);
+        if (codeTemplateGroup == null) {
+            return ResponseData.warnMsg("未找到指定id的代码模版组！");
         }
+        if (codeTemplateGroup.getState()!=StateCommon.DISABLED.getValue()){
+            return ResponseData.warnMsg("删除代码模版组失败！当前状态不是禁用状态！");
+        }
+        codeTemplateGroup.setModifyDate(new Date());
+        codeTemplateGroup.setState(StateCommon.DELETED.getValue());
+        dao.update(codeTemplateGroup);
+        return ResponseData.success();
     }
 
 }

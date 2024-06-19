@@ -142,21 +142,19 @@ public class CodeTemplateInfoController {
     @PatchMapping("/enable")
     @Operation(summary = "启用代码模版", description = "启用代码模版")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData enable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id,
-                               @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+    public ResponseData enable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo( CodeTemplateInfo.class, id, "启用代码模版！操作备注：" + remark );
         CodeTemplateInfo codeTemplateInfo = dao.load( CodeTemplateInfo.class, id );
-        if (codeTemplateInfo != null) {
-            if (codeTemplateInfo.getState() != StateCommon.DISABLED.getValue()) {
-                return ResponseData.warnMsg( "启用代码模版失败！当前状态不是禁用状态！" );
-            }
-            codeTemplateInfo.setModifyDate( new Date() );
-            codeTemplateInfo.setState( StateCommon.ENABLED.getValue() );
-            dao.update( codeTemplateInfo );
-            return ResponseData.successMsg( "启用代码模版成功！" );
-        } else {
+        if (codeTemplateInfo == null) {
             return ResponseData.warnMsg( "未找到指定id的代码模版！" );
         }
+        if (codeTemplateInfo.getState() != StateCommon.DISABLED.getValue()) {
+            return ResponseData.warnMsg( "启用代码模版失败！当前状态不是禁用状态！" );
+        }
+        codeTemplateInfo.setModifyDate( new Date() );
+        codeTemplateInfo.setState( StateCommon.ENABLED.getValue() );
+        dao.update( codeTemplateInfo );
+        return ResponseData.success();
     }
 
     /**
@@ -168,21 +166,19 @@ public class CodeTemplateInfoController {
     @PatchMapping("/disable")
     @Operation(summary = "禁用代码模版", description = "禁用代码模版")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData disable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id,
-                                @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+    public ResponseData disable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo( CodeTemplateInfo.class, id, "禁用代码模版！操作备注：" + remark );
         CodeTemplateInfo codeTemplateInfo = dao.load( CodeTemplateInfo.class, id );
-        if (codeTemplateInfo != null) {
-            if (codeTemplateInfo.getState() != StateCommon.ENABLED.getValue()) {
-                return ResponseData.warnMsg( "禁用代码模版失败！当前状态不是启用状态！" );
-            }
-            codeTemplateInfo.setModifyDate( new Date() );
-            codeTemplateInfo.setState( StateCommon.DISABLED.getValue() );
-            dao.update( codeTemplateInfo );
-            return ResponseData.successMsg( "禁用代码模版成功！" );
-        } else {
+        if (codeTemplateInfo == null) {
             return ResponseData.warnMsg( "未找到指定id的代码模版！" );
         }
+        if (codeTemplateInfo.getState() != StateCommon.ENABLED.getValue()) {
+            return ResponseData.warnMsg( "禁用代码模版失败！当前状态不是启用状态！" );
+        }
+        codeTemplateInfo.setModifyDate( new Date() );
+        codeTemplateInfo.setState( StateCommon.DISABLED.getValue() );
+        dao.update( codeTemplateInfo );
+        return ResponseData.success();
     }
 
     /**
@@ -194,21 +190,18 @@ public class CodeTemplateInfoController {
     @DeleteMapping("/delete")
     @Operation(summary = "删除代码模版", description = "删除代码模版")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData delete(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id,
-                               @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+    public ResponseData delete(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo( CodeTemplateInfo.class, id, "删除代码模版！操作备注：" + remark );
         CodeTemplateInfo codeTemplateInfo = dao.load( CodeTemplateInfo.class, id );
-        if (codeTemplateInfo != null) {
-            if (codeTemplateInfo.getState() != StateCommon.DISABLED.getValue()) {
-                return ResponseData.warnMsg( "删除代码模版失败！当前状态不是禁用状态！" );
-            }
-            codeTemplateInfo.setModifyDate( new Date() );
-            codeTemplateInfo.setState( StateCommon.DELETED.getValue() );
-            dao.update( codeTemplateInfo );
-            return ResponseData.successMsg( "删除代码模版成功！" );
-        } else {
+        if (codeTemplateInfo == null) {
             return ResponseData.warnMsg( "未找到指定id的代码模版！" );
         }
+        if (codeTemplateInfo.getState() != StateCommon.DISABLED.getValue()) {
+            return ResponseData.warnMsg( "删除代码模版失败！当前状态不是禁用状态！" );
+        }
+        codeTemplateInfo.setModifyDate( new Date() );
+        codeTemplateInfo.setState( StateCommon.DELETED.getValue() );
+        dao.update( codeTemplateInfo );
+        return ResponseData.success();
     }
-
 }

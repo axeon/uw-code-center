@@ -105,10 +105,9 @@ public class DatabaseGenCodeController {
         DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
         if (ctList.size() > 0 && tablelist.size() > 0) {
             //设置文件下载格式
-            response.setContentType( "application/octet-stream;charset=UTF-8" );
+            response.setContentType( "application/x-download; charset=utf-8" );
             response.setHeader( "Content-Disposition",
                     "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + dateFormat.format( new Date() ) + ".zip" );
-            response.setHeader( "Access-Control-Expose-Headers", "Content-Disposition" );
             OutputStream outputStream = response.getOutputStream();
             ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );
             //拼参数
