@@ -42,10 +42,10 @@ public class TemplateHelper {
         cfg.setTemplateLoader(stringTemplateLoader);
         //加载模板。
         try {
-            DataList<CodeTemplateInfo> list = dao.list(CodeTemplateInfo.class, "select * from code_template where state=1");
+            DataList<CodeTemplateInfo> list = dao.list(CodeTemplateInfo.class, "select * from code_template_info where state=1");
             for (CodeTemplateInfo CodeTemplateInfo : list) {
-                stringTemplateLoader.putTemplate(String.valueOf(CodeTemplateInfo.getId() + "#filename"), CodeTemplateInfo.getTemplateFilename());
-                stringTemplateLoader.putTemplate(String.valueOf(CodeTemplateInfo.getId() + "#body"), CodeTemplateInfo.getTemplateBody());
+                stringTemplateLoader.putTemplate( CodeTemplateInfo.getId() + "#filename", CodeTemplateInfo.getTemplateFilename());
+                stringTemplateLoader.putTemplate( CodeTemplateInfo.getId() + "#body", CodeTemplateInfo.getTemplateBody());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
