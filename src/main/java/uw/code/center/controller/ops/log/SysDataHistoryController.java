@@ -23,9 +23,9 @@ import uw.dao.TransactionException;
  * 数据历史管理。
  */
 @RestController
+@RequestMapping("/ops/log/dataHistory")
+@Tag(name = "数据历史", description = "数据历史")
 @MscPermDeclare(type = UserType.OPS)
-@Tag(name = "数据历史管理", description = "数据历史管理")
-@RequestMapping("/ops/log/history")
 public class SysDataHistoryController {
 
     DaoFactory dao = DaoFactory.getInstance();
@@ -37,26 +37,12 @@ public class SysDataHistoryController {
      * @return
      * @throws TransactionException
      */
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    @Operation(summary = "列表数据历史", description = "列表数据历史")
     @GetMapping("/list")
-    public DataList<SysDataHistory> list(SysDataHistoryQueryParam queryParam) throws TransactionException {
-        AuthServiceHelper.logInfo(SysDataHistory.class, 0, "列表saas系统修改数据历史");
-        return dao.list(SysDataHistory.class, queryParam);
-    }
-
-    /**
-     * 加载数据历史。
-     *
-     * @param id
-     * @throws TransactionException
-     */
+    @Operation(summary = "数据历史查询", description = "列表数据历史")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    @Operation(summary = "加载数据历史", description = "加载数据历史")
-    @GetMapping("/load")
-    public SysDataHistory load(@Parameter(description = "主键ID", required = true, example = "1") @RequestParam long id) throws TransactionException {
-        AuthServiceHelper.logInfo(SysDataHistory.class, id, "加载saas系统修改数据历史");
-        return dao.load(SysDataHistory.class, id);
+    public DataList<SysDataHistory> list(SysDataHistoryQueryParam queryParam) throws TransactionException {
+        AuthServiceHelper.logRef( SysDataHistory.class );
+        return dao.list( SysDataHistory.class, queryParam );
     }
 
 }
