@@ -12,9 +12,9 @@ import uw.auth.service.constant.UserType;
  */
 @RestController
 public class $PackageInfo$ {
-    @MscPermDeclare(type = UserType.OPS)
-    @Operation(summary = "模板管理", description = "模板管理")
     @GetMapping("/ops/template")
+    @Operation(summary = "模板管理", description = "模板管理")
+    @MscPermDeclare(type = UserType.OPS)
     public void info() {
 
     }
