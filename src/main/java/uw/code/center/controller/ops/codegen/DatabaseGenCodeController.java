@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +38,8 @@ import java.util.zip.ZipOutputStream;
 public class DatabaseGenCodeController {
 
     private final DaoFactory dao = DaoFactory.getInstance();
+
+    private FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
 
     /**
      * 获得数据库连接列表。
@@ -104,7 +107,7 @@ public class DatabaseGenCodeController {
             //设置文件下载格式
             response.setContentType( "application/octet-stream;charset=UTF-8" );
             response.setHeader( "Content-Disposition",
-                    "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + System.currentTimeMillis() + ".zip" );
+                    "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + dateFormat.format( new Date() ) + ".zip" );
             response.setHeader( "Access-Control-Expose-Headers", "Content-Disposition" );
             OutputStream outputStream = response.getOutputStream();
             ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );

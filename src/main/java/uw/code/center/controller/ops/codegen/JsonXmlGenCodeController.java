@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -50,6 +52,8 @@ import java.util.zip.ZipOutputStream;
 public class JsonXmlGenCodeController {
 
     private static final Logger log = LoggerFactory.getLogger( JsonXmlGenCodeController.class );
+
+    private FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
 
     private final ObjectMapper objectMapper;
 
@@ -103,23 +107,17 @@ public class JsonXmlGenCodeController {
      *
      * @param response
      * @param file
-     * @throws TransactionException
      * @throws IOException
-     * @throws ParserConfigurationException
-     * @throws SAXException
      */
     @ResponseAdviceIgnore
     @PostMapping("/downloadCode")
     @Operation(summary = "批量下载java的VO代码", description = "根据上传的文件批量生成后,打zip包下载java的VO代码")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public void downloadCode(HttpServletResponse response,
-                             @Parameter(name = "file", description = "json或者xml的文件的zip压缩包")
-                             @RequestParam("file") MultipartFile file) throws TransactionException, IOException, ParserConfigurationException, SAXException {
+    public void downloadCode(HttpServletResponse response, @Parameter(name = "file", description = "json或者xml的文件的zip压缩包") @RequestParam("file") MultipartFile file) throws IOException {
 
         // 上传的文件是json 或者 xml 的文件的zip压缩包
         //获取ZIP输入流(一定要指定字符集Charset.forName("GBK")否则会报java.lang.IllegalArgumentException: MALFORMED)
-        ZipInputStream zipInputStream =
-                new ZipInputStream( new BufferedInputStream( file.getInputStream() ), Charset.forName( "GBK" ) );
+        ZipInputStream zipInputStream = new ZipInputStream( new BufferedInputStream( file.getInputStream() ), Charset.forName( "GBK" ) );
         //定义ZipEntry置为null,避免由于重复调用zipInputStream.getNextEntry造成的不必要的问题
         ZipEntry ze;
         Map<String, byte[]> fileMap = new HashMap<>();
@@ -173,8 +171,7 @@ public class JsonXmlGenCodeController {
         if (fileMap.size() > 0) {
             //设置文件下载格式
             response.setContentType( "application/octet-stream;charset=UTF-8" );
-            response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( "自动生成VO代码"
-                    , "utf-8" ) + "_" + System.currentTimeMillis() + ".zip" );
+            response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( "自动生成VO代码", "utf-8" ) + "_" + dateFormat.format( new Date() ) + ".zip" );
             response.setHeader( "Access-Control-Expose-Headers", "Content-Disposition" );
             OutputStream outputStream = response.getOutputStream();
             ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );

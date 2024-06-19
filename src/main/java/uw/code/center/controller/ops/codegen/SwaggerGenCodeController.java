@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +45,8 @@ public class SwaggerGenCodeController {
 
     private final DaoFactory dao = DaoFactory.getInstance();
 
+    private FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
+
     /**
      * 批量下载vue3代码。
      *
@@ -59,7 +62,7 @@ public class SwaggerGenCodeController {
 
         //设置文件下载格式
         response.setContentType( "application/octet-stream;charset=UTF-8" );
-        response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + System.currentTimeMillis() +
+        response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + dateFormat.format( new Date() ) +
                 ".zip" );
         response.setHeader( "Access-Control-Expose-Headers", "Content-Disposition" );
         OutputStream outputStream = response.getOutputStream();
@@ -179,7 +182,7 @@ public class SwaggerGenCodeController {
         DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
         //设置文件下载格式
         response.setContentType( "application/octet-stream;charset=UTF-8" );
-        response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + System.currentTimeMillis() +
+        response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + dateFormat.format( new Date() ) +
                 ".zip" );
         response.setHeader( "Access-Control-Expose-Headers", "Content-Disposition" );
         OutputStream outputStream = response.getOutputStream();
