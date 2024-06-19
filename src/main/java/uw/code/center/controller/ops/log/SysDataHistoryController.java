@@ -41,7 +41,7 @@ public class SysDataHistoryController {
     @Operation(summary = "列表数据历史", description = "列表数据历史")
     @GetMapping("/list")
     public DataList<SysDataHistory> list(SysDataHistoryQueryParam queryParam) throws TransactionException {
-        AuthServiceHelper.logInfo(SysDataHistory.class, 0, "列表saas系统修改数据历史");
+        AuthServiceHelper.log(SysDataHistory.class, 0, "列表saas系统修改数据历史");
         return dao.list(SysDataHistory.class, queryParam);
     }
 
@@ -55,7 +55,7 @@ public class SysDataHistoryController {
     @Operation(summary = "加载数据历史", description = "加载数据历史")
     @GetMapping("/load")
     public SysDataHistory load(@Parameter(description = "主键ID", required = true, example = "1") @RequestParam long id) throws TransactionException {
-        AuthServiceHelper.logInfo(SysDataHistory.class, id, "加载saas系统修改数据历史");
+        AuthServiceHelper.log(SysDataHistory.class, id, "加载saas系统修改数据历史");
         return dao.load(SysDataHistory.class, id);
     }
 

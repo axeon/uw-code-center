@@ -41,7 +41,7 @@ public class SysCritLogController {
     @Operation(summary = "列表关键日志", description = "列表关键日志")
     @GetMapping("/list")
     public DataList<SysCritLog> list(SysCritLogQueryParam queryParam) throws TransactionException {
-        AuthServiceHelper.logInfo( SysCritLog.class, 0, "列表关键日志" );
+        AuthServiceHelper.log( SysCritLog.class, 0, "列表关键日志" );
         return dao.list( SysCritLog.class, queryParam );
     }
 
@@ -55,7 +55,7 @@ public class SysCritLogController {
     @Operation(summary = "加载关键日志", description = "加载关键日志")
     @GetMapping("/load")
     public SysCritLog load(@Parameter(description = "主键ID", required = true, example = "1") @RequestParam long id) throws TransactionException {
-        AuthServiceHelper.logInfo( SysCritLog.class, id, "加载关键日志" );
+        AuthServiceHelper.log( SysCritLog.class, id, "加载关键日志" );
         return dao.load( SysCritLog.class, id );
     }
 

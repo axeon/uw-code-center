@@ -103,7 +103,7 @@ public class TemplateGroupController {
     @PostMapping("/save")
     public ResponseData<CodeTemplateGroup> save(@RequestBody CodeTemplateGroup codeTemplateGroup) throws TransactionException {
         long id = dao.getSequenceId( CodeTemplateGroup.class );
-        AuthServiceHelper.logInfo( CodeTemplateGroup.class, id, "新增模板组" );
+        AuthServiceHelper.log( CodeTemplateGroup.class, id, "新增模板组" );
         codeTemplateGroup.setId( id );
         codeTemplateGroup.setCreateDate( new Date() );
         codeTemplateGroup.setModifyDate( null );
@@ -125,7 +125,7 @@ public class TemplateGroupController {
     @Operation(summary = "修改模板组", description = "修改模板组")
     @PutMapping("/update")
     public ResponseData<CodeTemplateGroup> update(@RequestBody CodeTemplateGroup codeTemplateGroup, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
-        AuthServiceHelper.logInfo( CodeTemplateGroup.class, codeTemplateGroup.getId(), "修改代码模版组!" + remark );
+        AuthServiceHelper.log( CodeTemplateGroup.class, codeTemplateGroup.getId(), "修改代码模版组!" + remark );
         CodeTemplateGroup codeTemplateGroupDb = dao.load( CodeTemplateGroup.class, codeTemplateGroup.getId() );
         if (codeTemplateGroupDb == null) {
             return ResponseData.errorMsg( "未找到指定ID的数值！" );
@@ -156,10 +156,10 @@ public class TemplateGroupController {
             codeTemplateGroup.setModifyDate( new Date() );
             codeTemplateGroup.setState( -1 );
             dao.update( codeTemplateGroup );
-            AuthServiceHelper.logInfo( CodeTemplateGroup.class, id, "删除代码模版组成功！" + remark );
+            AuthServiceHelper.log( CodeTemplateGroup.class, id, "删除代码模版组成功！" + remark );
             return ResponseData.successMsg( "删除代码模版组成功！" + remark );
         } else {
-            AuthServiceHelper.logInfo( CodeTemplateGroup.class, id, "删除代码模版组失败！" + remark );
+            AuthServiceHelper.log( CodeTemplateGroup.class, id, "删除代码模版组失败！" + remark );
             return ResponseData.errorMsg( "删除代码模版组失败！" + remark );
         }
     }

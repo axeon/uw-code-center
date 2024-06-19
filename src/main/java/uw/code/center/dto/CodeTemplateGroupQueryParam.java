@@ -1,6 +1,7 @@
 package uw.code.center.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import uw.app.common.dto.AuthPageQueryParam;
 import uw.dao.PageQueryParam;
 import uw.dao.annotation.QueryMeta;
 
@@ -10,7 +11,7 @@ import java.util.Date;
 * 代码模版组列表查询参数。
 */
 @Schema(title = "代码模版组列表查询参数", description = "代码模版组列表查询参数")
-public class CodeTemplateGroupQueryParam extends PageQueryParam{
+public class CodeTemplateGroupQueryParam extends PageQueryParam {
 
 
     /**
@@ -84,7 +85,6 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     private String stateOp;
 
 
-
     /**
     * 获得id。
     */
@@ -98,7 +98,6 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     public void setId(Long id){
         this.id = id;
     }
-
     /**
     * 获得数据源类型。
     */
@@ -112,7 +111,6 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     public void setGroupType(Integer groupType){
         this.groupType = groupType;
     }
-
 
     /**
     * 获得模板组名。
@@ -128,7 +126,6 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
         this.groupName = groupName;
     }
 
-
     /**
     * 获得模板组描述。
     */
@@ -142,8 +139,6 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     public void setGroupDesc(String groupDesc){
         this.groupDesc = groupDesc;
     }
-
-
     /**
     * 获得创建日期范围。
     */
@@ -157,8 +152,6 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     public void setCreateDateRange(Date[] createDateRange){
         this.createDateRange = createDateRange;
     }
-
-
     /**
     * 获得修改日期范围。
     */
@@ -172,7 +165,6 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     public void setModifyDateRange(Date[] modifyDateRange){
         this.modifyDateRange = modifyDateRange;
     }
-
     /**
     * 获得状态。1正常-1标记删除。
     */

@@ -1,6 +1,7 @@
 package uw.code.center.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import uw.app.common.dto.AuthPageQueryParam;
 import uw.dao.PageQueryParam;
 import uw.dao.annotation.QueryMeta;
 
@@ -10,7 +11,7 @@ import java.util.Date;
 * 代码模版列表查询参数。
 */
 @Schema(title = "代码模版列表查询参数", description = "代码模版列表查询参数")
-public class CodeTemplateQueryParam extends PageQueryParam{
+public class CodeTemplateQueryParam extends PageQueryParam {
 
 
     /**
@@ -98,7 +99,6 @@ public class CodeTemplateQueryParam extends PageQueryParam{
     private String stateOp;
 
 
-
     /**
     * 获得id。
     */
@@ -112,7 +112,6 @@ public class CodeTemplateQueryParam extends PageQueryParam{
     public void setId(Long id){
         this.id = id;
     }
-
     /**
     * 获得模板分组id。
     */
@@ -126,7 +125,6 @@ public class CodeTemplateQueryParam extends PageQueryParam{
     public void setGroupId(Long groupId){
         this.groupId = groupId;
     }
-
     /**
     * 获得数据类型。
     */
@@ -140,7 +138,6 @@ public class CodeTemplateQueryParam extends PageQueryParam{
     public void setTemplateType(Integer templateType){
         this.templateType = templateType;
     }
-
 
     /**
     * 获得模板名称。
@@ -156,7 +153,6 @@ public class CodeTemplateQueryParam extends PageQueryParam{
         this.templateName = templateName;
     }
 
-
     /**
     * 获得模板描述。
     */
@@ -171,7 +167,6 @@ public class CodeTemplateQueryParam extends PageQueryParam{
         this.templateDesc = templateDesc;
     }
 
-
     /**
     * 获得输出文件名模板。
     */
@@ -185,9 +180,6 @@ public class CodeTemplateQueryParam extends PageQueryParam{
     public void setTemplateFilename(String templateFilename){
         this.templateFilename = templateFilename;
     }
-
-
-
     /**
     * 获得创建日期范围。
     */
@@ -201,8 +193,6 @@ public class CodeTemplateQueryParam extends PageQueryParam{
     public void setCreateDateRange(Date[] createDateRange){
         this.createDateRange = createDateRange;
     }
-
-
     /**
     * 获得修改日期范围。
     */
@@ -216,7 +206,6 @@ public class CodeTemplateQueryParam extends PageQueryParam{
     public void setModifyDateRange(Date[] modifyDateRange){
         this.modifyDateRange = modifyDateRange;
     }
-
     /**
     * 获得状态。1正常-1标记删除。
     */
