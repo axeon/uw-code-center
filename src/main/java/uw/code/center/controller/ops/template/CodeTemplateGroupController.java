@@ -28,7 +28,7 @@ import java.util.List;
  * 代码模版组管理。
  */
 @RestController
-@RequestMapping("/code/template/group")
+@RequestMapping("/ops/template/group")
 @Tag(name = "代码模版组管理", description = "代码模版组增删改查列管理")
 @MscPermDeclare(type = UserType.OPS)
 public class CodeTemplateGroupController {

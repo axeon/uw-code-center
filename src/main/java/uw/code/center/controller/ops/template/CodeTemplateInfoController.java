@@ -28,7 +28,7 @@ import java.util.Date;
  * 代码模版管理。
  */
 @RestController
-@RequestMapping("/code/template/info")
+@RequestMapping("/ops/template/info")
 @Tag(name = "代码模版管理", description = "代码模版增删改查列管理")
 @MscPermDeclare(type = UserType.OPS)
 public class CodeTemplateInfoController {
