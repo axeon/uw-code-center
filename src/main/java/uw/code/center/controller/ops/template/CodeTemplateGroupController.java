@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import uw.app.common.dto.SysCritLogQueryParam;
 import uw.app.common.dto.SysDataHistoryQueryParam;
+import uw.app.common.entity.SysCritLog;
 import uw.app.common.entity.SysDataHistory;
 import uw.app.common.helper.SysDataHistoryHelper;
 import uw.auth.service.AuthServiceHelper;
@@ -14,6 +16,7 @@ import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
 import uw.code.center.dto.CodeTemplateGroupQueryParam;
 import uw.code.center.entity.CodeTemplateGroup;
+import uw.code.center.entity.CodeTemplateInfo;
 import uw.common.constant.StateCommon;
 import uw.common.dto.ResponseData;
 import uw.dao.DaoFactory;
@@ -57,10 +60,10 @@ public class CodeTemplateGroupController {
      * @return
      * @throws TransactionException
      */
-    @Operation(summary = "模板组select列表", description = "模板组select列表", operationId = "listForSelect")
-    @GetMapping("/listForSelect")
+    @Operation(summary = "模板组select列表", description = "模板组select列表")
+    @GetMapping("/liteList")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.USER, log = ActionLog.REQUEST)
-    public List<CodeTemplateGroup> listForSelect(@Parameter(description = "模板组类型", example = "1") @RequestParam int groupType) throws TransactionException {
+    public List<CodeTemplateGroup> liteList(@Parameter(description = "模板组类型", example = "1") @RequestParam int groupType) throws TransactionException {
         if (groupType > 0) {
             return dao.list( CodeTemplateGroup.class, "select id,group_name,group_type from code_template_group where group_type=? and state=1", new Object[]{groupType} ).results();
         } else {
@@ -82,19 +85,35 @@ public class CodeTemplateGroupController {
         return dao.load( CodeTemplateGroup.class, id );
     }
 
+
     /**
-     * 列表代码模版组历史。
+     * 查询数据历史。
      *
      * @param
      * @return
      */
-    @GetMapping("/history")
-    @Operation(summary = "代码模版组修改历史", description = "代码模版组修改历史")
+    @GetMapping("/listDataHistory")
+    @Operation(summary = "查询数据历史", description = "查询数据历史")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public DataList<SysDataHistory> history(SysDataHistoryQueryParam queryParam) throws TransactionException {
-        AuthServiceHelper.logInfo( CodeTemplateGroup.class, queryParam.getEntityId(), "列表代码模版组的历史" );
-        queryParam.setEntityClass( CodeTemplateGroup.class );
-        return SysDataHistoryHelper.listHistory( queryParam );
+    public DataList<SysDataHistory> listDataHistory(SysDataHistoryQueryParam queryParam) throws TransactionException {
+        AuthServiceHelper.logRef(CodeTemplateGroup.class, queryParam.getEntityId());
+        queryParam.setEntityClass(CodeTemplateGroup.class);
+        return dao.list(SysDataHistory.class, queryParam);
+    }
+
+    /**
+     * 查询操作日志。
+     *
+     * @param
+     * @return
+     */
+    @GetMapping("/listCritLog")
+    @Operation(summary = "查询操作日志", description = "查询操作日志")
+    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    public DataList<SysCritLog> listCritLog(SysCritLogQueryParam queryParam) throws TransactionException {
+        AuthServiceHelper.logRef(CodeTemplateGroup.class, queryParam.getRefId());
+        queryParam.setRefTypeClass(CodeTemplateGroup.class);
+        return dao.list(SysCritLog.class, queryParam);
     }
 
     /**

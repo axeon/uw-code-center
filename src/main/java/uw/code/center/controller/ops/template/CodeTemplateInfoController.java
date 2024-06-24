@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import uw.app.common.dto.SysCritLogQueryParam;
 import uw.app.common.dto.SysDataHistoryQueryParam;
+import uw.app.common.entity.SysCritLog;
 import uw.app.common.entity.SysDataHistory;
 import uw.app.common.helper.SysDataHistoryHelper;
 import uw.auth.service.AuthServiceHelper;
@@ -66,18 +68,33 @@ public class CodeTemplateInfoController {
     }
 
     /**
-     * 列表代码模版历史。
+     * 查询数据历史。
      *
      * @param
      * @return
      */
-    @GetMapping("/history")
-    @Operation(summary = "代码模版修改历史", description = "代码模版修改历史")
+    @GetMapping("/listDataHistory")
+    @Operation(summary = "查询数据历史", description = "查询数据历史")
     @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public DataList<SysDataHistory> history(SysDataHistoryQueryParam queryParam) throws TransactionException {
-        AuthServiceHelper.logInfo( CodeTemplateInfo.class, queryParam.getEntityId(), "列表代码模版的历史" );
-        queryParam.setEntityClass( CodeTemplateInfo.class );
-        return SysDataHistoryHelper.listHistory( queryParam );
+    public DataList<SysDataHistory> listDataHistory(SysDataHistoryQueryParam queryParam) throws TransactionException {
+        AuthServiceHelper.logRef( CodeTemplateInfo.class, queryParam.getEntityId());
+        queryParam.setEntityClass(CodeTemplateInfo.class);
+        return dao.list(SysDataHistory.class, queryParam);
+    }
+
+    /**
+     * 查询操作日志。
+     *
+     * @param
+     * @return
+     */
+    @GetMapping("/listCritLog")
+    @Operation(summary = "查询操作日志", description = "查询操作日志")
+    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    public DataList<SysCritLog> listCritLog(SysCritLogQueryParam queryParam) throws TransactionException {
+        AuthServiceHelper.logRef(CodeTemplateInfo.class, queryParam.getRefId());
+        queryParam.setRefTypeClass(CodeTemplateInfo.class);
+        return dao.list(SysCritLog.class, queryParam);
     }
 
     /**
