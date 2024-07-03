@@ -16,7 +16,6 @@ import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
 import uw.code.center.dto.CodeTemplateGroupQueryParam;
 import uw.code.center.entity.CodeTemplateGroup;
-import uw.code.center.entity.CodeTemplateInfo;
 import uw.common.constant.StateCommon;
 import uw.common.dto.ResponseData;
 import uw.dao.DaoFactory;
@@ -33,7 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/ops/template/group")
 @Tag(name = "代码模版组管理", description = "代码模版组增删改查列管理")
-@MscPermDeclare(type = UserType.OPS)
+@MscPermDeclare(user = UserType.OPS)
 public class CodeTemplateGroupController {
 
     DaoFactory dao = DaoFactory.getInstance();
@@ -47,7 +46,7 @@ public class CodeTemplateGroupController {
      */
     @GetMapping("/list")
     @Operation(summary = "列表代码模版组", description = "列表代码模版组")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public DataList<CodeTemplateGroup> list(CodeTemplateGroupQueryParam queryParam) throws TransactionException {
         AuthServiceHelper.logInfo( CodeTemplateGroup.class, "列表代码模版组" );
         return dao.list( CodeTemplateGroup.class, queryParam );
@@ -62,7 +61,7 @@ public class CodeTemplateGroupController {
      */
     @Operation(summary = "模板组select列表", description = "模板组select列表")
     @GetMapping("/liteList")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.USER, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.USER, log = ActionLog.REQUEST)
     public List<CodeTemplateGroup> liteList(@Parameter(description = "模板组类型", example = "1") @RequestParam int groupType) throws TransactionException {
         if (groupType > 0) {
             return dao.list( CodeTemplateGroup.class, "select id,group_name,group_type from code_template_group where group_type=? and state=1", new Object[]{groupType} ).results();
@@ -79,7 +78,7 @@ public class CodeTemplateGroupController {
      */
     @GetMapping("/load")
     @Operation(summary = "加载代码模版组", description = "加载代码模版组")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public CodeTemplateGroup load(@Parameter(description = "主键ID", required = true, example = "1") @RequestParam long id) throws TransactionException {
         AuthServiceHelper.logInfo( CodeTemplateGroup.class, id, "加载代码模版组" );
         return dao.load( CodeTemplateGroup.class, id );
@@ -94,7 +93,7 @@ public class CodeTemplateGroupController {
      */
     @GetMapping("/listDataHistory")
     @Operation(summary = "查询数据历史", description = "查询数据历史")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public DataList<SysDataHistory> listDataHistory(SysDataHistoryQueryParam queryParam) throws TransactionException {
         AuthServiceHelper.logRef(CodeTemplateGroup.class, queryParam.getEntityId());
         queryParam.setEntityClass(CodeTemplateGroup.class);
@@ -109,7 +108,7 @@ public class CodeTemplateGroupController {
      */
     @GetMapping("/listCritLog")
     @Operation(summary = "查询操作日志", description = "查询操作日志")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public DataList<SysCritLog> listCritLog(SysCritLogQueryParam queryParam) throws TransactionException {
         AuthServiceHelper.logRef(CodeTemplateGroup.class, queryParam.getRefId());
         queryParam.setRefTypeClass(CodeTemplateGroup.class);
@@ -125,7 +124,7 @@ public class CodeTemplateGroupController {
      */
     @PostMapping("/save")
     @Operation(summary = "新增代码模版组", description = "新增代码模版组")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
     public ResponseData<CodeTemplateGroup> save(@RequestBody CodeTemplateGroup codeTemplateGroup) throws TransactionException {
         long id = dao.getSequenceId( CodeTemplateGroup.class );
         AuthServiceHelper.logInfo( CodeTemplateGroup.class, id, "新增代码模版组" );
@@ -148,7 +147,7 @@ public class CodeTemplateGroupController {
      */
     @PutMapping("/update")
     @Operation(summary = "修改代码模版组", description = "修改代码模版组")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
     public ResponseData<CodeTemplateGroup> update(@RequestBody CodeTemplateGroup codeTemplateGroup, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo( CodeTemplateGroup.class, codeTemplateGroup.getId(), "修改代码模版组！操作备注：" + remark );
         CodeTemplateGroup codeTemplateGroupDb = dao.load( CodeTemplateGroup.class, codeTemplateGroup.getId() );
@@ -172,7 +171,7 @@ public class CodeTemplateGroupController {
      */
     @PatchMapping("/enable")
     @Operation(summary = "启用代码模版组", description = "启用代码模版组")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
     public ResponseData enable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo(CodeTemplateGroup.class,id,"启用代码模版组！操作备注："+remark);
         CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, id);
@@ -196,7 +195,7 @@ public class CodeTemplateGroupController {
      */
     @PatchMapping("/disable")
     @Operation(summary = "禁用代码模版组", description = "禁用代码模版组")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
     public ResponseData disable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo(CodeTemplateGroup.class,id,"禁用代码模版组！操作备注："+remark);
         CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, id);
@@ -220,7 +219,7 @@ public class CodeTemplateGroupController {
      */
     @DeleteMapping("/delete")
     @Operation(summary = "删除代码模版组", description = "删除代码模版组")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
     public ResponseData delete(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo(CodeTemplateGroup.class,id,"删除代码模版组！操作备注："+remark);
         CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, id);

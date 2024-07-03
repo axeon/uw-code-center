@@ -1,11 +1,9 @@
 package uw.code.center.controller.ops.log;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uw.app.common.dto.SysDataHistoryQueryParam;
 import uw.app.common.entity.SysDataHistory;
@@ -25,7 +23,7 @@ import uw.dao.TransactionException;
 @RestController
 @RequestMapping("/ops/log/dataHistory")
 @Tag(name = "数据历史", description = "数据历史")
-@MscPermDeclare(type = UserType.OPS)
+@MscPermDeclare(user = UserType.OPS)
 public class SysDataHistoryController {
 
     DaoFactory dao = DaoFactory.getInstance();
@@ -39,7 +37,7 @@ public class SysDataHistoryController {
      */
     @GetMapping("/list")
     @Operation(summary = "数据历史查询", description = "列表数据历史")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public DataList<SysDataHistory> list(SysDataHistoryQueryParam queryParam) throws TransactionException {
         AuthServiceHelper.logRef( SysDataHistory.class );
         return dao.list( SysDataHistory.class, queryParam );

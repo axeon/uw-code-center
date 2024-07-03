@@ -1,11 +1,9 @@
 package uw.code.center.controller.ops.log;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uw.app.common.dto.SysCritLogQueryParam;
 import uw.app.common.entity.SysCritLog;
@@ -25,7 +23,7 @@ import uw.dao.TransactionException;
 @RestController
 @RequestMapping("/ops/log/critLog")
 @Tag(name = "关键日志", description = "关键日志")
-@MscPermDeclare(type = UserType.OPS)
+@MscPermDeclare(user = UserType.OPS)
 public class SysCritLogController {
 
     DaoFactory dao = DaoFactory.getInstance();
@@ -39,7 +37,7 @@ public class SysCritLogController {
      */
     @GetMapping("/list")
     @Operation(summary = "关键日志查询", description = "列表关键日志")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public DataList<SysCritLog> list(SysCritLogQueryParam queryParam) throws TransactionException {
         AuthServiceHelper.logRef( SysCritLog.class );
         return dao.list( SysCritLog.class, queryParam );

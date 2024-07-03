@@ -12,7 +12,7 @@ import uw.auth.service.constant.UserType;
  */
 @RestController
 public class $PackageInfo$ {
-    @MscPermDeclare(type = UserType.OPS)
+    @MscPermDeclare(user = UserType.OPS)
     @Operation(summary = "代码生成", description = "代码生成")
     @GetMapping("/ops/codegen")
     public void info() {

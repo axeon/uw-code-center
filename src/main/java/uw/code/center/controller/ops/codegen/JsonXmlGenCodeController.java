@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.annotation.ResponseAdviceIgnore;
 import uw.auth.service.constant.ActionLog;
@@ -23,10 +22,8 @@ import uw.code.center.service.jsonxml.AnnotationStyle;
 import uw.code.center.service.jsonxml.GenerationConfig;
 import uw.code.center.service.jsonxml.GenerationType;
 import uw.code.center.service.jsonxml.VOCodeGenTools;
-import uw.dao.TransactionException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -48,7 +45,7 @@ import java.util.zip.ZipOutputStream;
 @RestController
 @Tag(name = "json和xml代码生成", description = "json和xml代码生成")
 @RequestMapping("/ops/codegen/jsonxmlGenCode")
-@MscPermDeclare(type = UserType.OPS)
+@MscPermDeclare(user = UserType.OPS)
 public class JsonXmlGenCodeController {
 
     private static final Logger log = LoggerFactory.getLogger( JsonXmlGenCodeController.class );
@@ -70,7 +67,7 @@ public class JsonXmlGenCodeController {
      */
     @PostMapping("/genCode")
     @Operation(summary = "生成单个VO代码的文本", description = "生成单个VO代码的文本")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public String genCode(@Parameter(description = "生成单个VO代码的请求体") @RequestBody JsonXmlRequestParam requestParam) throws Exception {
 
         // 校验传入的是 json 或者 xml
@@ -112,7 +109,7 @@ public class JsonXmlGenCodeController {
     @ResponseAdviceIgnore
     @PostMapping("/downloadCode")
     @Operation(summary = "批量下载java的VO代码", description = "根据上传的文件批量生成后,打zip包下载java的VO代码")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public void downloadCode(HttpServletResponse response, @Parameter(name = "file", description = "json或者xml的文件的zip压缩包") @RequestParam("file") MultipartFile file) throws IOException {
 
         // 上传的文件是json 或者 xml 的文件的zip压缩包

@@ -40,7 +40,7 @@ import java.util.zip.ZipOutputStream;
 @RestController
 @Tag(name = "swagger代码生成", description = "swagger代码生成")
 @RequestMapping("/ops/codegen/swaggerGenCode")
-@MscPermDeclare(type = UserType.OPS)
+@MscPermDeclare(user = UserType.OPS)
 public class SwaggerGenCodeController {
 
     private final DaoFactory dao = DaoFactory.getInstance();
@@ -55,7 +55,7 @@ public class SwaggerGenCodeController {
     @ResponseAdviceIgnore
     @GetMapping("/downloadCodeForVue3")
     @Operation(summary = "批量下载VUE3代码", description = "批量下载Vue3代码")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public void downloadCodeForVue3(HttpServletResponse response, @Parameter(description = "模板组Id", example = "1") @RequestParam long templateGroupId, String swaggerUrl) throws IOException, TransactionException {
         CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
         DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
@@ -175,7 +175,7 @@ public class SwaggerGenCodeController {
     @ResponseAdviceIgnore
     @GetMapping("/downloadCodeForJmeter")
     @Operation(summary = "批量下载Jmeter代码", description = "批量下载Jmeter代码")
-    @MscPermDeclare(type = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public void downloadCodeForJmeter(HttpServletResponse response, @Parameter(description = "模板组Id", example = "1") @RequestParam long templateGroupId, String swaggerUrl) throws IOException, TransactionException {
         CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
         DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
