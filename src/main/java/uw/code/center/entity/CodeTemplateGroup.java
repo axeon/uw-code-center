@@ -2,6 +2,7 @@ package uw.code.center.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
@@ -173,7 +174,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置id。
      */
     public void setId(long id){
-        if ((!String.valueOf(this.id).equals(String.valueOf(id)))) {
+        if (!Objects.equals(this.id, id)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -187,7 +188,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置数据源类型。
      */
     public void setGroupType(int groupType){
-        if ((!String.valueOf(this.groupType).equals(String.valueOf(groupType)))) {
+        if (!Objects.equals(this.groupType, groupType)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -201,7 +202,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置模板组名。
      */
     public void setGroupName(String groupName){
-        if ((!String.valueOf(this.groupName).equals(String.valueOf(groupName)))) {
+        if (!Objects.equals(this.groupName, groupName)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -215,7 +216,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置模板组描述。
      */
     public void setGroupDesc(String groupDesc){
-        if ((!String.valueOf(this.groupDesc).equals(String.valueOf(groupDesc)))) {
+        if (!Objects.equals(this.groupDesc, groupDesc)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -229,7 +230,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置创建日期。
      */
     public void setCreateDate(java.util.Date createDate){
-        if ((!String.valueOf(this.createDate).equals(String.valueOf(createDate)))) {
+        if (!Objects.equals(this.createDate, createDate)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -243,7 +244,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置修改日期。
      */
     public void setModifyDate(java.util.Date modifyDate){
-        if ((!String.valueOf(this.modifyDate).equals(String.valueOf(modifyDate)))) {
+        if (!Objects.equals(this.modifyDate, modifyDate)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -257,7 +258,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置状态。1正常-1标记删除。
      */
     public void setState(int state){
-        if ((!String.valueOf(this.state).equals(String.valueOf(state)))) {
+        if (!Objects.equals(this.state, state)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }

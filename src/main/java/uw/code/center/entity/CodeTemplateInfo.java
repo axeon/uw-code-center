@@ -2,6 +2,7 @@ package uw.code.center.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
@@ -215,7 +216,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置id。
      */
     public void setId(long id){
-        if ((!String.valueOf(this.id).equals(String.valueOf(id)))) {
+        if (!Objects.equals(this.id, id)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -229,7 +230,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置模板分组id。
      */
     public void setGroupId(long groupId){
-        if ((!String.valueOf(this.groupId).equals(String.valueOf(groupId)))) {
+        if (!Objects.equals(this.groupId, groupId)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -243,7 +244,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置数据类型。
      */
     public void setTemplateType(int templateType){
-        if ((!String.valueOf(this.templateType).equals(String.valueOf(templateType)))) {
+        if (!Objects.equals(this.templateType, templateType)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -257,7 +258,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置模板名称。
      */
     public void setTemplateName(String templateName){
-        if ((!String.valueOf(this.templateName).equals(String.valueOf(templateName)))) {
+        if (!Objects.equals(this.templateName, templateName)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -271,7 +272,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置模板描述。
      */
     public void setTemplateDesc(String templateDesc){
-        if ((!String.valueOf(this.templateDesc).equals(String.valueOf(templateDesc)))) {
+        if (!Objects.equals(this.templateDesc, templateDesc)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -285,7 +286,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置输出文件名模板。
      */
     public void setTemplateFilename(String templateFilename){
-        if ((!String.valueOf(this.templateFilename).equals(String.valueOf(templateFilename)))) {
+        if (!Objects.equals(this.templateFilename, templateFilename)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -299,7 +300,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置模板内容。
      */
     public void setTemplateBody(String templateBody){
-        if ((!String.valueOf(this.templateBody).equals(String.valueOf(templateBody)))) {
+        if (!Objects.equals(this.templateBody, templateBody)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -313,7 +314,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置创建日期。
      */
     public void setCreateDate(java.util.Date createDate){
-        if ((!String.valueOf(this.createDate).equals(String.valueOf(createDate)))) {
+        if (!Objects.equals(this.createDate, createDate)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -327,7 +328,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置修改日期。
      */
     public void setModifyDate(java.util.Date modifyDate){
-        if ((!String.valueOf(this.modifyDate).equals(String.valueOf(modifyDate)))) {
+        if (!Objects.equals(this.modifyDate, modifyDate)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
@@ -341,7 +342,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置状态。1正常-1标记删除。
      */
     public void setState(int state){
-        if ((!String.valueOf(this.state).equals(String.valueOf(state)))) {
+        if (!Objects.equals(this.state, state)){
             if (this.UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }

@@ -1,7 +1,6 @@
 package uw.code.center.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import uw.app.common.dto.AuthPageQueryParam;
 import uw.dao.PageQueryParam;
 import uw.dao.annotation.QueryMeta;
 
@@ -11,7 +10,7 @@ import java.util.Date;
 * 代码模版组列表查询参数。
 */
 @Schema(title = "代码模版组列表查询参数", description = "代码模版组列表查询参数")
-public class CodeTemplateGroupQueryParam extends PageQueryParam {
+public class CodeTemplateGroupQueryParam extends PageQueryParam{
 
 
     /**
