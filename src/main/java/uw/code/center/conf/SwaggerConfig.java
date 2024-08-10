@@ -31,20 +31,21 @@ public class SwaggerConfig {
     public OpenApiCustomizer customOpenAPI() {
         return openApi -> openApi
                 .addSecurityItem(new SecurityRequirement().addList("AuthToken"))
-                .components(openApi.getComponents().addSecuritySchemes("AuthToken", new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").in(SecurityScheme.In.HEADER)))
-                .info(new Info().title(appName).version(appVersion).description("本项目使用了ResponseData结构作为统一返回的结构体，请注意！")
+                .components(openApi.getComponents().addSecuritySchemes("AuthToken",
+                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").in(SecurityScheme.In.HEADER)))
+                .info(new Info().title(appName).version(appVersion)
                         .contact(new Contact().name("axeon").email("23231269@qq.com")));
     }
 
     /**
-     * open API接口。
+     * opsApi接口。
      *
      * @return
      */
     @Bean
     public GroupedOpenApi opsApi() {
         return GroupedOpenApi.builder()
-                .group("ops")
+                .group("opsApi")
                 .packagesToScan("uw.code.center.controller.ops")
                 .addOpenApiCustomizer(customOpenAPI())
                 .build();
