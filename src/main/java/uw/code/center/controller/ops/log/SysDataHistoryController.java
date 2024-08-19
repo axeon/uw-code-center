@@ -26,7 +26,7 @@ import uw.dao.TransactionException;
 @MscPermDeclare(user = UserType.OPS)
 public class SysDataHistoryController {
 
-    DaoFactory dao = DaoFactory.getInstance();
+    private final DaoFactory dao = DaoFactory.getInstance();
 
     /**
      * 列表数据历史。

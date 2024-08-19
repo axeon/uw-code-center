@@ -35,7 +35,7 @@ import java.util.List;
 @MscPermDeclare(user = UserType.OPS)
 public class CodeTemplateGroupController {
 
-    DaoFactory dao = DaoFactory.getInstance();
+    private final DaoFactory dao = DaoFactory.getInstance();
 
     /**
      * 列表代码模版组。
