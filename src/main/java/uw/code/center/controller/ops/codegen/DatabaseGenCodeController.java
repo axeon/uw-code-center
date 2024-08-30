@@ -39,7 +39,7 @@ public class DatabaseGenCodeController {
 
     private final DaoFactory dao = DaoFactory.getInstance();
 
-    private FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
+    private final FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
 
     /**
      * 获得数据库连接列表。

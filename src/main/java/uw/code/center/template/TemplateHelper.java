@@ -21,7 +21,7 @@ public class TemplateHelper {
 
     private static final Logger log = LoggerFactory.getLogger(TemplateHelper.class);
 
-    private static DaoFactory dao = DaoFactory.getInstance();
+    private static final DaoFactory dao = DaoFactory.getInstance();
 
     /**
      * Configuration对象.

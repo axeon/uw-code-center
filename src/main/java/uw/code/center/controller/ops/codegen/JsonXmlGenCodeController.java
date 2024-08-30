@@ -50,7 +50,7 @@ public class JsonXmlGenCodeController {
 
     private static final Logger log = LoggerFactory.getLogger( JsonXmlGenCodeController.class );
 
-    private FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
+    private final FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
 
     private final ObjectMapper objectMapper;
 

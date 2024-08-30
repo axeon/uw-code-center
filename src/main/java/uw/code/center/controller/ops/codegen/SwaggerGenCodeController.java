@@ -45,7 +45,7 @@ public class SwaggerGenCodeController {
 
     private final DaoFactory dao = DaoFactory.getInstance();
 
-    private FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
+    private final FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
 
     /**
      * 批量下载vue3代码。

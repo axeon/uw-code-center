@@ -57,7 +57,7 @@ public class SwaggerParser {
     /**
      * 用于检测排查的schemaNameSet。
      */
-    private Set<String> schemaNameSet = new HashSet<>();
+    private final Set<String> schemaNameSet = new HashSet<>();
 
     public static void main(String[] args) {
         SwaggerParser swaggerParser = new SwaggerParser();
