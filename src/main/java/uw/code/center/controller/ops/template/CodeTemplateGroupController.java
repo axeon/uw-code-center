@@ -148,7 +148,7 @@ public class CodeTemplateGroupController {
     @PutMapping("/update")
     @Operation(summary = "修改代码模版组", description = "修改代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData<CodeTemplateGroup> update(@RequestBody CodeTemplateGroup codeTemplateGroup, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+    public ResponseData<CodeTemplateGroup> update(@RequestBody CodeTemplateGroup codeTemplateGroup, @Parameter( description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo( CodeTemplateGroup.class, codeTemplateGroup.getId(), "修改代码模版组！操作备注：" + remark );
         CodeTemplateGroup codeTemplateGroupDb = dao.load( CodeTemplateGroup.class, codeTemplateGroup.getId() );
         if (codeTemplateGroupDb == null) {
@@ -172,7 +172,7 @@ public class CodeTemplateGroupController {
     @PatchMapping("/enable")
     @Operation(summary = "启用代码模版组", description = "启用代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData enable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+    public ResponseData enable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter( description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo(CodeTemplateGroup.class,id,"启用代码模版组！操作备注："+remark);
         CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, id);
         if (codeTemplateGroup == null) {
@@ -196,7 +196,7 @@ public class CodeTemplateGroupController {
     @PatchMapping("/disable")
     @Operation(summary = "禁用代码模版组", description = "禁用代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData disable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+    public ResponseData disable(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter( description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo(CodeTemplateGroup.class,id,"禁用代码模版组！操作备注："+remark);
         CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, id);
         if (codeTemplateGroup == null) {
@@ -220,7 +220,7 @@ public class CodeTemplateGroupController {
     @DeleteMapping("/delete")
     @Operation(summary = "删除代码模版组", description = "删除代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData delete(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter(name = "remark", description = "备注") @RequestParam String remark) throws TransactionException {
+    public ResponseData delete(@Parameter(name = "id", description = "主键ID", example = "1") @RequestParam long id, @Parameter( description = "备注") @RequestParam String remark) throws TransactionException {
         AuthServiceHelper.logInfo(CodeTemplateGroup.class,id,"删除代码模版组！操作备注："+remark);
         CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, id);
         if (codeTemplateGroup == null) {
