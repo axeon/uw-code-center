@@ -56,7 +56,7 @@ public class SwaggerGenCodeController {
     @GetMapping("/downloadCodeForVue3")
     @Operation(summary = "批量下载VUE3代码", description = "批量下载Vue3代码")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public void downloadCodeForVue3(HttpServletResponse response, @Parameter(description = "模板组Id", example = "1") @RequestParam long templateGroupId, String swaggerUrl) throws IOException, TransactionException {
+    public void downloadCodeForVue3(HttpServletResponse response, @Parameter(description = "模板组Id") @RequestParam long templateGroupId, String swaggerUrl) throws IOException, TransactionException {
         CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
         DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
 
@@ -176,7 +176,7 @@ public class SwaggerGenCodeController {
     @GetMapping("/downloadCodeForJmeter")
     @Operation(summary = "批量下载Jmeter代码", description = "批量下载Jmeter代码")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public void downloadCodeForJmeter(HttpServletResponse response, @Parameter(description = "模板组Id", example = "1") @RequestParam long templateGroupId, String swaggerUrl) throws IOException, TransactionException {
+    public void downloadCodeForJmeter(HttpServletResponse response, @Parameter(description = "模板组Id") @RequestParam long templateGroupId, String swaggerUrl) throws IOException, TransactionException {
         CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
         DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
         //设置文件下载格式

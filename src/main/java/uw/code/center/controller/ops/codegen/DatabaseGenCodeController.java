@@ -81,8 +81,8 @@ public class DatabaseGenCodeController {
     @GetMapping("/genCode")
     @Operation(summary = "生成代码", description = "生成代码")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public String genCode(@Parameter(description = "模板Id", example = "1") @RequestParam long templateId,
-                          @Parameter(description = "表名称", example = "1") @RequestParam String tableName) {
+    public String genCode(@Parameter(description = "模板Id") @RequestParam long templateId,
+                          @Parameter(description = "表名称") @RequestParam String tableName) {
         return null;
     }
 
@@ -96,7 +96,7 @@ public class DatabaseGenCodeController {
     @GetMapping("/downloadCode")
     @Operation(summary = "批量下载代码", description = "批量下载代码")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public void downloadCode(HttpServletResponse response, @RequestParam() String connName, @RequestParam() String schemaName, @Parameter(description = "模板组Id", example = "1",
+    public void downloadCode(HttpServletResponse response, @RequestParam() String connName, @RequestParam() String schemaName, @Parameter(description = "模板组Id",
             required = false) @RequestParam long templateGroupId, @Parameter(description = "过滤表集合(set)", example = "filter_table_1,filter_table_2", schema = @Schema(type =
             "string")) @RequestParam() Set<String> filterTableNames) throws TransactionException, IOException {
         DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface( connName, schemaName );
