@@ -21,7 +21,7 @@ import uw.code.center.dto.JsonXmlRequestParam;
 import uw.code.center.service.jsonxml.AnnotationStyle;
 import uw.code.center.service.jsonxml.GenerationConfig;
 import uw.code.center.service.jsonxml.GenerationType;
-import uw.code.center.service.jsonxml.VOCodeGenTools;
+import uw.code.center.service.jsonxml.VoCodeGenTools;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
@@ -95,7 +95,7 @@ public class JsonXmlGenCodeController {
         generationConfig.setTakeSwagger( requestParam.isTakeSwagger() );
 
         // 生成的VO代码
-        StringBuilder voText = VOCodeGenTools.generator( generationConfig );
+        StringBuilder voText = VoCodeGenTools.generator( generationConfig );
         return voText.toString();
     }
 
@@ -156,7 +156,7 @@ public class JsonXmlGenCodeController {
                     generationConfig.setGenerationType( GenerationType.XML );
                 }
 
-                StringBuilder generator = VOCodeGenTools.generator( generationConfig );
+                StringBuilder generator = VoCodeGenTools.generator( generationConfig );
                 String fileName = name + ".java";
                 fileMap.put( fileName, generator.toString().getBytes( StandardCharsets.UTF_8 ) );
             }
@@ -221,8 +221,7 @@ public class JsonXmlGenCodeController {
         while ((length = inputStream.read( buffer )) != -1) {
             result.write( buffer, 0, length );
         }
-        String str = result.toString( StandardCharsets.UTF_8.name() );
-        return str;
+        return result.toString( StandardCharsets.UTF_8 );
     }
 
 }

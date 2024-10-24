@@ -20,13 +20,10 @@ import java.util.*;
 /**
  * 描述: 根据传入的xml 或者 json 生成VO对象
  *
- * @Author: dengxiuwei
- * @Date: 2023/5/5 19:00
- * @Version 1.0
  */
-public class VOCodeGenTools {
+public class VoCodeGenTools {
 
-    private static final Logger logger = LoggerFactory.getLogger(VOCodeGenTools.class);
+    private static final Logger logger = LoggerFactory.getLogger( VoCodeGenTools.class);
 
 
     private JSONTokener jsonTokener;
@@ -82,7 +79,7 @@ public class VOCodeGenTools {
         }
     };
 
-    public VOCodeGenTools(GenerationConfig config, String objectName, String json) {
+    public VoCodeGenTools(GenerationConfig config, String objectName, String json) {
         this.generationConfig = config;
         this.annotationStyle = config.getAnnotationStyle();
         this.objectName = objectName;
@@ -131,14 +128,14 @@ public class VOCodeGenTools {
         // 获取传入文本是什么类型
         GenerationType sourceType = config.getGenerationType();
         logger.debug("开始生成VO...");
-        VOCodeGenTools generator = null;
+        VoCodeGenTools generator = null;
 
         if (sourceType == GenerationType.JSON) {
-            generator = new VOCodeGenTools(config, config.getObjectName(), config.getGenerationText());
+            generator = new VoCodeGenTools(config, config.getObjectName(), config.getGenerationText());
         } else {
             JSONObject xmlJSONObj = XML.toJSONObject(config.getGenerationText());
             String json = xmlJSONObj.toString();
-            generator = new VOCodeGenTools(config, config.getObjectName(), json);
+            generator = new VoCodeGenTools(config, config.getObjectName(), json);
         }
         StringBuilder text = generator.run();
         if (null == text || text.isEmpty()) {
