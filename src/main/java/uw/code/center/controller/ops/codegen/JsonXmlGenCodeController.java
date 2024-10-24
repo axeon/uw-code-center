@@ -195,14 +195,12 @@ public class JsonXmlGenCodeController {
         try {
             objectMapper.readTree( text );
             return "JSON";
-        } catch (IOException e) {
-            log.info( "Text is not valid JSON." );
+        } catch (IOException ignored) {
         }
         try {
             DocumentBuilderFactory.newInstance().newDocumentBuilder().parse( new InputSource( new StringReader( text ) ) );
             return "XML";
-        } catch (Exception e) {
-            log.info( "Text is not valid XML." );
+        } catch (Exception ignored) {
         }
         return null;
     }
