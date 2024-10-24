@@ -38,9 +38,6 @@ import java.util.zip.ZipOutputStream;
 /**
  * 描述:
  *
- * @Author: dengxiuwei
- * @Date: 2023/5/6 18:21
- * @Version 1.0
  */
 @RestController
 @Tag(name = "json和xml代码生成", description = "json和xml代码生成")

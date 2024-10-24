@@ -3,9 +3,6 @@ package uw.code.center.service.jsonxml;
 /**
  * 描述:
  *
- * @Author: dengxiuwei
- * @Date: 2023/5/5 19:10
- * @Version 1.0
  */
 
 public class GenerationConfig {

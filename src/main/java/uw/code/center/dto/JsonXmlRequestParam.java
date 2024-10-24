@@ -6,9 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * 描述:生成单个VO代码的请求体
  *
- * @Author: dengxiuwei
- * @Date: 2023/5/9 13:48
- * @Version 1.0
  */
 @Schema(title = "生成单个VO代码的参数", description = "生成单个VO代码的参数")
 public class JsonXmlRequestParam {
