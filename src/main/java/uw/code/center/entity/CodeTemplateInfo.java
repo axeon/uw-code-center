@@ -103,7 +103,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     private transient StringBuilder UPDATED_INFO = null;
 
     /**
-     * 获得更改的字段列表.
+     * 获取更改的字段列表.
      */
     @Override
     public Set<String> GET_UPDATED_COLUMN() {
@@ -111,7 +111,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     }
 
     /**
-     * 获得文本更新信息.
+     * 获取文本更新信息.
      */
     @Override
     public String GET_UPDATED_INFO() {
@@ -142,70 +142,70 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
 
 
     /**
-     * 获得id。
+     * 获取id。
      */
     public long getId(){
         return this.id;
     }
 
     /**
-     * 获得模板分组id。
+     * 获取模板分组id。
      */
     public long getGroupId(){
         return this.groupId;
     }
 
     /**
-     * 获得数据类型。
+     * 获取数据类型。
      */
     public int getTemplateType(){
         return this.templateType;
     }
 
     /**
-     * 获得模板名称。
+     * 获取模板名称。
      */
     public String getTemplateName(){
         return this.templateName;
     }
 
     /**
-     * 获得模板描述。
+     * 获取模板描述。
      */
     public String getTemplateDesc(){
         return this.templateDesc;
     }
 
     /**
-     * 获得输出文件名模板。
+     * 获取输出文件名模板。
      */
     public String getTemplateFilename(){
         return this.templateFilename;
     }
 
     /**
-     * 获得模板内容。
+     * 获取模板内容。
      */
     public String getTemplateBody(){
         return this.templateBody;
     }
 
     /**
-     * 获得创建日期。
+     * 获取创建日期。
      */
     public java.util.Date getCreateDate(){
         return this.createDate;
     }
 
     /**
-     * 获得修改日期。
+     * 获取修改日期。
      */
     public java.util.Date getModifyDate(){
         return this.modifyDate;
     }
 
     /**
-     * 获得状态。1正常-1标记删除。
+     * 获取状态。1正常-1标记删除。
      */
     public int getState(){
         return this.state;

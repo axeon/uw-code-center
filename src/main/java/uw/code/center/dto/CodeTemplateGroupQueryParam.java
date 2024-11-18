@@ -14,78 +14,77 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
 
 
     /**
-    * id
+    * id。
     */
     @QueryMeta(expr = "id=?")
     @Schema(title="id", description = "id")
     private Long id;
 
     /**
-    * 数据源类型
+    * 数据源类型。
     */
     @QueryMeta(expr = "group_type=?")
     @Schema(title="数据源类型", description = "数据源类型")
     private Integer groupType;
 
     /**
-    * 模板组名
+    * 模板组名。
     */
     @QueryMeta(expr = "group_name like ?")
     @Schema(title="模板组名", description = "模板组名")
     private String groupName;
 
     /**
-    * 模板组描述
+    * 模板组描述。
     */
     @QueryMeta(expr = "group_desc like ?")
     @Schema(title="模板组描述", description = "模板组描述")
     private String groupDesc;
     /**
-    * 创建日期范围
+    * 创建日期范围。
     */
     @QueryMeta(expr = "create_date between ? and ?")
     @Schema(title="创建日期范围", description = "创建日期范围")
     private Date[] createDateRange;
 
     /**
-    * 修改日期范围
+    * 修改日期范围。
     */
     @QueryMeta(expr = "modify_date between ? and ?")
     @Schema(title="修改日期范围", description = "修改日期范围")
     private Date[] modifyDateRange;
 
     /**
-    * 状态。1正常-1标记删除
+    * 状态。1正常-1标记删除。
     */
     @QueryMeta(expr = "state=?")
     @Schema(title="状态。1正常-1标记删除", description = "状态。1正常-1标记删除")
     private Integer state;
 
     /**
-    * 正常状态。1正常-1标记删除
-    */
-    @QueryMeta(expr = "state>-1")
-    @Schema(title="正常状态。1正常-1标记删除", description = "正常状态。1正常-1标记删除")
-    private Boolean stateOn;
-
-    /**
-    * 状态。1正常-1标记删除数组
+    * 数组状态。1正常-1标记删除。
     */
     @QueryMeta(expr = "state in (?)")
-    @Schema(title="状态。1正常-1标记删除数组", description = "状态。1正常-1标记删除数组，可同时匹配多个状态。")
+    @Schema(title="数组状态。1正常-1标记删除", description = "状态。1正常-1标记删除数组，可同时匹配多个状态。")
     private Integer[] states;
 
     /**
-    * 状态。1正常-1标记删除运算条件。
-    * 可以使用运算符号。
+    * 大于等于状态。1正常-1标记删除。
     */
-    @QueryMeta(expr = "state ?")
-    @Schema(title="状态。1正常-1标记删除运算条件", description = "状态。1正常-1标记删除运算条件，可使用><=!比较运算符。")
-    private String stateOp;
+    @QueryMeta(expr = "state>=?")
+    @Schema(title="大于等于状态。1正常-1标记删除", description = "大于等于状态。1正常-1标记删除")
+    private Integer stateGte;
+
+    /**
+    * 小于等于状态。1正常-1标记删除。
+    */
+    @QueryMeta(expr = "state<=?")
+    @Schema(title="小于等于状态。1正常-1标记删除", description = "小于等于状态。1正常-1标记删除")
+    private Integer stateLte;
 
 
     /**
-    * 获得id。
+    * 获取id。
     */
     public Long getId(){
         return this.id;
@@ -98,7 +97,7 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
         this.id = id;
     }
     /**
-    * 获得数据源类型。
+    * 获取数据源类型。
     */
     public Integer getGroupType(){
         return this.groupType;
@@ -112,7 +111,7 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     }
 
     /**
-    * 获得模板组名。
+    * 获取模板组名。
     */
     public String getGroupName(){
         return this.groupName;
@@ -126,7 +125,7 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     }
 
     /**
-    * 获得模板组描述。
+    * 获取模板组描述。
     */
     public String getGroupDesc(){
         return this.groupDesc;
@@ -139,7 +138,7 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
         this.groupDesc = groupDesc;
     }
     /**
-    * 获得创建日期范围。
+    * 获取创建日期范围。
     */
     public Date[] getCreateDateRange(){
         return this.createDateRange;
@@ -152,7 +151,7 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
         this.createDateRange = createDateRange;
     }
     /**
-    * 获得修改日期范围。
+    * 获取修改日期范围。
     */
     public Date[] getModifyDateRange(){
         return this.modifyDateRange;
@@ -165,7 +164,7 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
         this.modifyDateRange = modifyDateRange;
     }
     /**
-    * 获得状态。1正常-1标记删除。
+    * 获取状态。1正常-1标记删除。
     */
     public Integer getState(){
         return this.state;
@@ -179,45 +178,46 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     }
 
     /**
-    * 获得正常状态。1正常-1标记删除。
-    */
-    public Boolean getStateOn(){
-        return this.stateOn;
-    }
-
-    /**
-    * 设置正常状态。1正常-1标记删除。
-    */
-    public void setStateOn(Boolean stateOn){
-        this.stateOn = stateOn;
-    }
-
-    /**
-    * 获得状态。1正常-1标记删除数组。
+    * 获取数组状态。1正常-1标记删除。
     */
     public Integer[] getStates(){
         return this.states;
     }
 
     /**
-    * 设置状态。1正常-1标记删除数组。
+    * 设置数组状态。1正常-1标记删除。
     */
     public void setStates(Integer[] states){
         this.states = states;
     }
-
+    
     /**
-    * 获得状态。1正常-1标记删除运算条件。
+    * 获取大于等于状态。1正常-1标记删除。
     */
-    public String getStateOp(){
-        return this.stateOp;
+    public Integer getStateGte(){
+        return this.stateGte;
     }
 
     /**
-    * 设置状态。1正常-1标记删除运算条件。
+    * 设置大于等于状态。1正常-1标记删除。
     */
-    public void setStateOp(String stateOp){
-        this.stateOp = stateOp;
+    public void setStateGte(Integer stateGte){
+        this.stateGte = stateGte;
     }
+    
+    /**
+    * 获取小于等于状态。1正常-1标记删除。
+    */
+    public Integer getStateLte(){
+        return this.stateLte;
+    }
+
+    /**
+    * 获取小于等于状态。1正常-1标记删除。
+    */
+    public void setStateLte(Integer stateOn){
+        this.stateLte = stateLte;
+    }
+    
 
 }

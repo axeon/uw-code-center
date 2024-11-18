@@ -82,7 +82,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
     private transient StringBuilder UPDATED_INFO = null;
 
     /**
-     * 获得更改的字段列表.
+     * 获取更改的字段列表.
      */
     @Override
     public Set<String> GET_UPDATED_COLUMN() {
@@ -90,7 +90,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
     }
 
     /**
-     * 获得文本更新信息.
+     * 获取文本更新信息.
      */
     @Override
     public String GET_UPDATED_INFO() {
@@ -121,49 +121,49 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
 
 
     /**
-     * 获得id。
+     * 获取id。
      */
     public long getId(){
         return this.id;
     }
 
     /**
-     * 获得数据源类型。
+     * 获取数据源类型。
      */
     public int getGroupType(){
         return this.groupType;
     }
 
     /**
-     * 获得模板组名。
+     * 获取模板组名。
      */
     public String getGroupName(){
         return this.groupName;
     }
 
     /**
-     * 获得模板组描述。
+     * 获取模板组描述。
      */
     public String getGroupDesc(){
         return this.groupDesc;
     }
 
     /**
-     * 获得创建日期。
+     * 获取创建日期。
      */
     public java.util.Date getCreateDate(){
         return this.createDate;
     }
 
     /**
-     * 获得修改日期。
+     * 获取修改日期。
      */
     public java.util.Date getModifyDate(){
         return this.modifyDate;
     }
 
     /**
-     * 获得状态。1正常-1标记删除。
+     * 获取状态。1正常-1标记删除。
      */
     public int getState(){
         return this.state;
