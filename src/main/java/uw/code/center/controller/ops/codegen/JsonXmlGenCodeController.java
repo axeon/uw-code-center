@@ -107,7 +107,7 @@ public class JsonXmlGenCodeController {
     @PostMapping("/downloadCode")
     @Operation(summary = "批量下载java的VO代码", description = "根据上传的文件批量生成后,打zip包下载java的VO代码")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public void downloadCode(HttpServletResponse response, @Parameter(name = "file", description = "json或者xml的文件的zip压缩包") @RequestParam("file") MultipartFile file) throws IOException {
+    public void downloadCode(HttpServletResponse response, @Parameter(description = "json或者xml的文件的zip压缩包") @RequestParam MultipartFile file) throws IOException {
 
         // 上传的文件是json 或者 xml 的文件的zip压缩包
         //获取ZIP输入流(一定要指定字符集Charset.forName("GBK")否则会报java.lang.IllegalArgumentException: MALFORMED)
