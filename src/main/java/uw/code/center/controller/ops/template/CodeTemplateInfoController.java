@@ -156,7 +156,7 @@ public class CodeTemplateInfoController {
      * @param id
      * @throws TransactionException
      */
-    @PatchMapping("/enable")
+    @PutMapping("/enable")
     @Operation(summary = "启用代码模版", description = "启用代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
     public ResponseData enable(@Parameter(description = "主键ID") @RequestParam long id, @Parameter( description = "备注") @RequestParam String remark) throws TransactionException {
@@ -180,7 +180,7 @@ public class CodeTemplateInfoController {
      * @param id
      * @throws TransactionException
      */
-    @PatchMapping("/disable")
+    @PutMapping("/disable")
     @Operation(summary = "禁用代码模版", description = "禁用代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
     public ResponseData disable(@Parameter(description = "主键ID") @RequestParam long id, @Parameter( description = "备注") @RequestParam String remark) throws TransactionException {
