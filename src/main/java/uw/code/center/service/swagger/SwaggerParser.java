@@ -148,6 +148,12 @@ public class SwaggerParser {
                     propertyInfo.setName(cleanPropertyName(pkv.getKey()));
                     propertyInfo.setTitle(pkv.getValue().getTitle());
                     propertyInfo.setType(getFullType(pkv.getValue()));
+                    if (pkv.getValue().getMaxLength() != null) {
+                        propertyInfo.setMaxLength(pkv.getValue().getMaxLength());
+                    }
+                    if (pkv.getValue().getNullable() != null) {
+                        propertyInfo.setNullable(pkv.getValue().getNullable());
+                    }
                 }
             }
         }

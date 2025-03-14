@@ -90,6 +90,8 @@ public class SwaggerGenCodeController {
                         map.remove( "functionList" );
                         map.remove( "functionSave" );
                         map.remove( "functionUpdate" );
+                        map.remove( "functionEnable" );
+                        map.remove( "functionDisable" );
                         map.remove( "functionDelete" );
                         //找出增删改查列相关信息，并赋值。
                         for (ApiInfo apiInfo : apiGroupInfo.getApiInfoList()) {

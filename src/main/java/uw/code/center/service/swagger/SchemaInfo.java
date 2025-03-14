@@ -76,6 +76,16 @@ public class SchemaInfo {
          */
         private String type;
 
+        /**
+         * 最大长度。
+         */
+        private int maxLength;
+
+        /**
+         * 是否为空。
+         */
+        private boolean nullable;
+
         public String getName() {
             return name;
         }
@@ -100,13 +110,32 @@ public class SchemaInfo {
             this.type = type;
         }
 
+        public int getMaxLength() {
+            return maxLength;
+        }
+
+        public void setMaxLength(int maxLength) {
+            this.maxLength = maxLength;
+        }
+
+        public boolean isNullable() {
+            return nullable;
+        }
+
+        public void setNullable(boolean nullable) {
+            this.nullable = nullable;
+        }
+
         @Override
         public String toString() {
-            return "PropertyInfo{" +
-                    "name='" + name + '\'' +
-                    ", title='" + title + '\'' +
-                    ", type='" + type + '\'' +
-                    '}';
+            final StringBuilder sb = new StringBuilder( "PropertyInfo{" );
+            sb.append( "name='" ).append( name ).append( '\'' );
+            sb.append( ", title='" ).append( title ).append( '\'' );
+            sb.append( ", type='" ).append( type ).append( '\'' );
+            sb.append( ", maxLength=" ).append( maxLength );
+            sb.append( ", nullable=" ).append( nullable );
+            sb.append( '}' );
+            return sb.toString();
         }
     }
 }
