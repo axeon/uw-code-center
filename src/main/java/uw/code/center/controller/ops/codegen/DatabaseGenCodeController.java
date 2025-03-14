@@ -27,6 +27,7 @@ import uw.dao.conf.DaoConfigManager;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -107,7 +108,7 @@ public class DatabaseGenCodeController {
             //设置文件下载格式
             response.setContentType( "application/x-download; charset=utf-8" );
             response.setHeader( "Content-Disposition",
-                    "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), "utf-8" ) + "_" + dateFormat.format( new Date() ) + ".zip" );
+                    "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8 ) + "_" + dateFormat.format( new Date() ) + ".zip" );
             OutputStream outputStream = response.getOutputStream();
             ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );
             //拼参数

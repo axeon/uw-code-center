@@ -30,6 +30,7 @@ import uw.dao.TransactionException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -138,6 +139,10 @@ public class SwaggerGenCodeController {
                                 map.put( "functionSave", apiInfo.getFunction() );
                             } else if (apiInfo.getPath().endsWith( "/update" )) {
                                 map.put( "functionUpdate", apiInfo.getFunction() );
+                            } else if (apiInfo.getPath().endsWith( "/enable" )) {
+                                map.put( "functionEnable", apiInfo.getFunction() );
+                            } else if (apiInfo.getPath().endsWith( "/disable" )) {
+                                map.put( "functionDisable", apiInfo.getFunction() );
                             } else if (apiInfo.getPath().endsWith( "/delete" )) {
                                 map.put( "functionDelete", apiInfo.getFunction() );
                                 map.put( "functionDeleteParameterInfoList", apiInfo.getParameterInfoList() );
@@ -150,14 +155,14 @@ public class SwaggerGenCodeController {
                         String fileName = TemplateHelper.buildTemplate( ct.getId() + "#filename", map );
                         String fileBody = TemplateHelper.buildTemplate( ct.getId() + "#body", map );
                         zipOutputStream.putNextEntry( new ZipEntry( fileName ) );
-                        zipOutputStream.write( fileBody.getBytes( "utf-8" ) );
+                        zipOutputStream.write( fileBody.getBytes( StandardCharsets.UTF_8 ) );
                         zipOutputStream.closeEntry();
                     }
                 } else {
                     String fileName = TemplateHelper.buildTemplate( ct.getId() + "#filename", map );
                     String fileBody = TemplateHelper.buildTemplate( ct.getId() + "#body", map );
                     zipOutputStream.putNextEntry( new ZipEntry( fileName ) );
-                    zipOutputStream.write( fileBody.getBytes( "utf-8" ) );
+                    zipOutputStream.write( fileBody.getBytes( StandardCharsets.UTF_8 ) );
                     zipOutputStream.closeEntry();
                 }
             }
@@ -206,7 +211,7 @@ public class SwaggerGenCodeController {
                 String fileName = TemplateHelper.buildTemplate( ct.getId() + "#filename", map );
                 String fileBody = TemplateHelper.buildTemplate( ct.getId() + "#body", map );
                 zipOutputStream.putNextEntry( new ZipEntry( fileName ) );
-                zipOutputStream.write( fileBody.getBytes( "utf-8" ) );
+                zipOutputStream.write( fileBody.getBytes( StandardCharsets.UTF_8 ) );
                 zipOutputStream.closeEntry();
             }
         }
