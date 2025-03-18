@@ -93,6 +93,8 @@ public class SwaggerGenCodeController {
                         map.remove( "functionEnable" );
                         map.remove( "functionDisable" );
                         map.remove( "functionDelete" );
+                        map.remove( "functionListDataHistory" );
+                        map.remove( "functionListCritLog" );
                         //找出增删改查列相关信息，并赋值。
                         for (ApiInfo apiInfo : apiGroupInfo.getApiInfoList()) {
 
@@ -141,6 +143,10 @@ public class SwaggerGenCodeController {
                                 map.put( "functionSave", apiInfo.getFunction() );
                             } else if (apiInfo.getPath().endsWith( "/update" )) {
                                 map.put( "functionUpdate", apiInfo.getFunction() );
+                            } else if (apiInfo.getPath().endsWith( "/listDataHistory" )) {
+                                map.put( "functionListDataHistory", apiInfo.getFunction() );
+                            } else if (apiInfo.getPath().endsWith( "/listCritLog" )) {
+                                map.put( "functionListCritLog", apiInfo.getFunction() );
                             } else if (apiInfo.getPath().endsWith( "/enable" )) {
                                 map.put( "functionEnable", apiInfo.getFunction() );
                             } else if (apiInfo.getPath().endsWith( "/disable" )) {
