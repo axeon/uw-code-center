@@ -17,7 +17,7 @@ import uw.auth.service.constant.UserType;
 import uw.code.center.dto.CodeTemplateInfoQueryParam;
 import uw.code.center.entity.CodeTemplateInfo;
 import uw.code.center.template.TemplateHelper;
-import uw.common.constant.StateCommon;
+import uw.app.common.constant.CommonState;
 import uw.common.dto.ResponseData;
 import uw.dao.DaoFactory;
 import uw.dao.DataList;
@@ -113,7 +113,7 @@ public class CodeTemplateInfoController {
         codeTemplateInfo.setId( id );
         codeTemplateInfo.setCreateDate( new Date() );
         codeTemplateInfo.setModifyDate( null );
-        codeTemplateInfo.setState( 1 );
+        codeTemplateInfo.setState( CommonState.ENABLED.getValue() );
         dao.save( codeTemplateInfo );
         TemplateHelper.init();
         //保存历史记录
@@ -165,11 +165,11 @@ public class CodeTemplateInfoController {
         if (codeTemplateInfo == null) {
             return ResponseData.warnMsg( "未找到指定id的代码模版！" );
         }
-        if (codeTemplateInfo.getState() != StateCommon.DISABLED.getValue()) {
+        if (codeTemplateInfo.getState() != CommonState.DISABLED.getValue()) {
             return ResponseData.warnMsg( "启用代码模版失败！当前状态不是禁用状态！" );
         }
         codeTemplateInfo.setModifyDate( new Date() );
-        codeTemplateInfo.setState( StateCommon.ENABLED.getValue() );
+        codeTemplateInfo.setState( CommonState.ENABLED.getValue() );
         dao.update( codeTemplateInfo );
         return ResponseData.success();
     }
@@ -189,11 +189,11 @@ public class CodeTemplateInfoController {
         if (codeTemplateInfo == null) {
             return ResponseData.warnMsg( "未找到指定id的代码模版！" );
         }
-        if (codeTemplateInfo.getState() != StateCommon.ENABLED.getValue()) {
+        if (codeTemplateInfo.getState() != CommonState.ENABLED.getValue()) {
             return ResponseData.warnMsg( "禁用代码模版失败！当前状态不是启用状态！" );
         }
         codeTemplateInfo.setModifyDate( new Date() );
-        codeTemplateInfo.setState( StateCommon.DISABLED.getValue() );
+        codeTemplateInfo.setState( CommonState.DISABLED.getValue() );
         dao.update( codeTemplateInfo );
         return ResponseData.success();
     }
@@ -213,11 +213,11 @@ public class CodeTemplateInfoController {
         if (codeTemplateInfo == null) {
             return ResponseData.warnMsg( "未找到指定id的代码模版！" );
         }
-        if (codeTemplateInfo.getState() != StateCommon.DISABLED.getValue()) {
+        if (codeTemplateInfo.getState() != CommonState.DISABLED.getValue()) {
             return ResponseData.warnMsg( "删除代码模版失败！当前状态不是禁用状态！" );
         }
         codeTemplateInfo.setModifyDate( new Date() );
-        codeTemplateInfo.setState( StateCommon.DELETED.getValue() );
+        codeTemplateInfo.setState( CommonState.DELETED.getValue() );
         dao.update( codeTemplateInfo );
         return ResponseData.success();
     }

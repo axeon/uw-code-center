@@ -16,7 +16,7 @@ import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
 import uw.code.center.dto.CodeTemplateGroupQueryParam;
 import uw.code.center.entity.CodeTemplateGroup;
-import uw.common.constant.StateCommon;
+import uw.app.common.constant.CommonState;
 import uw.common.dto.ResponseData;
 import uw.dao.DaoFactory;
 import uw.dao.DataList;
@@ -131,7 +131,7 @@ public class CodeTemplateGroupController {
         codeTemplateGroup.setId( id );
         codeTemplateGroup.setCreateDate( new Date() );
         codeTemplateGroup.setModifyDate( null );
-        codeTemplateGroup.setState( 1 );
+        codeTemplateGroup.setState( CommonState.ENABLED.getValue() );
         dao.save( codeTemplateGroup );
         //保存历史记录
         SysDataHistoryHelper.saveHistory( codeTemplateGroup.getId(), codeTemplateGroup, "代码模版组", "新增代码模版组" );
@@ -178,11 +178,11 @@ public class CodeTemplateGroupController {
         if (codeTemplateGroup == null) {
             return ResponseData.warnMsg("未找到指定id的代码模版组！");
         }
-        if (codeTemplateGroup.getState()!=StateCommon.DISABLED.getValue()){
+        if (codeTemplateGroup.getState()!= CommonState.DISABLED.getValue()){
             return ResponseData.warnMsg("启用代码模版组失败！当前状态不是禁用状态！");
         }
         codeTemplateGroup.setModifyDate(new Date());
-        codeTemplateGroup.setState(StateCommon.ENABLED.getValue());
+        codeTemplateGroup.setState( CommonState.ENABLED.getValue());
         dao.update(codeTemplateGroup);
         return ResponseData.success();
     }
@@ -202,11 +202,11 @@ public class CodeTemplateGroupController {
         if (codeTemplateGroup == null) {
             return ResponseData.warnMsg("未找到指定id的代码模版组！");
         }
-        if (codeTemplateGroup.getState()!=StateCommon.ENABLED.getValue()){
+        if (codeTemplateGroup.getState()!= CommonState.ENABLED.getValue()){
             return ResponseData.warnMsg("禁用代码模版组失败！当前状态不是启用状态！");
         }
         codeTemplateGroup.setModifyDate(new Date());
-        codeTemplateGroup.setState(StateCommon.DISABLED.getValue());
+        codeTemplateGroup.setState( CommonState.DISABLED.getValue());
         dao.update(codeTemplateGroup);
         return ResponseData.success();
     }
@@ -226,11 +226,11 @@ public class CodeTemplateGroupController {
         if (codeTemplateGroup == null) {
             return ResponseData.warnMsg("未找到指定id的代码模版组！");
         }
-        if (codeTemplateGroup.getState()!=StateCommon.DISABLED.getValue()){
+        if (codeTemplateGroup.getState()!= CommonState.DISABLED.getValue()){
             return ResponseData.warnMsg("删除代码模版组失败！当前状态不是禁用状态！");
         }
         codeTemplateGroup.setModifyDate(new Date());
-        codeTemplateGroup.setState(StateCommon.DELETED.getValue());
+        codeTemplateGroup.setState( CommonState.DELETED.getValue());
         dao.update(codeTemplateGroup);
         return ResponseData.success();
     }
