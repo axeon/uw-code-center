@@ -4,11 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import uw.app.common.dto.SysCritLogQueryParam;
-import uw.app.common.dto.SysDataHistoryQueryParam;
-import uw.app.common.entity.SysCritLog;
-import uw.app.common.entity.SysDataHistory;
-import uw.app.common.helper.SysDataHistoryHelper;
+import uw.common.app.dto.SysCritLogQueryParam;
+import uw.common.app.dto.SysDataHistoryQueryParam;
+import uw.common.app.entity.SysCritLog;
+import uw.common.app.entity.SysDataHistory;
+import uw.common.app.helper.SysDataHistoryHelper;
 import uw.auth.service.AuthServiceHelper;
 import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.constant.ActionLog;
@@ -16,7 +16,7 @@ import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
 import uw.code.center.dto.CodeTemplateGroupQueryParam;
 import uw.code.center.entity.CodeTemplateGroup;
-import uw.app.common.constant.CommonState;
+import uw.common.app.constant.CommonState;
 import uw.common.dto.ResponseData;
 import uw.dao.DaoFactory;
 import uw.dao.DataList;
@@ -110,8 +110,8 @@ public class CodeTemplateGroupController {
     @Operation(summary = "查询操作日志", description = "查询操作日志")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public DataList<SysCritLog> listCritLog(SysCritLogQueryParam queryParam) throws TransactionException {
-        AuthServiceHelper.logRef(CodeTemplateGroup.class, queryParam.getRefId());
-        queryParam.setRefTypeClass(CodeTemplateGroup.class);
+        AuthServiceHelper.logRef(CodeTemplateGroup.class, queryParam.getBizId());
+        queryParam.setBizTypeClass(CodeTemplateGroup.class);
         return dao.list(SysCritLog.class, queryParam);
     }
 
