@@ -1,5 +1,7 @@
 package uw.code.center.service.jsonxml;
 
+import uw.common.util.SystemClock;
+
 import java.util.Map;
 
 /**
@@ -18,7 +20,7 @@ public class Json2JavaVo {
 
     private long prvId;
 
-    private long id = System.currentTimeMillis();
+    private long id = SystemClock.now();
 
     public Json2JavaVo(String propName, String className, long prvId) {
         this.propName = propName;
