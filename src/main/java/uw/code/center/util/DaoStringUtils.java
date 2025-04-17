@@ -18,7 +18,7 @@ public class DaoStringUtils {
     }
 
     /**
-     * 获得上一级路径。
+     * 获取上一级路径。
      *
      * @param path
      * @return

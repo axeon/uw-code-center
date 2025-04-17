@@ -23,7 +23,7 @@ public class DatabaseMetaParser {
 
 
     /**
-     * 根据连接名获得DataMeta操作接口。
+     * 根据连接名获取DataMeta操作接口。
      * 对于oracle数据库，还需要传入connName，
      *
      * @param connName

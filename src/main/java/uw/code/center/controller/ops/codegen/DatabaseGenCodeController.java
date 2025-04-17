@@ -43,19 +43,19 @@ public class DatabaseGenCodeController {
     private final FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
 
     /**
-     * 获得数据库连接列表。
+     * 获取数据库连接列表。
      *
      * @return
      */
     @GetMapping("/list")
-    @Operation(summary = "获得数据库连接列表", description = "获得数据库连接列表")
+    @Operation(summary = "获取数据库连接列表", description = "获取数据库连接列表")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public List<String> getConnectionList() {
         return DaoConfigManager.getConnPoolNameList();
     }
 
     /**
-     * 获得数据库表列表。
+     * 获取数据库表列表。
      * 对于oracle数据库，还需要传入connName，
      *
      * @param connName
@@ -64,7 +64,7 @@ public class DatabaseGenCodeController {
      * @return
      */
     @GetMapping("/tableInfoList")
-    @Operation(summary = "获得数据库表列表", description = "获得数据库表列表")
+    @Operation(summary = "获取数据库表列表", description = "获取数据库表列表")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public List<MetaTableInfo> getTableInfo(@Parameter(description = "connName", example = "test") @RequestParam String connName, @Parameter(description = "schemaName", example
             = "test") @RequestParam String schemaName, @Parameter(description = "过滤表名称", example = "filter_table_1,filter_table_2") @RequestParam Set<String> filterTableNames) {
@@ -120,9 +120,9 @@ public class DatabaseGenCodeController {
 //                if (ct.getTemplateType()) {
                 for (MetaTableInfo metaTableInfo : tablelist) {
                     map.put( "tableMeta", metaTableInfo );
-                    // 获得主键列表
+                    // 获取主键列表
                     List<MetaPrimaryKeyInfo> pklist = dataMetaInterface.getPrimaryKey( metaTableInfo.getTableName() );
-                    // 获得列列表
+                    // 获取列列表
                     List<MetaColumnInfo> columnlist = dataMetaInterface.getColumnList( metaTableInfo.getTableName(), pklist );
                     map.put( "columnList", columnlist );
                     //过滤生成主键

@@ -44,7 +44,7 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
     }
 
     /**
-     * 获得数据库链接.
+     * 获取数据库链接.
      *
      * @return Connection对象
      * @throws SQLException SQL异常
@@ -202,7 +202,7 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
     }
 
     /**
-     * 获得主键名.
+     * 获取主键名.
      *
      * @param tableName 表名
      * @return 主键列表

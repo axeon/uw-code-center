@@ -131,11 +131,11 @@ public class SwaggerParser {
                 }
                 SchemaInfo schemaInfo = new SchemaInfo();
                 this.schemaInfoList.add(schemaInfo);
-                //获得对象名和注释。
+                //获取对象名和注释。
                 schemaInfo.setName(skv.getKey());
                 schemaNameSet.add(schemaInfo.getName());
                 schemaInfo.setTitle(skv.getValue().getTitle());
-                //获得属性列表。
+                //获取属性列表。
                 List<SchemaInfo.PropertyInfo> propertyInfoList = new ArrayList<>();
                 schemaInfo.setPropertyList(propertyInfoList);
                 if (skv.getValue().getProperties() == null) {
@@ -408,7 +408,7 @@ public class SwaggerParser {
     }
 
     /**
-     * 获得api上级路径。
+     * 获取api上级路径。
      *
      * @param path
      * @return
