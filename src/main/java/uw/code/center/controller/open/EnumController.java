@@ -12,19 +12,18 @@ import java.util.Map;
 
 /**
  * 公共搜索枚举接口
- *
  */
 @RestController
 @RequestMapping("/open/enum")
 @Tag(name = "枚举类管理")
-@Profile({"test","dev"})
+@Profile({"test", "dev"})
 public class EnumController {
 
     private static final String BASE_PACKAGE = "uw.code.center.constant";
 
     @GetMapping("/getAllEnumMap")
     @Operation(summary = "获取所有枚举", description = "获取所有枚举")
-    public Map<String, Object> getAllEnumMap() throws Exception {
+    public Map<String, Object> getAllEnumMap() {
         return EnumUtils.getEnumMap(BASE_PACKAGE);
     }
 

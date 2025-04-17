@@ -12,7 +12,8 @@ import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.constant.ActionLog;
 import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
-import uw.dao.DaoFactory;
+import uw.common.dto.ResponseData;
+import uw.dao.DaoManager;
 import uw.dao.DataList;
 import uw.dao.TransactionException;
 
@@ -26,7 +27,7 @@ import uw.dao.TransactionException;
 @MscPermDeclare(user = UserType.OPS)
 public class SysDataHistoryController {
 
-    private final DaoFactory dao = DaoFactory.getInstance();
+    private final DaoManager dao = DaoManager.getInstance();
 
     /**
      * 列表数据历史。
@@ -38,7 +39,7 @@ public class SysDataHistoryController {
     @GetMapping("/list")
     @Operation(summary = "数据历史查询", description = "列表数据历史")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public DataList<SysDataHistory> list(SysDataHistoryQueryParam queryParam) throws TransactionException {
+    public ResponseData<DataList<SysDataHistory>> list(SysDataHistoryQueryParam queryParam){
         AuthServiceHelper.logRef( SysDataHistory.class );
         return dao.list( SysDataHistory.class, queryParam );
     }

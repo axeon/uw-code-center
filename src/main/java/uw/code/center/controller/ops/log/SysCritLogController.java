@@ -12,7 +12,9 @@ import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.constant.ActionLog;
 import uw.auth.service.constant.AuthType;
 import uw.auth.service.constant.UserType;
+import uw.common.dto.ResponseData;
 import uw.dao.DaoFactory;
+import uw.dao.DaoManager;
 import uw.dao.DataList;
 import uw.dao.TransactionException;
 
@@ -26,7 +28,7 @@ import uw.dao.TransactionException;
 @MscPermDeclare(user = UserType.OPS)
 public class SysCritLogController {
 
-    private final DaoFactory dao = DaoFactory.getInstance();
+    private final DaoManager dao = DaoManager.getInstance();
 
     /**
      * 列表OPS关键日志。
@@ -38,7 +40,7 @@ public class SysCritLogController {
     @GetMapping("/list")
     @Operation(summary = "关键日志查询", description = "列表关键日志")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public DataList<SysCritLog> list(SysCritLogQueryParam queryParam) throws TransactionException {
+    public ResponseData<DataList<SysCritLog>> list(SysCritLogQueryParam queryParam){
         AuthServiceHelper.logRef( SysCritLog.class );
         return dao.list( SysCritLog.class, queryParam );
     }

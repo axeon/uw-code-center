@@ -20,6 +20,7 @@ import uw.code.center.entity.CodeTemplateInfo;
 import uw.code.center.service.dao.*;
 import uw.code.center.template.TemplateHelper;
 import uw.dao.DaoFactory;
+import uw.dao.DaoManager;
 import uw.dao.DataList;
 import uw.dao.TransactionException;
 import uw.dao.conf.DaoConfigManager;
@@ -38,7 +39,7 @@ import java.util.zip.ZipOutputStream;
 @MscPermDeclare(user = UserType.OPS)
 public class DatabaseGenCodeController {
 
-    private final DaoFactory dao = DaoFactory.getInstance();
+    private final DaoManager dao = DaoManager.getInstance();
 
     private final FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
 
@@ -99,11 +100,14 @@ public class DatabaseGenCodeController {
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public void downloadCode(HttpServletResponse response, @RequestParam() String connName, @RequestParam() String schemaName, @Parameter(description = "模板组Id",
             required = false) @RequestParam long templateGroupId, @Parameter(description = "过滤表集合(set)", example = "filter_table_1,filter_table_2", schema = @Schema(type =
-            "string")) @RequestParam() Set<String> filterTableNames) throws TransactionException, IOException {
+            "string")) @RequestParam() Set<String> filterTableNames) throws IOException {
+        CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, templateGroupId).getData();
+        DataList<CodeTemplateInfo> ctList = dao.list(CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId}).getData();
+        if (codeTemplateGroup == null || ctList == null) {
+            throw new RuntimeException("模板组或模板组下模板不存在！");
+        }
         DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface( connName, schemaName );
         List<MetaTableInfo> tablelist = dataMetaInterface.getTablesAndViews( filterTableNames );
-        CodeTemplateGroup codeTemplateGroup = dao.load( CodeTemplateGroup.class, templateGroupId );
-        DataList<CodeTemplateInfo> ctList = dao.list( CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId} );
         if (ctList.size() > 0 && tablelist.size() > 0) {
             //设置文件下载格式
             response.setContentType( "application/x-download; charset=utf-8" );

@@ -41,7 +41,14 @@ public class CodeTemplateInfoQueryParam extends PageQueryParam{
     @QueryMeta(expr = "id=?")
     @Schema(title="id", description = "id")
     private Long id;
-	
+
+    /**
+    * ID数组。
+    */
+    @QueryMeta(expr = "id in (?)")
+    @Schema(title="ID数组", description = "ID数组，可同时匹配多个。")
+    private Long[] ids;
+
     /**
     * 模板分组id。
     */
@@ -99,10 +106,10 @@ public class CodeTemplateInfoQueryParam extends PageQueryParam{
     private Integer state;
 
     /**
-    * 数组状态。1正常-1标记删除。
+    * 状态。1正常-1标记删除数组。
     */
     @QueryMeta(expr = "state in (?)")
-    @Schema(title="数组状态。1正常-1标记删除", description = "状态。1正常-1标记删除数组，可同时匹配多个状态。")
+    @Schema(title="状态。1正常-1标记删除数组", description = "状态。1正常-1标记删除数组，可同时匹配多个状态。")
     private Integer[] states;
 
     /**
@@ -123,25 +130,47 @@ public class CodeTemplateInfoQueryParam extends PageQueryParam{
     /**
     * 获取id。
     */
-    public Long getId(){
+    public Long getId() {
         return this.id;
     }
 
     /**
     * 设置id。
     */
-    public void setId(Long id){
+    public void setId(Long id) {
         this.id = id;
     }
-	
+
     /**
     * 设置id链式调用。
     */
-	public CodeTemplateInfoQueryParam id(Long id){
+    public CodeTemplateInfoQueryParam id(Long id) {
         setId(id);
         return this;
     }
-	
+
+    /**
+    * 获取ID数组。
+    */
+    public Long[] getIds() {
+        return this.ids;
+    }
+
+    /**
+    * 设置ID数组。
+    */
+    public void setIds(Long[] ids) {
+        this.ids = ids;
+    }
+
+    /**
+    * 设置ID数组链式调用。
+    */
+    public CodeTemplateInfoQueryParam ids(Long[] ids) {
+        setIds(ids);
+        return this;
+    }
+
     /**
     * 获取模板分组id。
     */
@@ -319,21 +348,21 @@ public class CodeTemplateInfoQueryParam extends PageQueryParam{
     }
 
     /**
-    * 获取数组状态。1正常-1标记删除。
+    * 获取状态。1正常-1标记删除数组。
     */
     public Integer[] getStates(){
         return this.states;
     }
 
     /**
-    * 设置数组状态。1正常-1标记删除。
+    * 设置状态。1正常-1标记删除数组。
     */
     public void setStates(Integer[] states){
         this.states = states;
     }
 	
     /**
-    * 设置数组状态。1正常-1标记删除链式调用。
+    * 设置状态。1正常-1标记删除数组链式调用。
     */
     public CodeTemplateInfoQueryParam states(Integer[] states) {
         setStates(states);

@@ -26,70 +26,70 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * id
      */
     @ColumnMeta(columnName="id", dataType="long", dataSize=19, nullable=false, primaryKey=true)
-    @Schema(title = "id", description = "id")
+    @Schema(title = "id", description = "id", maxLength=19, nullable=false )
     private long id;
 
     /**
      * 模板分组id
      */
     @ColumnMeta(columnName="group_id", dataType="long", dataSize=19, nullable=false)
-    @Schema(title = "模板分组id", description = "模板分组id")
+    @Schema(title = "模板分组id", description = "模板分组id", maxLength=19, nullable=false )
     private long groupId;
 
     /**
      * 数据类型
      */
     @ColumnMeta(columnName="template_type", dataType="int", dataSize=10, nullable=true)
-    @Schema(title = "数据类型", description = "数据类型")
+    @Schema(title = "数据类型", description = "数据类型", maxLength=10, nullable=true )
     private int templateType;
 
     /**
      * 模板名称
      */
     @ColumnMeta(columnName="template_name", dataType="String", dataSize=100, nullable=true)
-    @Schema(title = "模板名称", description = "模板名称")
+    @Schema(title = "模板名称", description = "模板名称", maxLength=100, nullable=true )
     private String templateName;
 
     /**
      * 模板描述
      */
     @ColumnMeta(columnName="template_desc", dataType="String", dataSize=100, nullable=true)
-    @Schema(title = "模板描述", description = "模板描述")
+    @Schema(title = "模板描述", description = "模板描述", maxLength=100, nullable=true )
     private String templateDesc;
 
     /**
      * 输出文件名模板
      */
     @ColumnMeta(columnName="template_filename", dataType="String", dataSize=100, nullable=true)
-    @Schema(title = "输出文件名模板", description = "输出文件名模板")
+    @Schema(title = "输出文件名模板", description = "输出文件名模板", maxLength=100, nullable=true )
     private String templateFilename;
 
     /**
      * 模板内容
      */
-    @ColumnMeta(columnName="template_body", dataType="String", dataSize=2147483647, nullable=true)
-    @Schema(title = "模板内容", description = "模板内容")
+    @ColumnMeta(columnName="template_body", dataType="String", dataSize=2147483646, nullable=true)
+    @Schema(title = "模板内容", description = "模板内容", maxLength=2147483646, nullable=true )
     private String templateBody;
 
     /**
      * 创建日期
      */
     @ColumnMeta(columnName="create_date", dataType="java.util.Date", dataSize=23, nullable=true)
-    @Schema(title = "创建日期", description = "创建日期")
+    @Schema(title = "创建日期", description = "创建日期", maxLength=23, nullable=true )
     private java.util.Date createDate;
 
     /**
      * 修改日期
      */
     @ColumnMeta(columnName="modify_date", dataType="java.util.Date", dataSize=23, nullable=true)
-    @Schema(title = "修改日期", description = "修改日期")
+    @Schema(title = "修改日期", description = "修改日期", maxLength=23, nullable=true )
     private java.util.Date modifyDate;
 
     /**
      * 状态。1正常-1标记删除
      */
     @ColumnMeta(columnName="state", dataType="int", dataSize=10, nullable=false)
-    @Schema(title = "状态。1正常-1标记删除", description = "状态。1正常-1标记删除")
+    @Schema(title = "状态。1正常-1标记删除", description = "状态。1正常-1标记删除", maxLength=10, nullable=false )
     private int state;
 
     /**
@@ -101,6 +101,32 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 更新的信息.
      */
     private transient StringBuilder UPDATED_INFO = null;
+
+
+    /**
+     * 获得实体的表名。
+     */
+    @Override
+    public String ENTITY_TABLE(){
+         return "code_template_info";
+       }
+
+    /**
+     * 获得实体的表注释。
+     */
+    @Override
+    public String ENTITY_NAME(){
+          return "代码模版";
+       }
+
+    /**
+     * 获得主键
+     */
+    @Override
+    public Serializable ENTITY_ID(){
+          return getId();
+       }
+
 
     /**
      * 获取更改的字段列表.
@@ -221,10 +247,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("id");
-            this.UPDATED_INFO.append("id:\"" + this.id+ "\"=>\"" + id + "\"\r\n");
+            this.UPDATED_INFO.append("id:\"").append(this.id).append("\"=>\"").append(id).append("\"\n");
             this.id = id;
         }
     }
+
+    /**
+     *  设置id链式调用。
+     */
+    public CodeTemplateInfo id(long id){
+        setId(id);
+        return this;
+        }
 
     /**
      * 设置模板分组id。
@@ -235,10 +269,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("group_id");
-            this.UPDATED_INFO.append("group_id:\"" + this.groupId+ "\"=>\"" + groupId + "\"\r\n");
+            this.UPDATED_INFO.append("group_id:\"").append(this.groupId).append("\"=>\"").append(groupId).append("\"\n");
             this.groupId = groupId;
         }
     }
+
+    /**
+     *  设置模板分组id链式调用。
+     */
+    public CodeTemplateInfo groupId(long groupId){
+        setGroupId(groupId);
+        return this;
+        }
 
     /**
      * 设置数据类型。
@@ -249,10 +291,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("template_type");
-            this.UPDATED_INFO.append("template_type:\"" + this.templateType+ "\"=>\"" + templateType + "\"\r\n");
+            this.UPDATED_INFO.append("template_type:\"").append(this.templateType).append("\"=>\"").append(templateType).append("\"\n");
             this.templateType = templateType;
         }
     }
+
+    /**
+     *  设置数据类型链式调用。
+     */
+    public CodeTemplateInfo templateType(int templateType){
+        setTemplateType(templateType);
+        return this;
+        }
 
     /**
      * 设置模板名称。
@@ -263,10 +313,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("template_name");
-            this.UPDATED_INFO.append("template_name:\"" + this.templateName+ "\"=>\"" + templateName + "\"\r\n");
+            this.UPDATED_INFO.append("template_name:\"").append(this.templateName).append("\"=>\"").append(templateName).append("\"\n");
             this.templateName = templateName;
         }
     }
+
+    /**
+     *  设置模板名称链式调用。
+     */
+    public CodeTemplateInfo templateName(String templateName){
+        setTemplateName(templateName);
+        return this;
+        }
 
     /**
      * 设置模板描述。
@@ -277,10 +335,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("template_desc");
-            this.UPDATED_INFO.append("template_desc:\"" + this.templateDesc+ "\"=>\"" + templateDesc + "\"\r\n");
+            this.UPDATED_INFO.append("template_desc:\"").append(this.templateDesc).append("\"=>\"").append(templateDesc).append("\"\n");
             this.templateDesc = templateDesc;
         }
     }
+
+    /**
+     *  设置模板描述链式调用。
+     */
+    public CodeTemplateInfo templateDesc(String templateDesc){
+        setTemplateDesc(templateDesc);
+        return this;
+        }
 
     /**
      * 设置输出文件名模板。
@@ -291,10 +357,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("template_filename");
-            this.UPDATED_INFO.append("template_filename:\"" + this.templateFilename+ "\"=>\"" + templateFilename + "\"\r\n");
+            this.UPDATED_INFO.append("template_filename:\"").append(this.templateFilename).append("\"=>\"").append(templateFilename).append("\"\n");
             this.templateFilename = templateFilename;
         }
     }
+
+    /**
+     *  设置输出文件名模板链式调用。
+     */
+    public CodeTemplateInfo templateFilename(String templateFilename){
+        setTemplateFilename(templateFilename);
+        return this;
+        }
 
     /**
      * 设置模板内容。
@@ -305,10 +379,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("template_body");
-            this.UPDATED_INFO.append("template_body:\"" + this.templateBody+ "\"=>\"" + templateBody + "\"\r\n");
+            this.UPDATED_INFO.append("template_body:\"").append(this.templateBody).append("\"=>\"").append(templateBody).append("\"\n");
             this.templateBody = templateBody;
         }
     }
+
+    /**
+     *  设置模板内容链式调用。
+     */
+    public CodeTemplateInfo templateBody(String templateBody){
+        setTemplateBody(templateBody);
+        return this;
+        }
 
     /**
      * 设置创建日期。
@@ -319,10 +401,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("create_date");
-            this.UPDATED_INFO.append("create_date:\"" + this.createDate+ "\"=>\"" + createDate + "\"\r\n");
+            this.UPDATED_INFO.append("create_date:\"").append(this.createDate).append("\"=>\"").append(createDate).append("\"\n");
             this.createDate = createDate;
         }
     }
+
+    /**
+     *  设置创建日期链式调用。
+     */
+    public CodeTemplateInfo createDate(java.util.Date createDate){
+        setCreateDate(createDate);
+        return this;
+        }
 
     /**
      * 设置修改日期。
@@ -333,10 +423,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("modify_date");
-            this.UPDATED_INFO.append("modify_date:\"" + this.modifyDate+ "\"=>\"" + modifyDate + "\"\r\n");
+            this.UPDATED_INFO.append("modify_date:\"").append(this.modifyDate).append("\"=>\"").append(modifyDate).append("\"\n");
             this.modifyDate = modifyDate;
         }
     }
+
+    /**
+     *  设置修改日期链式调用。
+     */
+    public CodeTemplateInfo modifyDate(java.util.Date modifyDate){
+        setModifyDate(modifyDate);
+        return this;
+        }
 
     /**
      * 设置状态。1正常-1标记删除。
@@ -347,10 +445,18 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("state");
-            this.UPDATED_INFO.append("state:\"" + this.state+ "\"=>\"" + state + "\"\r\n");
+            this.UPDATED_INFO.append("state:\"").append(this.state).append("\"=>\"").append(state).append("\"\n");
             this.state = state;
         }
     }
+
+    /**
+     *  设置状态。1正常-1标记删除链式调用。
+     */
+    public CodeTemplateInfo state(int state){
+        setState(state);
+        return this;
+        }
 
     /**
      * 重载toString方法.

@@ -26,49 +26,49 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * id
      */
     @ColumnMeta(columnName="id", dataType="long", dataSize=19, nullable=false, primaryKey=true)
-    @Schema(title = "id", description = "id")
+    @Schema(title = "id", description = "id", maxLength=19, nullable=false )
     private long id;
 
     /**
      * 数据源类型
      */
     @ColumnMeta(columnName="group_type", dataType="int", dataSize=10, nullable=true)
-    @Schema(title = "数据源类型", description = "数据源类型")
+    @Schema(title = "数据源类型", description = "数据源类型", maxLength=10, nullable=true )
     private int groupType;
 
     /**
      * 模板组名
      */
     @ColumnMeta(columnName="group_name", dataType="String", dataSize=100, nullable=true)
-    @Schema(title = "模板组名", description = "模板组名")
+    @Schema(title = "模板组名", description = "模板组名", maxLength=100, nullable=true )
     private String groupName;
 
     /**
      * 模板组描述
      */
     @ColumnMeta(columnName="group_desc", dataType="String", dataSize=100, nullable=true)
-    @Schema(title = "模板组描述", description = "模板组描述")
+    @Schema(title = "模板组描述", description = "模板组描述", maxLength=100, nullable=true )
     private String groupDesc;
 
     /**
      * 创建日期
      */
     @ColumnMeta(columnName="create_date", dataType="java.util.Date", dataSize=23, nullable=true)
-    @Schema(title = "创建日期", description = "创建日期")
+    @Schema(title = "创建日期", description = "创建日期", maxLength=23, nullable=true )
     private java.util.Date createDate;
 
     /**
      * 修改日期
      */
     @ColumnMeta(columnName="modify_date", dataType="java.util.Date", dataSize=23, nullable=true)
-    @Schema(title = "修改日期", description = "修改日期")
+    @Schema(title = "修改日期", description = "修改日期", maxLength=23, nullable=true )
     private java.util.Date modifyDate;
 
     /**
      * 状态。1正常-1标记删除
      */
     @ColumnMeta(columnName="state", dataType="int", dataSize=10, nullable=false)
-    @Schema(title = "状态。1正常-1标记删除", description = "状态。1正常-1标记删除")
+    @Schema(title = "状态。1正常-1标记删除", description = "状态。1正常-1标记删除", maxLength=10, nullable=false )
     private int state;
 
     /**
@@ -80,6 +80,32 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 更新的信息.
      */
     private transient StringBuilder UPDATED_INFO = null;
+
+
+    /**
+     * 获得实体的表名。
+     */
+    @Override
+    public String ENTITY_TABLE(){
+         return "code_template_group";
+       }
+
+    /**
+     * 获得实体的表注释。
+     */
+    @Override
+    public String ENTITY_NAME(){
+          return "代码模版组";
+       }
+
+    /**
+     * 获得主键
+     */
+    @Override
+    public Serializable ENTITY_ID(){
+          return getId();
+       }
+
 
     /**
      * 获取更改的字段列表.
@@ -179,10 +205,18 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("id");
-            this.UPDATED_INFO.append("id:\"" + this.id+ "\"=>\"" + id + "\"\r\n");
+            this.UPDATED_INFO.append("id:\"").append(this.id).append("\"=>\"").append(id).append("\"\n");
             this.id = id;
         }
     }
+
+    /**
+     *  设置id链式调用。
+     */
+    public CodeTemplateGroup id(long id){
+        setId(id);
+        return this;
+        }
 
     /**
      * 设置数据源类型。
@@ -193,10 +227,18 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("group_type");
-            this.UPDATED_INFO.append("group_type:\"" + this.groupType+ "\"=>\"" + groupType + "\"\r\n");
+            this.UPDATED_INFO.append("group_type:\"").append(this.groupType).append("\"=>\"").append(groupType).append("\"\n");
             this.groupType = groupType;
         }
     }
+
+    /**
+     *  设置数据源类型链式调用。
+     */
+    public CodeTemplateGroup groupType(int groupType){
+        setGroupType(groupType);
+        return this;
+        }
 
     /**
      * 设置模板组名。
@@ -207,10 +249,18 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("group_name");
-            this.UPDATED_INFO.append("group_name:\"" + this.groupName+ "\"=>\"" + groupName + "\"\r\n");
+            this.UPDATED_INFO.append("group_name:\"").append(this.groupName).append("\"=>\"").append(groupName).append("\"\n");
             this.groupName = groupName;
         }
     }
+
+    /**
+     *  设置模板组名链式调用。
+     */
+    public CodeTemplateGroup groupName(String groupName){
+        setGroupName(groupName);
+        return this;
+        }
 
     /**
      * 设置模板组描述。
@@ -221,10 +271,18 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("group_desc");
-            this.UPDATED_INFO.append("group_desc:\"" + this.groupDesc+ "\"=>\"" + groupDesc + "\"\r\n");
+            this.UPDATED_INFO.append("group_desc:\"").append(this.groupDesc).append("\"=>\"").append(groupDesc).append("\"\n");
             this.groupDesc = groupDesc;
         }
     }
+
+    /**
+     *  设置模板组描述链式调用。
+     */
+    public CodeTemplateGroup groupDesc(String groupDesc){
+        setGroupDesc(groupDesc);
+        return this;
+        }
 
     /**
      * 设置创建日期。
@@ -235,10 +293,18 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("create_date");
-            this.UPDATED_INFO.append("create_date:\"" + this.createDate+ "\"=>\"" + createDate + "\"\r\n");
+            this.UPDATED_INFO.append("create_date:\"").append(this.createDate).append("\"=>\"").append(createDate).append("\"\n");
             this.createDate = createDate;
         }
     }
+
+    /**
+     *  设置创建日期链式调用。
+     */
+    public CodeTemplateGroup createDate(java.util.Date createDate){
+        setCreateDate(createDate);
+        return this;
+        }
 
     /**
      * 设置修改日期。
@@ -249,10 +315,18 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("modify_date");
-            this.UPDATED_INFO.append("modify_date:\"" + this.modifyDate+ "\"=>\"" + modifyDate + "\"\r\n");
+            this.UPDATED_INFO.append("modify_date:\"").append(this.modifyDate).append("\"=>\"").append(modifyDate).append("\"\n");
             this.modifyDate = modifyDate;
         }
     }
+
+    /**
+     *  设置修改日期链式调用。
+     */
+    public CodeTemplateGroup modifyDate(java.util.Date modifyDate){
+        setModifyDate(modifyDate);
+        return this;
+        }
 
     /**
      * 设置状态。1正常-1标记删除。
@@ -263,10 +337,18 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
                 _INIT_UPDATE_INFO();
             }
             this.UPDATED_COLUMN.add("state");
-            this.UPDATED_INFO.append("state:\"" + this.state+ "\"=>\"" + state + "\"\r\n");
+            this.UPDATED_INFO.append("state:\"").append(this.state).append("\"=>\"").append(state).append("\"\n");
             this.state = state;
         }
     }
+
+    /**
+     *  设置状态。1正常-1标记删除链式调用。
+     */
+    public CodeTemplateGroup state(int state){
+        setState(state);
+        return this;
+        }
 
     /**
      * 重载toString方法.

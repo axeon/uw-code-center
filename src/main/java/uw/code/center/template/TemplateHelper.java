@@ -6,8 +6,7 @@ import freemarker.template.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uw.code.center.entity.CodeTemplateInfo;
-import uw.dao.DaoFactory;
-import uw.dao.DataList;
+import uw.dao.DaoManager;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -21,7 +20,7 @@ public class TemplateHelper {
 
     private static final Logger log = LoggerFactory.getLogger(TemplateHelper.class);
 
-    private static final DaoFactory dao = DaoFactory.getInstance();
+    private static final DaoManager dao = DaoManager.getInstance();
 
     /**
      * Configuration对象.
@@ -41,15 +40,12 @@ public class TemplateHelper {
         StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
         cfg.setTemplateLoader(stringTemplateLoader);
         //加载模板。
-        try {
-            DataList<CodeTemplateInfo> list = dao.list(CodeTemplateInfo.class, "select * from code_template_info where state=1");
+        dao.list(CodeTemplateInfo.class, "select * from code_template_info where state=1").onSuccess(list -> {
             for (CodeTemplateInfo CodeTemplateInfo : list) {
-                stringTemplateLoader.putTemplate( CodeTemplateInfo.getId() + "#filename", CodeTemplateInfo.getTemplateFilename());
-                stringTemplateLoader.putTemplate( CodeTemplateInfo.getId() + "#body", CodeTemplateInfo.getTemplateBody());
+                stringTemplateLoader.putTemplate(CodeTemplateInfo.getId() + "#filename", CodeTemplateInfo.getTemplateFilename());
+                stringTemplateLoader.putTemplate(CodeTemplateInfo.getId() + "#body", CodeTemplateInfo.getTemplateBody());
             }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        });
     }
 
     /**
