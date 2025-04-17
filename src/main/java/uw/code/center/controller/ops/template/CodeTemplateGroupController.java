@@ -93,7 +93,7 @@ public class CodeTemplateGroupController {
      */
     @GetMapping("/listDataHistory")
     @Operation(summary = "查询数据历史", description = "查询数据历史")
-    @MscPermDeclare(user = UserType.SAAS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public ResponseData<DataList<SysDataHistory>> listDataHistory(SysDataHistoryQueryParam queryParam){
         AuthServiceHelper.logRef(CodeTemplateGroup.class, queryParam.getEntityId());
         queryParam.setEntityClass(CodeTemplateGroup.class);
@@ -108,7 +108,7 @@ public class CodeTemplateGroupController {
      */
     @GetMapping("/listCritLog")
     @Operation(summary = "查询操作日志", description = "查询操作日志")
-    @MscPermDeclare(user = UserType.SAAS, auth = AuthType.PERM, log = ActionLog.REQUEST)
+    @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public ResponseData<DataList<SysCritLog>> listCritLog(SysCritLogQueryParam queryParam)  {
         AuthServiceHelper.logRef(CodeTemplateGroup.class, queryParam.getBizId());
         queryParam.setBizTypeClass(CodeTemplateGroup.class);
