@@ -4,12 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import uw.common.app.dto.IdStateQueryParam;
-import uw.common.app.dto.SysCritLogQueryParam;
-import uw.common.app.dto.SysDataHistoryQueryParam;
-import uw.common.app.entity.SysCritLog;
-import uw.common.app.entity.SysDataHistory;
-import uw.common.app.helper.SysDataHistoryHelper;
 import uw.auth.service.AuthServiceHelper;
 import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.constant.ActionLog;
@@ -19,11 +13,15 @@ import uw.code.center.dto.CodeTemplateInfoQueryParam;
 import uw.code.center.entity.CodeTemplateInfo;
 import uw.code.center.template.TemplateHelper;
 import uw.common.app.constant.CommonState;
+import uw.common.app.dto.IdStateQueryParam;
+import uw.common.app.dto.SysCritLogQueryParam;
+import uw.common.app.dto.SysDataHistoryQueryParam;
+import uw.common.app.entity.SysCritLog;
+import uw.common.app.entity.SysDataHistory;
+import uw.common.app.helper.SysDataHistoryHelper;
 import uw.common.dto.ResponseData;
-import uw.dao.DaoFactory;
 import uw.dao.DaoManager;
 import uw.dao.DataList;
-import uw.dao.TransactionException;
 
 import java.util.Date;
 
@@ -44,12 +42,11 @@ public class CodeTemplateInfoController {
      *
      * @param queryParam
      * @return
-     *
      */
     @GetMapping("/list")
     @Operation(summary = "列表代码模版", description = "列表代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public ResponseData<DataList<CodeTemplateInfo>> list(CodeTemplateInfoQueryParam queryParam){
+    public ResponseData<DataList<CodeTemplateInfo>> list(CodeTemplateInfoQueryParam queryParam) {
         AuthServiceHelper.logRef(CodeTemplateInfo.class);
         return dao.list(CodeTemplateInfo.class, queryParam);
     }
@@ -62,8 +59,8 @@ public class CodeTemplateInfoController {
     @GetMapping("/liteList")
     @Operation(summary = "轻量级列表代码模版", description = "轻量级列表代码模版，一般用于select控件。")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.USER, log = ActionLog.NONE)
-    public ResponseData<DataList<CodeTemplateInfo>> liteList(CodeTemplateInfoQueryParam queryParam){
-        queryParam.SELECT_SQL( "SELECT id,group_id,template_type,template_name,template_desc,template_filename,create_date,modify_date,state from code_template_info " );
+    public ResponseData<DataList<CodeTemplateInfo>> liteList(CodeTemplateInfoQueryParam queryParam) {
+        queryParam.SELECT_SQL("SELECT id,group_id,template_type,template_name,template_desc,template_filename,create_date,modify_date,state from code_template_info ");
         return dao.list(CodeTemplateInfo.class, queryParam);
     }
 
@@ -71,13 +68,12 @@ public class CodeTemplateInfoController {
      * 加载代码模版。
      *
      * @param id
-     *
      */
     @GetMapping("/load")
     @Operation(summary = "加载代码模版", description = "加载代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public ResponseData<CodeTemplateInfo> load(@Parameter(description = "主键ID", required = true) @RequestParam long id)  {
-        AuthServiceHelper.logRef(CodeTemplateInfo.class,id);
+    public ResponseData<CodeTemplateInfo> load(@Parameter(description = "主键ID", required = true) @RequestParam long id) {
+        AuthServiceHelper.logRef(CodeTemplateInfo.class, id);
         return dao.load(CodeTemplateInfo.class, id);
     }
 
@@ -90,7 +86,7 @@ public class CodeTemplateInfoController {
     @GetMapping("/listDataHistory")
     @Operation(summary = "查询数据历史", description = "查询数据历史")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public ResponseData<DataList<SysDataHistory>> listDataHistory(SysDataHistoryQueryParam queryParam){
+    public ResponseData<DataList<SysDataHistory>> listDataHistory(SysDataHistoryQueryParam queryParam) {
         AuthServiceHelper.logRef(CodeTemplateInfo.class, queryParam.getEntityId());
         queryParam.setEntityClass(CodeTemplateInfo.class);
         return dao.list(SysDataHistory.class, queryParam);
@@ -105,7 +101,7 @@ public class CodeTemplateInfoController {
     @GetMapping("/listCritLog")
     @Operation(summary = "查询操作日志", description = "查询操作日志")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public ResponseData<DataList<SysCritLog>> listCritLog(SysCritLogQueryParam queryParam)  {
+    public ResponseData<DataList<SysCritLog>> listCritLog(SysCritLogQueryParam queryParam) {
         AuthServiceHelper.logRef(CodeTemplateInfo.class, queryParam.getBizId());
         queryParam.setBizTypeClass(CodeTemplateInfo.class);
         return dao.list(SysCritLog.class, queryParam);
@@ -116,20 +112,19 @@ public class CodeTemplateInfoController {
      *
      * @param codeTemplateInfo
      * @return
-     *
      */
     @PostMapping("/save")
     @Operation(summary = "新增代码模版", description = "新增代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData<CodeTemplateInfo> save(@RequestBody CodeTemplateInfo codeTemplateInfo){
+    public ResponseData<CodeTemplateInfo> save(@RequestBody CodeTemplateInfo codeTemplateInfo) {
         long id = dao.getSequenceId(CodeTemplateInfo.class);
-        AuthServiceHelper.logRef(CodeTemplateInfo.class,id);
+        AuthServiceHelper.logRef(CodeTemplateInfo.class, id);
         codeTemplateInfo.setId(id);
         codeTemplateInfo.setCreateDate(new Date());
         codeTemplateInfo.setModifyDate(null);
         codeTemplateInfo.setState(CommonState.ENABLED.getValue());
         //保存历史记录
-        return dao.save( codeTemplateInfo ).onSuccess(savedEntity -> {
+        return dao.save(codeTemplateInfo).onSuccess(savedEntity -> {
             SysDataHistoryHelper.saveHistory(codeTemplateInfo);
         });
     }
@@ -139,14 +134,13 @@ public class CodeTemplateInfoController {
      *
      * @param codeTemplateInfo
      * @return
-     *
      */
     @PutMapping("/update")
     @Operation(summary = "修改代码模版", description = "修改代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData<CodeTemplateInfo> update(@RequestBody CodeTemplateInfo codeTemplateInfo, @Parameter(description = "备注") @RequestParam String remark){
-        AuthServiceHelper.logInfo(CodeTemplateInfo.class,codeTemplateInfo.getId(),remark);
-        return  dao.load( CodeTemplateInfo.class, codeTemplateInfo.getId() ).onSuccess(codeTemplateInfoDb-> {
+    public ResponseData<CodeTemplateInfo> update(@RequestBody CodeTemplateInfo codeTemplateInfo, @Parameter(description = "备注") @RequestParam String remark) {
+        AuthServiceHelper.logInfo(CodeTemplateInfo.class, codeTemplateInfo.getId(), remark);
+        return dao.load(CodeTemplateInfo.class, codeTemplateInfo.getId()).onSuccess(codeTemplateInfoDb -> {
             codeTemplateInfoDb.setGroupId(codeTemplateInfo.getGroupId());
             codeTemplateInfoDb.setTemplateType(codeTemplateInfo.getTemplateType());
             codeTemplateInfoDb.setTemplateName(codeTemplateInfo.getTemplateName());
@@ -154,11 +148,11 @@ public class CodeTemplateInfoController {
             codeTemplateInfoDb.setTemplateFilename(codeTemplateInfo.getTemplateFilename());
             codeTemplateInfoDb.setTemplateBody(codeTemplateInfo.getTemplateBody());
             codeTemplateInfoDb.setModifyDate(new Date());
-            return dao.update( codeTemplateInfoDb ).onSuccess(updatedEntity -> {
+            return dao.update(codeTemplateInfoDb).onSuccess(updatedEntity -> {
                 TemplateHelper.init();
-                SysDataHistoryHelper.saveHistory( codeTemplateInfoDb,remark );
-            } );
-        } );
+                SysDataHistoryHelper.saveHistory(codeTemplateInfoDb, remark);
+            });
+        });
     }
 
 
@@ -166,13 +160,12 @@ public class CodeTemplateInfoController {
      * 启用代码模版。
      *
      * @param id
-     *
      */
     @PutMapping("/enable")
     @Operation(summary = "启用代码模版", description = "启用代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData enable(@Parameter(description = "主键ID") @RequestParam long id, @Parameter(description = "备注") @RequestParam String remark){
-        AuthServiceHelper.logInfo(CodeTemplateInfo.class,id,remark);
+    public ResponseData enable(@Parameter(description = "主键ID") @RequestParam long id, @Parameter(description = "备注") @RequestParam String remark) {
+        AuthServiceHelper.logInfo(CodeTemplateInfo.class, id, remark);
         return dao.update(new CodeTemplateInfo().modifyDate(new Date()).state(CommonState.ENABLED.getValue()), new IdStateQueryParam(id, CommonState.DISABLED.getValue()));
     }
 
@@ -180,13 +173,12 @@ public class CodeTemplateInfoController {
      * 禁用代码模版。
      *
      * @param id
-     *
      */
     @PutMapping("/disable")
     @Operation(summary = "禁用代码模版", description = "禁用代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData disable(@Parameter(description = "主键ID") @RequestParam long id, @Parameter(description = "备注") @RequestParam String remark){
-        AuthServiceHelper.logInfo(CodeTemplateInfo.class,id,remark);
+    public ResponseData disable(@Parameter(description = "主键ID") @RequestParam long id, @Parameter(description = "备注") @RequestParam String remark) {
+        AuthServiceHelper.logInfo(CodeTemplateInfo.class, id, remark);
         return dao.update(new CodeTemplateInfo().modifyDate(new Date()).state(CommonState.DISABLED.getValue()), new IdStateQueryParam(id, CommonState.ENABLED.getValue()));
     }
 
@@ -194,13 +186,12 @@ public class CodeTemplateInfoController {
      * 删除代码模版。
      *
      * @param id
-     *
      */
     @DeleteMapping("/delete")
     @Operation(summary = "删除代码模版", description = "删除代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
-    public ResponseData delete(@Parameter(description = "主键ID") @RequestParam long id, @Parameter(description = "备注") @RequestParam String remark){
-        AuthServiceHelper.logInfo(CodeTemplateInfo.class,id,remark);
+    public ResponseData delete(@Parameter(description = "主键ID") @RequestParam long id, @Parameter(description = "备注") @RequestParam String remark) {
+        AuthServiceHelper.logInfo(CodeTemplateInfo.class, id, remark);
         return dao.update(new CodeTemplateInfo().modifyDate(new Date()).state(CommonState.DELETED.getValue()), new IdStateQueryParam(id, CommonState.DISABLED.getValue()));
     }
 
