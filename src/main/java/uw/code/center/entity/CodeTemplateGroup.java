@@ -1,14 +1,15 @@
 package uw.code.center.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import uw.dao.DataEntity;
-import uw.dao.annotation.ColumnMeta;
-import uw.dao.annotation.TableMeta;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import io.swagger.v3.oas.annotations.media.Schema;
+import uw.dao.DataEntity;
+import uw.dao.annotation.ColumnMeta;
+import uw.dao.annotation.TableMeta;
 
 /**
  * CodeTemplateGroup实体类
@@ -73,12 +74,18 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
     /**
      * 轻量级状态下更新列表list.
      */
-    private transient Set<String> UPDATED_COLUMN = null;
+    private transient Set<String> _UPDATED_COLUMN = null;
 
     /**
      * 更新的信息.
      */
-    private transient StringBuilder UPDATED_INFO = null;
+    private transient StringBuilder _UPDATED_INFO = null;
+
+
+    /**
+     * 是否加载完成.
+     */
+    private transient boolean _IS_LOADED;
 
 
     /**
@@ -86,24 +93,24 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      */
     @Override
     public String ENTITY_TABLE(){
-         return "code_template_group";
-       }
+        return "code_template_group";
+    }
 
     /**
      * 获得实体的表注释。
      */
     @Override
     public String ENTITY_NAME(){
-          return "代码模版组";
-       }
+        return "代码模版组";
+    }
 
     /**
      * 获得主键
      */
     @Override
     public Serializable ENTITY_ID(){
-          return getId();
-       }
+        return getId();
+    }
 
 
     /**
@@ -111,7 +118,7 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      */
     @Override
     public Set<String> GET_UPDATED_COLUMN() {
-        return UPDATED_COLUMN;
+        return _UPDATED_COLUMN;
     }
 
     /**
@@ -119,10 +126,10 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      */
     @Override
     public String GET_UPDATED_INFO() {
-        if (this.UPDATED_INFO == null) {
+        if (this._UPDATED_INFO == null) {
             return null;
         } else {
-            return this.UPDATED_INFO.toString();
+            return this._UPDATED_INFO.toString();
         }
     }
 
@@ -131,16 +138,16 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      */
     @Override
     public void CLEAR_UPDATED_INFO() {
-        UPDATED_COLUMN = null;
-        UPDATED_INFO = null;
+        _UPDATED_COLUMN = null;
+        _UPDATED_INFO = null;
     }
 
     /**
      * 初始化set相关的信息.
      */
     private void _INIT_UPDATE_INFO() {
-        this.UPDATED_COLUMN = new HashSet<String>();
-        this.UPDATED_INFO = new StringBuilder("表code_template_group主键\"" + 
+        this._UPDATED_COLUMN = new HashSet<String>();
+        this._UPDATED_INFO = new StringBuilder("表code_template_group主键\"" + 
         this.id+ "\"更新为:\r\n");
     }
 
@@ -199,12 +206,12 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置id。
      */
     public void setId(long id){
-        if (!Objects.equals(this.id, id)){
-            if (this.UPDATED_COLUMN == null) {
+        if (!_IS_LOADED||!Objects.equals(this.id, id)){
+            if (this._UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
-            this.UPDATED_COLUMN.add("id");
-            this.UPDATED_INFO.append("id:\"").append(this.id).append("\"=>\"").append(id).append("\"\n");
+            this._UPDATED_COLUMN.add("id");
+            this._UPDATED_INFO.append("id:\"").append(this.id).append("\"=>\"").append(id).append("\"\n");
             this.id = id;
         }
     }
@@ -221,12 +228,12 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置数据源类型。
      */
     public void setGroupType(int groupType){
-        if (!Objects.equals(this.groupType, groupType)){
-            if (this.UPDATED_COLUMN == null) {
+        if (!_IS_LOADED||!Objects.equals(this.groupType, groupType)){
+            if (this._UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
-            this.UPDATED_COLUMN.add("group_type");
-            this.UPDATED_INFO.append("group_type:\"").append(this.groupType).append("\"=>\"").append(groupType).append("\"\n");
+            this._UPDATED_COLUMN.add("group_type");
+            this._UPDATED_INFO.append("group_type:\"").append(this.groupType).append("\"=>\"").append(groupType).append("\"\n");
             this.groupType = groupType;
         }
     }
@@ -243,12 +250,12 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置模板组名。
      */
     public void setGroupName(String groupName){
-        if (!Objects.equals(this.groupName, groupName)){
-            if (this.UPDATED_COLUMN == null) {
+        if (!_IS_LOADED||!Objects.equals(this.groupName, groupName)){
+            if (this._UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
-            this.UPDATED_COLUMN.add("group_name");
-            this.UPDATED_INFO.append("group_name:\"").append(this.groupName).append("\"=>\"").append(groupName).append("\"\n");
+            this._UPDATED_COLUMN.add("group_name");
+            this._UPDATED_INFO.append("group_name:\"").append(this.groupName).append("\"=>\"").append(groupName).append("\"\n");
             this.groupName = groupName;
         }
     }
@@ -265,12 +272,12 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置模板组描述。
      */
     public void setGroupDesc(String groupDesc){
-        if (!Objects.equals(this.groupDesc, groupDesc)){
-            if (this.UPDATED_COLUMN == null) {
+        if (!_IS_LOADED||!Objects.equals(this.groupDesc, groupDesc)){
+            if (this._UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
-            this.UPDATED_COLUMN.add("group_desc");
-            this.UPDATED_INFO.append("group_desc:\"").append(this.groupDesc).append("\"=>\"").append(groupDesc).append("\"\n");
+            this._UPDATED_COLUMN.add("group_desc");
+            this._UPDATED_INFO.append("group_desc:\"").append(this.groupDesc).append("\"=>\"").append(groupDesc).append("\"\n");
             this.groupDesc = groupDesc;
         }
     }
@@ -287,12 +294,12 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置创建日期。
      */
     public void setCreateDate(java.util.Date createDate){
-        if (!Objects.equals(this.createDate, createDate)){
-            if (this.UPDATED_COLUMN == null) {
+        if (!_IS_LOADED||!Objects.equals(this.createDate, createDate)){
+            if (this._UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
-            this.UPDATED_COLUMN.add("create_date");
-            this.UPDATED_INFO.append("create_date:\"").append(this.createDate).append("\"=>\"").append(createDate).append("\"\n");
+            this._UPDATED_COLUMN.add("create_date");
+            this._UPDATED_INFO.append("create_date:\"").append(this.createDate).append("\"=>\"").append(createDate).append("\"\n");
             this.createDate = createDate;
         }
     }
@@ -309,12 +316,12 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置修改日期。
      */
     public void setModifyDate(java.util.Date modifyDate){
-        if (!Objects.equals(this.modifyDate, modifyDate)){
-            if (this.UPDATED_COLUMN == null) {
+        if (!_IS_LOADED||!Objects.equals(this.modifyDate, modifyDate)){
+            if (this._UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
-            this.UPDATED_COLUMN.add("modify_date");
-            this.UPDATED_INFO.append("modify_date:\"").append(this.modifyDate).append("\"=>\"").append(modifyDate).append("\"\n");
+            this._UPDATED_COLUMN.add("modify_date");
+            this._UPDATED_INFO.append("modify_date:\"").append(this.modifyDate).append("\"=>\"").append(modifyDate).append("\"\n");
             this.modifyDate = modifyDate;
         }
     }
@@ -331,12 +338,12 @@ public class CodeTemplateGroup implements DataEntity,Serializable{
      * 设置状态。1正常-1标记删除。
      */
     public void setState(int state){
-        if (!Objects.equals(this.state, state)){
-            if (this.UPDATED_COLUMN == null) {
+        if (!_IS_LOADED||!Objects.equals(this.state, state)){
+            if (this._UPDATED_COLUMN == null) {
                 _INIT_UPDATE_INFO();
             }
-            this.UPDATED_COLUMN.add("state");
-            this.UPDATED_INFO.append("state:\"").append(this.state).append("\"=>\"").append(state).append("\"\n");
+            this._UPDATED_COLUMN.add("state");
+            this._UPDATED_INFO.append("state:\"").append(this.state).append("\"=>\"").append(state).append("\"\n");
             this.state = state;
         }
     }
