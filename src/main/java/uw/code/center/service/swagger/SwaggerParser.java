@@ -27,6 +27,10 @@ public class SwaggerParser {
     public static final String PACKAGE_INFO = "$-package-info-$";
     private static final Logger log = LoggerFactory.getLogger(SwaggerParser.class);
     /**
+     * 用于检测排查的schemaNameSet。
+     */
+    private final Set<String> schemaNameSet = new HashSet<>();
+    /**
      * api分组列表。
      */
     public Set<ApiGroupInfo> apiGroupInfoList = new LinkedHashSet<>();
@@ -54,14 +58,10 @@ public class SwaggerParser {
      * schema列表。
      */
     private List<SchemaInfo> schemaInfoList = new ArrayList<>();
-    /**
-     * 用于检测排查的schemaNameSet。
-     */
-    private final Set<String> schemaNameSet = new HashSet<>();
 
     public static void main(String[] args) {
         SwaggerParser swaggerParser = new SwaggerParser();
-        swaggerParser.parse("http://192.168.88.21:20050/v3/api-docs/saas");
+        swaggerParser.parse("http://192.168.88.21:10000/v3/api-docs/adminApi");
         System.out.println(swaggerParser.getApiName());
         for (ApiInfo apiInfo : swaggerParser.getApiInfoList()) {
             System.out.println(apiInfo);
@@ -379,38 +379,54 @@ public class SwaggerParser {
             String subtype = type.substring(4);
             if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
+            } else {
+                type = "Array<" + convertType(subtype) + ">";
             }
         } else if (type.startsWith("ArrayList")) {
             String subtype = type.substring(9);
             if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
+            } else {
+                type = "Array<" + convertType(subtype) + ">";
             }
         } else if (type.startsWith("LinkedList")) {
             String subtype = type.substring(10);
             if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
+            } else {
+                type = "Array<" + convertType(subtype) + ">";
             }
         } else if (type.startsWith("Set")) {
             String subtype = type.substring(3);
             if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
+            } else {
+                type = "Array<" + convertType(subtype) + ">";
             }
         } else if (type.startsWith("HashSet")) {
             String subtype = type.substring(7);
             if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
+            } else {
+                type = "Array<" + convertType(subtype) + ">";
             }
         } else if (type.startsWith("LinkedHashSet")) {
             String subtype = type.substring(13);
             if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
+            } else {
+                type = "Array<" + convertType(subtype) + ">";
             }
         }
 
-        if (type.length() == 0) {
+        if (type.isEmpty()) {
             return "ResponseData<void>";
         } else {
-            return "ResponseData<" + type + ">";
+            if (schemaNameSet.contains(type)) {
+                return "ResponseData<" + type + ">";
+            } else {
+                return "ResponseData<" + convertType(type) + ">";
+            }
         }
     }
 
