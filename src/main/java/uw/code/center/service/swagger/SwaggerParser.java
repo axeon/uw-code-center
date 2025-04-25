@@ -390,6 +390,21 @@ public class SwaggerParser {
             if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
             }
+        } else if (type.startsWith("Set")) {
+            String subtype = type.substring(3);
+            if (schemaNameSet.contains(subtype)) {
+                type = "Array<" + subtype + ">";
+            }
+        } else if (type.startsWith("HashSet")) {
+            String subtype = type.substring(7);
+            if (schemaNameSet.contains(subtype)) {
+                type = "Array<" + subtype + ">";
+            }
+        } else if (type.startsWith("LinkedHashSet")) {
+            String subtype = type.substring(13);
+            if (schemaNameSet.contains(subtype)) {
+                type = "Array<" + subtype + ">";
+            }
         }
 
         if (type.length() == 0) {
