@@ -51,7 +51,7 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
      */
     @Override
     public Connection getConnection() throws SQLException {
-        if (connName == null || connName.equals("")) {
+        if (StringUtils.isBlank(connName)) {
             return ConnectionManager.getConnection();
         } else {
             return ConnectionManager.getConnection(connName);

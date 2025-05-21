@@ -1,5 +1,6 @@
 package uw.code.center.service.dao;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uw.code.center.util.DaoStringUtils;
@@ -52,7 +53,7 @@ public class OracleDataMetaImpl implements DataMetaInterface {
      */
     @Override
     public Connection getConnection() throws SQLException {
-        if (connName == null || connName.equals("")) {
+        if (StringUtils.isBlank(connName)) {
             return ConnectionManager.getConnection();
         } else {
             return ConnectionManager.getConnection(connName);
