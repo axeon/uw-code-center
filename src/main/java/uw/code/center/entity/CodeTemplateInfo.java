@@ -1,15 +1,15 @@
 package uw.code.center.entity;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import io.swagger.v3.oas.annotations.media.Schema;
+import uw.common.util.JsonUtils;
 import uw.dao.DataEntity;
+import uw.dao.DataUpdateInfo;
 import uw.dao.annotation.ColumnMeta;
 import uw.dao.annotation.TableMeta;
+
+import java.io.Serializable;
+
 
 /**
  * CodeTemplateInfo实体类
@@ -93,21 +93,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     private int state;
 
     /**
-     * 轻量级状态下更新列表list.
+     * 数据更新信息.
      */
-    private transient Set<String> _UPDATED_COLUMN = null;
-
-    /**
-     * 更新的信息.
-     */
-    private transient StringBuilder _UPDATED_INFO = null;
-
+    private transient DataUpdateInfo _UPDATED_INFO = null;
 
     /**
      * 是否加载完成.
      */
     private transient boolean _IS_LOADED;
-
 
     /**
      * 获得实体的表名。
@@ -133,25 +126,12 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
         return getId();
     }
 
-
     /**
-     * 获取更改的字段列表.
+     * 获取更新信息.
      */
     @Override
-    public Set<String> GET_UPDATED_COLUMN() {
-        return _UPDATED_COLUMN;
-    }
-
-    /**
-     * 获取文本更新信息.
-     */
-    @Override
-    public String GET_UPDATED_INFO() {
-        if (this._UPDATED_INFO == null) {
-            return null;
-        } else {
-            return this._UPDATED_INFO.toString();
-        }
+    public DataUpdateInfo GET_UPDATED_INFO() {
+        return this._UPDATED_INFO;
     }
 
     /**
@@ -159,17 +139,7 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      */
     @Override
     public void CLEAR_UPDATED_INFO() {
-        _UPDATED_COLUMN = null;
         _UPDATED_INFO = null;
-    }
-
-    /**
-     * 初始化set相关的信息.
-     */
-    private void _INIT_UPDATE_INFO() {
-        this._UPDATED_COLUMN = new HashSet<String>();
-        this._UPDATED_INFO = new StringBuilder("表code_template_info主键\"" + 
-        this.id+ "\"更新为:\r\n");
     }
 
 
@@ -248,14 +218,8 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
      * 设置id。
      */
     public void setId(long id){
-        if (!_IS_LOADED||!Objects.equals(this.id, id)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("id");
-            this._UPDATED_INFO.append("id:\"").append(this.id).append("\"=>\"").append(id).append("\"\n");
-            this.id = id;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "id", this.id, id, !_IS_LOADED );
+        this.id = id;
     }
 
     /**
@@ -264,20 +228,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo id(long id){
         setId(id);
         return this;
-        }
+    }
 
     /**
      * 设置模板分组id。
      */
     public void setGroupId(long groupId){
-        if (!_IS_LOADED||!Objects.equals(this.groupId, groupId)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("group_id");
-            this._UPDATED_INFO.append("group_id:\"").append(this.groupId).append("\"=>\"").append(groupId).append("\"\n");
-            this.groupId = groupId;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "groupId", this.groupId, groupId, !_IS_LOADED );
+        this.groupId = groupId;
     }
 
     /**
@@ -286,20 +244,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo groupId(long groupId){
         setGroupId(groupId);
         return this;
-        }
+    }
 
     /**
      * 设置数据类型。
      */
     public void setTemplateType(int templateType){
-        if (!_IS_LOADED||!Objects.equals(this.templateType, templateType)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("template_type");
-            this._UPDATED_INFO.append("template_type:\"").append(this.templateType).append("\"=>\"").append(templateType).append("\"\n");
-            this.templateType = templateType;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "templateType", this.templateType, templateType, !_IS_LOADED );
+        this.templateType = templateType;
     }
 
     /**
@@ -308,20 +260,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo templateType(int templateType){
         setTemplateType(templateType);
         return this;
-        }
+    }
 
     /**
      * 设置模板名称。
      */
     public void setTemplateName(String templateName){
-        if (!_IS_LOADED||!Objects.equals(this.templateName, templateName)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("template_name");
-            this._UPDATED_INFO.append("template_name:\"").append(this.templateName).append("\"=>\"").append(templateName).append("\"\n");
-            this.templateName = templateName;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "templateName", this.templateName, templateName, !_IS_LOADED );
+        this.templateName = templateName;
     }
 
     /**
@@ -330,20 +276,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo templateName(String templateName){
         setTemplateName(templateName);
         return this;
-        }
+    }
 
     /**
      * 设置模板描述。
      */
     public void setTemplateDesc(String templateDesc){
-        if (!_IS_LOADED||!Objects.equals(this.templateDesc, templateDesc)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("template_desc");
-            this._UPDATED_INFO.append("template_desc:\"").append(this.templateDesc).append("\"=>\"").append(templateDesc).append("\"\n");
-            this.templateDesc = templateDesc;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "templateDesc", this.templateDesc, templateDesc, !_IS_LOADED );
+        this.templateDesc = templateDesc;
     }
 
     /**
@@ -352,20 +292,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo templateDesc(String templateDesc){
         setTemplateDesc(templateDesc);
         return this;
-        }
+    }
 
     /**
      * 设置输出文件名模板。
      */
     public void setTemplateFilename(String templateFilename){
-        if (!_IS_LOADED||!Objects.equals(this.templateFilename, templateFilename)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("template_filename");
-            this._UPDATED_INFO.append("template_filename:\"").append(this.templateFilename).append("\"=>\"").append(templateFilename).append("\"\n");
-            this.templateFilename = templateFilename;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "templateFilename", this.templateFilename, templateFilename, !_IS_LOADED );
+        this.templateFilename = templateFilename;
     }
 
     /**
@@ -374,20 +308,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo templateFilename(String templateFilename){
         setTemplateFilename(templateFilename);
         return this;
-        }
+    }
 
     /**
      * 设置模板内容。
      */
     public void setTemplateBody(String templateBody){
-        if (!_IS_LOADED||!Objects.equals(this.templateBody, templateBody)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("template_body");
-            this._UPDATED_INFO.append("template_body:\"").append(this.templateBody).append("\"=>\"").append(templateBody).append("\"\n");
-            this.templateBody = templateBody;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "templateBody", this.templateBody, templateBody, !_IS_LOADED );
+        this.templateBody = templateBody;
     }
 
     /**
@@ -396,20 +324,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo templateBody(String templateBody){
         setTemplateBody(templateBody);
         return this;
-        }
+    }
 
     /**
      * 设置创建日期。
      */
     public void setCreateDate(java.util.Date createDate){
-        if (!_IS_LOADED||!Objects.equals(this.createDate, createDate)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("create_date");
-            this._UPDATED_INFO.append("create_date:\"").append(this.createDate).append("\"=>\"").append(createDate).append("\"\n");
-            this.createDate = createDate;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "createDate", this.createDate, createDate, !_IS_LOADED );
+        this.createDate = createDate;
     }
 
     /**
@@ -418,20 +340,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo createDate(java.util.Date createDate){
         setCreateDate(createDate);
         return this;
-        }
+    }
 
     /**
      * 设置修改日期。
      */
     public void setModifyDate(java.util.Date modifyDate){
-        if (!_IS_LOADED||!Objects.equals(this.modifyDate, modifyDate)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("modify_date");
-            this._UPDATED_INFO.append("modify_date:\"").append(this.modifyDate).append("\"=>\"").append(modifyDate).append("\"\n");
-            this.modifyDate = modifyDate;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "modifyDate", this.modifyDate, modifyDate, !_IS_LOADED );
+        this.modifyDate = modifyDate;
     }
 
     /**
@@ -440,20 +356,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo modifyDate(java.util.Date modifyDate){
         setModifyDate(modifyDate);
         return this;
-        }
+    }
 
     /**
      * 设置状态。1正常-1标记删除。
      */
     public void setState(int state){
-        if (!_IS_LOADED||!Objects.equals(this.state, state)){
-            if (this._UPDATED_COLUMN == null) {
-                _INIT_UPDATE_INFO();
-            }
-            this._UPDATED_COLUMN.add("state");
-            this._UPDATED_INFO.append("state:\"").append(this.state).append("\"=>\"").append(state).append("\"\n");
-            this.state = state;
-        }
+        _UPDATED_INFO = DataUpdateInfo.addUpdateInfo(_UPDATED_INFO, "state", this.state, state, !_IS_LOADED );
+        this.state = state;
     }
 
     /**
@@ -462,25 +372,14 @@ public class CodeTemplateInfo implements DataEntity,Serializable{
     public CodeTemplateInfo state(int state){
         setState(state);
         return this;
-        }
+    }
 
     /**
      * 重载toString方法.
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("id:\"" + this.id + "\"\r\n");
-        sb.append("group_id:\"" + this.groupId + "\"\r\n");
-        sb.append("template_type:\"" + this.templateType + "\"\r\n");
-        sb.append("template_name:\"" + this.templateName + "\"\r\n");
-        sb.append("template_desc:\"" + this.templateDesc + "\"\r\n");
-        sb.append("template_filename:\"" + this.templateFilename + "\"\r\n");
-        sb.append("template_body:\"" + this.templateBody + "\"\r\n");
-        sb.append("create_date:\"" + this.createDate + "\"\r\n");
-        sb.append("modify_date:\"" + this.modifyDate + "\"\r\n");
-        sb.append("state:\"" + this.state + "\"\r\n");
-        return sb.toString();
+        return JsonUtils.toString(this);
     }
 
 }
