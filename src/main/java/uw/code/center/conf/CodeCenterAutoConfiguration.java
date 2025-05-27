@@ -23,17 +23,6 @@ import java.util.List;
 @AutoConfigureAfter({DaoAutoConfiguration.class, AuthServiceAutoConfiguration.class})
 public class CodeCenterAutoConfiguration implements WebMvcConfigurer {
 
-
-    /**
-     * 移除XML消息转换器
-     *
-     * @param converters
-     */
-    @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.removeIf(x -> x instanceof MappingJackson2XmlHttpMessageConverter);
-    }
-
     /**
      * 注册代码生成器。
      *

@@ -3,11 +3,15 @@ package uw.code.center.controller.open;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.context.annotation.Profile;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uw.common.util.EnumUtils;
+import uw.common.util.JsonUtils;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -27,4 +31,9 @@ public class EnumController {
         return EnumUtils.getEnumMap(BASE_PACKAGE);
     }
 
+
+    @GetMapping("/echo")
+    public Date echo(@RequestParam(required = false) Date date) {
+        return date;
+    }
 }
