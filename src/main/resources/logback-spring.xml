@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration>
 <configuration>
-    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue=""/>
-    <springProperty scope="context" name="appVersion" source="project.version" defaultValue=""/>
-    <springProperty scope="context" name="appHost" source="APP_HOST" defaultValue=""/>
-    <springProperty scope="context" name="appPort" source="APP_PORT" defaultValue=""/>
-    <springProperty scope="context" name="esServer" source="LOG_ES_SERVER" defaultValue=""/>
-    <springProperty scope="context" name="esUsername" source="LOG_ES_USERNAME" defaultValue=""/>
-    <springProperty scope="context" name="esPassword" source="LOG_ES_PASSWORD" defaultValue=""/>
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="uw-code-center"/>
+    <springProperty scope="context" name="appVersion" source="project.version" defaultValue="1.1.0"/>
+    <springProperty scope="context" name="appHost" source="APP_HOST" defaultValue="127.0.0.1"/>
+    <springProperty scope="context" name="appPort" source="APP_PORT" defaultValue="10030"/>
+    <springProperty scope="context" name="esServer" source="LOG_ES_SERVER" defaultValue="http://192.168.88.21:9200"/>
+    <springProperty scope="context" name="esUsername" source="LOG_ES_USERNAME" defaultValue="elastic"/>
+    <springProperty scope="context" name="esPassword" source="LOG_ES_PASSWORD" defaultValue="espasswd"/>
 
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
@@ -31,16 +31,14 @@
         <!-- 需要排除的异常关键字，多个关键字之间用','分割。-->
         <excludeThrowableKeys>org.spring,org.apache,org.apache,java.base,jakarta,com.mysql</excludeThrowableKeys>
         <!-- 开启JMX监控支持,默认未开启 -->
-        <jmxMonitoring>false</jmxMonitoring>
+        <jmxMonitoring>true</jmxMonitoring>
     </appender>
-    <!-- 对于非生产环境，都打印console -->
-    <springProfile name="!(prod|stab)">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-        </root>
-    </springProfile>
+    <!-- 默认输出CONSOLE -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
     <!-- 对于非本地开发，都打印到ES -->
-    <springProfile name="!dev">
+    <springProfile name="!dev3">
         <root level="INFO">
             <appender-ref ref="ES"/>
         </root>
