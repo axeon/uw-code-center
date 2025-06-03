@@ -4,14 +4,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uw.auth.service.conf.AuthServiceAutoConfiguration;
 import uw.code.center.template.TemplateHelper;
 import uw.dao.conf.DaoAutoConfiguration;
-
-import java.util.List;
 
 /**
  * SaasAppAutoConfiguration

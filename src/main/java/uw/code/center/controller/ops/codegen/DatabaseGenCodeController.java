@@ -19,6 +19,7 @@ import uw.code.center.entity.CodeTemplateGroup;
 import uw.code.center.entity.CodeTemplateInfo;
 import uw.code.center.service.dao.*;
 import uw.code.center.template.TemplateHelper;
+import uw.common.util.SystemClock;
 import uw.dao.DaoManager;
 import uw.dao.DataList;
 import uw.dao.conf.DaoConfigManager;
@@ -27,7 +28,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -110,13 +114,13 @@ public class DatabaseGenCodeController {
             //设置文件下载格式
             response.setContentType( "application/x-download; charset=utf-8" );
             response.setHeader( "Content-Disposition",
-                    "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8 ) + "_" + dateFormat.format( new Date() ) + ".zip" );
+                    "attachment; filename=" + URLEncoder.encode( codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8 ) + "_" + dateFormat.format( SystemClock.nowDate() ) + ".zip" );
             OutputStream outputStream = response.getOutputStream();
             ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );
             //拼参数
             Map<String, Object> map = new HashMap<String, Object>();
             map.put( "author", "axeon" );
-            map.put( "date", new Date() );
+            map.put( "date", SystemClock.nowDate() );
             for (CodeTemplateInfo ct : ctList) {
                 //判定类型再输出。
 //                if (ct.getTemplateType()) {

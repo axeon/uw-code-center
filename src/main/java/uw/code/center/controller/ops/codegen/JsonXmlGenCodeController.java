@@ -22,13 +22,13 @@ import uw.code.center.service.jsonxml.AnnotationStyle;
 import uw.code.center.service.jsonxml.GenerationConfig;
 import uw.code.center.service.jsonxml.GenerationType;
 import uw.code.center.service.jsonxml.VoCodeGenTools;
+import uw.common.util.SystemClock;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -165,7 +165,7 @@ public class JsonXmlGenCodeController {
         if (fileMap.size() > 0) {
             //设置文件下载格式
             response.setContentType( "application/x-download; charset=utf-8" );
-            response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( "自动生成VO代码", StandardCharsets.UTF_8 ) + "_" + dateFormat.format( new Date() ) + ".zip" );
+            response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( "自动生成VO代码", StandardCharsets.UTF_8 ) + "_" + dateFormat.format( SystemClock.nowDate() ) + ".zip" );
             OutputStream outputStream = response.getOutputStream();
             ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );
 

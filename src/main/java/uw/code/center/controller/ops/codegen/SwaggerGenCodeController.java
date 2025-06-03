@@ -23,6 +23,7 @@ import uw.code.center.service.swagger.ApiInfo;
 import uw.code.center.service.swagger.SchemaInfo;
 import uw.code.center.service.swagger.SwaggerParser;
 import uw.code.center.template.TemplateHelper;
+import uw.common.util.SystemClock;
 import uw.dao.DaoManager;
 import uw.dao.DataList;
 import uw.dao.TransactionException;
@@ -31,7 +32,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -65,7 +65,7 @@ public class SwaggerGenCodeController {
         }
         //设置文件下载格式
         response.setContentType("application/x-download; charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8) + "_" + dateFormat.format(new Date()) + ".zip");
+        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8) + "_" + dateFormat.format(SystemClock.nowDate()) + ".zip");
         OutputStream outputStream = response.getOutputStream();
         ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
         String[] swaggers = swaggerUrl.split(",");
@@ -75,7 +75,7 @@ public class SwaggerGenCodeController {
             //拼参数
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("author", "axeon");
-            map.put("date", new Date());
+            map.put("date", SystemClock.nowDate());
             map.put("projectName", swaggerParser.getProjectName());
             map.put("apiName", swaggerParser.getApiName());
             map.put("apiInfoList", swaggerParser.getApiInfoList());
@@ -198,7 +198,7 @@ public class SwaggerGenCodeController {
         }
         //设置文件下载格式
         response.setContentType("application/octet-stream;charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(codeTemplateGroup.getGroupName(), "utf-8") + "_" + dateFormat.format(new Date()) +
+        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(codeTemplateGroup.getGroupName(), "utf-8") + "_" + dateFormat.format(SystemClock.nowDate()) +
                 ".zip");
         response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         OutputStream outputStream = response.getOutputStream();
@@ -211,7 +211,7 @@ public class SwaggerGenCodeController {
             //拼参数
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("author", "axeon");
-            map.put("date", new Date());
+            map.put("date", SystemClock.nowDate());
             map.put("projectName", swaggerParser.getProjectName());
             map.put("apiName", swaggerParser.getApiName());
             map.put("apiInfoList", swaggerParser.getApiInfoList());

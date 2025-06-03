@@ -13,6 +13,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uw.common.util.SystemClock;
 
 import java.io.IOException;
 import java.util.*;
@@ -66,7 +67,7 @@ public class VoCodeGenTools {
      */
     private final static Splitter splitter = Splitter.on("$");
 
-    private static Date now = new Date();
+    private static Date now = SystemClock.nowDate();
 
     private GenerationConfig generationConfig;
 
