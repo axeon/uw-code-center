@@ -23,7 +23,9 @@ import java.util.*;
  */
 public class SwaggerParser {
 
-
+    /**
+     * package info
+     */
     public static final String PACKAGE_INFO = "$-package-info-$";
     private static final Logger log = LoggerFactory.getLogger(SwaggerParser.class);
     /**
@@ -61,7 +63,7 @@ public class SwaggerParser {
 
     public static void main(String[] args) {
         SwaggerParser swaggerParser = new SwaggerParser();
-        swaggerParser.parse("http://192.168.88.21:10000/v3/api-docs/adminApi");
+        swaggerParser.parse("http://192.168.88.21:20000/v3/api-docs/guestApi");
         System.out.println(swaggerParser.getApiName());
         for (ApiInfo apiInfo : swaggerParser.getApiInfoList()) {
             System.out.println(apiInfo);
@@ -72,31 +74,6 @@ public class SwaggerParser {
         for (ApiGroupInfo apiGroupInfo : swaggerParser.getApiGroupInfoList()) {
             System.out.println(apiGroupInfo);
         }
-    }
-
-    /**
-     * 将appName按照驼峰整形。
-     *
-     * @param text
-     * @return
-     */
-    private static String clearAppName(String text) {
-        StringBuilder sb = new StringBuilder();
-        char[] data = text.toCharArray();
-        boolean needClear = false;
-        for (int i = 0; i < data.length; i++) {
-            if (data[i] != '-') {
-                if (needClear) {
-                    sb.append(Character.toUpperCase(data[i]));
-                    needClear = false;
-                } else {
-                    sb.append(data[i]);
-                }
-            } else {
-                needClear = true;
-            }
-        }
-        return sb.toString();
     }
 
     /**
@@ -112,6 +89,11 @@ public class SwaggerParser {
         return text;
     }
 
+    /**
+     * 解析swagger文档。
+     *
+     * @param swaggerUrl
+     */
     public void parse(String swaggerUrl) {
         SwaggerParseResult result = new OpenAPIV3Parser().readLocation(swaggerUrl, null, null);
         //设置信息列表
@@ -125,8 +107,7 @@ public class SwaggerParser {
         if (schemaMap != null) {
             for (Map.Entry<String, Schema> skv : schemaMap.entrySet()) {
                 //对于封装结构体，不再重复输出。
-                if (skv.getKey().startsWith("ResponseData") || skv.getKey().startsWith("DataList") || skv.getKey().startsWith("ESDataListScroll") || skv.getKey().startsWith(
-                        "ESDataList")) {
+                if (skv.getKey().startsWith("ResponseData") || skv.getKey().startsWith("DataList") || skv.getKey().startsWith("ESDataListScroll") || skv.getKey().startsWith("ESDataList")) {
                     continue;
                 }
                 SchemaInfo schemaInfo = new SchemaInfo();
@@ -172,7 +153,7 @@ public class SwaggerParser {
                 apiInfo.setResponseInfo(responseInfo);
                 List<String> tags = mkv.getValue().getTags();
                 if (tags != null && tags.size() > 0) {
-                    apiInfo.setGroup(tags.get(0));
+                    apiInfo.setGroup(tags.getFirst());
                 }
                 //对于一级菜单，采用特殊的处理办法。
                 if (apiInfo.getGroup().equalsIgnoreCase(PACKAGE_INFO)) {
@@ -256,20 +237,147 @@ public class SwaggerParser {
 
     }
 
+    /**
+     * 获取apiName
+     *
+     * @return
+     */
     public String getApiName() {
         return apiName;
     }
 
+    /**
+     * 设置apiName
+     *
+     * @param apiName
+     */
     public void setApiName(String apiName) {
         this.apiName = apiName;
     }
 
+    /**
+     * 获取schemaInfoList
+     *
+     * @return
+     */
     public List<SchemaInfo> getSchemaInfoList() {
         return schemaInfoList;
     }
 
+    /**
+     * 设置schemaInfoList
+     *
+     * @param schemaInfoList
+     */
     public void setSchemaInfoList(List<SchemaInfo> schemaInfoList) {
         this.schemaInfoList = schemaInfoList;
+    }
+
+    /**
+     * 获取ApiInfoList。
+     *
+     * @return
+     */
+    public List<ApiInfo> getApiInfoList() {
+        return apiInfoList;
+    }
+
+    /**
+     * 设置ApiInfoList。
+     *
+     * @param apiInfoList
+     */
+    public void setApiInfoList(List<ApiInfo> apiInfoList) {
+        this.apiInfoList = apiInfoList;
+    }
+
+    /**
+     * 获取ApiGroupInfo列表。
+     * @return
+     */
+    public Set<ApiGroupInfo> getApiGroupInfoList() {
+        return apiGroupInfoList;
+    }
+
+    /**
+     * 设置ApiGroupInfo列表。
+     * @param apiGroupInfoList
+     */
+    public void setApiGroupInfoList(Set<ApiGroupInfo> apiGroupInfoList) {
+        this.apiGroupInfoList = apiGroupInfoList;
+    }
+
+    /**
+     * 获取项目名。
+     * @return
+     */
+    public String getProjectName() {
+        return projectName;
+    }
+
+    /**
+     * 设置项目名。
+     * @param projectName
+     */
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    /**
+     * 获取错误信息。
+     * @return
+     */
+    public List<String> getMessageList() {
+        return messageList;
+    }
+
+    /**
+     * 设置错误信息。
+     * @param messageList
+     */
+    public void setMessageList(List<String> messageList) {
+        this.messageList = messageList;
+    }
+
+    /**
+     * 获取API分组信息列表。
+     * @return
+     */
+    public Set<ApiCatalogInfo> getApiCatalogInfoList() {
+        return apiCatalogInfoList;
+    }
+
+    /**
+     * 设置API分组信息列表。
+     * @param apiCatalogInfoList
+     */
+    public void setApiCatalogInfoList(Set<ApiCatalogInfo> apiCatalogInfoList) {
+        this.apiCatalogInfoList = apiCatalogInfoList;
+    }
+
+    /**
+     * 将appName按照驼峰整形。
+     *
+     * @param text
+     * @return
+     */
+    private static String clearAppName(String text) {
+        StringBuilder sb = new StringBuilder();
+        char[] data = text.toCharArray();
+        boolean needClear = false;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] != '-') {
+                if (needClear) {
+                    sb.append(Character.toUpperCase(data[i]));
+                    needClear = false;
+                } else {
+                    sb.append(data[i]);
+                }
+            } else {
+                needClear = true;
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -430,13 +538,6 @@ public class SwaggerParser {
         }
     }
 
-    public List<ApiInfo> getApiInfoList() {
-        return apiInfoList;
-    }
-
-    public void setApiInfoList(List<ApiInfo> apiInfoList) {
-        this.apiInfoList = apiInfoList;
-    }
 
     /**
      * 获取api上级路径。
@@ -461,57 +562,41 @@ public class SwaggerParser {
      * @param schema
      * @return
      */
-    public String getFullType(Schema schema) {
-        String fullType = "any";
-        if (schema.getType() == null) {
-            fullType = (getSchemeName(schema.get$ref()));
-        } else {
-            if (schema.getType().equals("array")) {
-                fullType = "Array<" + getFullType(schema.getItems()) + ">";
-            } else if (schema.getType().equals("object")) {
-                //特殊处理Map类型，当前仅支持String类型。
-                if (schema instanceof MapSchema) {
-                    Schema valueSchema = (Schema) schema.getAdditionalProperties();
-                    if (valueSchema != null) {
-                        fullType = ("Record<string, " + getFullType(valueSchema) + ">");
+    private String getFullType(Schema schema) {
+        String fullType = null;
+        if (schema != null) {
+            String schemaType = schema.getType();
+            //从OpenAPI31开始，类型信息放入types里了。
+            if (schemaType == null) {
+                if (schema.getTypes() != null) {
+                    Set<String> schemaTypes = schema.getTypes();
+                    if (schemaTypes.size() == 1) {
+                        schemaType = schemaTypes.iterator().next();
                     }
                 }
-            } else {
-                fullType = (convertType(schema.getFormat() == null ? schema.getType() : schema.getFormat()));
             }
+            if (schemaType == null) {
+                fullType = (getSchemeName(schema.get$ref()));
+            } else {
+                if (schemaType.equals("array")) {
+                    fullType = "Array<" + getFullType(schema.getItems()) + ">";
+                } else if (schemaType.equals("object")) {
+                    //特殊处理Map类型，当前仅支持String类型。
+                    if (schema instanceof MapSchema) {
+                        Schema valueSchema = (Schema) schema.getAdditionalProperties();
+                        if (valueSchema != null) {
+                            fullType = ("Record<string, " + getFullType(valueSchema) + ">");
+                        }
+                    }
+                } else {
+                    fullType = convertType(schemaType);
+                }
+            }
+        }
+        if (fullType == null) {
+            fullType = "any";
         }
         return fullType;
     }
 
-    public Set<ApiGroupInfo> getApiGroupInfoList() {
-        return apiGroupInfoList;
-    }
-
-    public void setApiGroupInfoList(Set<ApiGroupInfo> apiGroupInfoList) {
-        this.apiGroupInfoList = apiGroupInfoList;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public List<String> getMessageList() {
-        return messageList;
-    }
-
-    public void setMessageList(List<String> messageList) {
-        this.messageList = messageList;
-    }
-
-    public Set<ApiCatalogInfo> getApiCatalogInfoList() {
-        return apiCatalogInfoList;
-    }
-
-    public void setApiCatalogInfoList(Set<ApiCatalogInfo> apiCatalogInfoList) {
-        this.apiCatalogInfoList = apiCatalogInfoList;
-    }
 }

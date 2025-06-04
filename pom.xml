@@ -68,7 +68,7 @@
         <dependency>
             <groupId>io.swagger.parser.v3</groupId>
             <artifactId>swagger-parser-v3</artifactId>
-            <version>2.1.21</version>
+            <version>2.1.29</version>
         </dependency>
         <!-- 这两个jar是用于自动成功VO功能使用 -->
         <dependency>
