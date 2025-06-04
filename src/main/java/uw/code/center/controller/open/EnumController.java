@@ -11,6 +11,7 @@ import uw.common.util.EnumUtils;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * 公共搜索枚举接口
@@ -34,4 +35,16 @@ public class EnumController {
     public Date echo(@RequestParam(required = false) Date date) {
         return date;
     }
+
+    @GetMapping("/now")
+    public Date now() {
+        return new Date();
+    }
+
+
+    @GetMapping("/timezone")
+    public String timezone() {
+        return TimeZone.getDefault().toString();
+    }
+
 }
