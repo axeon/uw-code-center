@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uw.common.util.DateUtils;
 import uw.common.util.EnumUtils;
 
 import java.util.Date;
@@ -37,14 +38,14 @@ public class EnumController {
     }
 
     @GetMapping("/now")
-    public Date now() {
-        return new Date();
+    public String now() {
+        return DateUtils.dateToString(new Date(), DateUtils.DATE_MILLIS_ISO);
     }
 
 
     @GetMapping("/timezone")
     public String timezone() {
-        return TimeZone.getDefault().toString();
+        return TimeZone.getDefault().getDisplayName();
     }
 
 }
