@@ -38,7 +38,7 @@
         <appender-ref ref="CONSOLE"/>
     </root>
     <!-- 对于非本地开发，都打印到ES -->
-    <springProfile name="!dev3">
+    <springProfile name="!dev">
         <root level="INFO">
             <appender-ref ref="ES"/>
         </root>
