@@ -15,21 +15,31 @@ import java.util.Map;
 import java.util.TimeZone;
 
 /**
- * 枚举类管理
+ * 测试接口
  */
 @RestController
-@RequestMapping("/open/enum")
-@Tag(name = "枚举类管理")
+@RequestMapping("/open/test")
+@Tag(name = "测试接口")
 @Profile({"test", "dev"})
-public class EnumController {
+public class TestController {
 
-    private static final String BASE_PACKAGE = "uw.code.center.constant";
-
-    @GetMapping("/getAllEnumMap")
-    @Operation(summary = "获取所有枚举", description = "获取所有枚举")
-    public Map<String, Object> getAllEnumMap() {
-        return EnumUtils.getEnumMap(BASE_PACKAGE);
+    @GetMapping("/echo")
+    public Date echo(@RequestParam(required = false) Date date) {
+        return date;
     }
 
+    @GetMapping("/now")
+    public String now() {
+        return DateUtils.dateToString(new Date(), DateUtils.DATE_MILLIS_ISO);
+    }
 
+    @GetMapping("/timezone")
+    public String timezone() {
+        return TimeZone.getDefault().getDisplayName();
+    }
+
+    @GetMapping("/exception")
+    public void exception() {
+        throw new RuntimeException("测试异常");
+    }
 }
