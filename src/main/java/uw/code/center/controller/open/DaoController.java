@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uw.code.center.dto.CodeTemplateGroupQueryParam;
 import uw.code.center.entity.CodeTemplateGroup;
 import uw.code.center.entity.CodeTemplateInfo;
 import uw.common.dto.ResponseData;
@@ -25,7 +26,7 @@ public class DaoController {
 
     @GetMapping("/list")
     public ResponseData<DataList<CodeTemplateGroup>> list() {
-        return dao.list(CodeTemplateGroup.class, "");
+        return dao.list(CodeTemplateGroup.class, new CodeTemplateGroupQueryParam());
     }
 
     @GetMapping("/load")
