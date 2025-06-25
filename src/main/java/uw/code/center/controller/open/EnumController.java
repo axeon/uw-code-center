@@ -20,7 +20,7 @@ import java.util.TimeZone;
 @RestController
 @RequestMapping("/open/enum")
 @Tag(name = "枚举类管理")
-@Profile({"test", "dev"})
+@Profile({"dev"})
 public class EnumController {
 
     private static final String BASE_PACKAGE = "uw.code.center.constant";
