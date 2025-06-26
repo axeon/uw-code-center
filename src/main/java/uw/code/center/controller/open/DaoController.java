@@ -19,7 +19,7 @@ import uw.dao.DataList;
 @RestController
 @RequestMapping("/open/dao")
 @Tag(name = "测试接口")
-@Profile({"dev"})
+@Profile({"debug","dev"})
 public class DaoController {
 
     DaoManager dao = DaoManager.getInstance();

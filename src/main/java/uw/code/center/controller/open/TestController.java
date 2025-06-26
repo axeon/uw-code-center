@@ -20,7 +20,7 @@ import java.util.TimeZone;
 @RestController
 @RequestMapping("/open/test")
 @Tag(name = "测试接口")
-@Profile({"dev"})
+@Profile({"debug","dev"})
 public class TestController {
 
     @GetMapping("/echo")
