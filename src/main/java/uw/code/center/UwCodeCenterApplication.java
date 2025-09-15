@@ -12,7 +12,7 @@ public class UwCodeCenterApplication {
     public static void main(String[] args) {
         new SpringApplicationBuilder(UwCodeCenterApplication.class).beanNameGenerator((beanDefinition, beanDefinitionRegistry) -> {
             String beanClassName = beanDefinition.getBeanClassName();
-            if (beanClassName.contains("uw.code.center")) {
+            if (beanClassName.startsWith("uw.code.center")) {
                 return beanClassName;
             }
 
