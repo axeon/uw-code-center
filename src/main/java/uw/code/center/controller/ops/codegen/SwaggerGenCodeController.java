@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriUtils;
 import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.annotation.ResponseAdviceIgnore;
 import uw.auth.service.constant.ActionLog;
@@ -65,7 +66,7 @@ public class SwaggerGenCodeController {
         }
         //设置文件下载格式
         response.setContentType("application/x-download; charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8) + "_" + dateFormat.format(SystemClock.nowDate()) + ".zip");
+        response.setHeader("Content-Disposition", "attachment; filename=" + UriUtils.encode(codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8) + "_" + dateFormat.format(SystemClock.nowDate()) + ".zip");
         OutputStream outputStream = response.getOutputStream();
         ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
         String[] swaggers = swaggerUrl.split(",");
@@ -198,7 +199,7 @@ public class SwaggerGenCodeController {
         }
         //设置文件下载格式
         response.setContentType("application/octet-stream;charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(codeTemplateGroup.getGroupName(), "utf-8") + "_" + dateFormat.format(SystemClock.nowDate()) +
+        response.setHeader("Content-Disposition", "attachment; filename=" + UriUtils.encode(codeTemplateGroup.getGroupName(), "utf-8") + "_" + dateFormat.format(SystemClock.nowDate()) +
                 ".zip");
         response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         OutputStream outputStream = response.getOutputStream();

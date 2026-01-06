@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriUtils;
 import org.xml.sax.InputSource;
 import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.annotation.ResponseAdviceIgnore;
@@ -165,7 +166,7 @@ public class JsonXmlGenCodeController {
         if (fileMap.size() > 0) {
             //设置文件下载格式
             response.setContentType( "application/x-download; charset=utf-8" );
-            response.setHeader( "Content-Disposition", "attachment; filename=" + URLEncoder.encode( "自动生成VO代码", StandardCharsets.UTF_8 ) + "_" + dateFormat.format( SystemClock.nowDate() ) + ".zip" );
+            response.setHeader( "Content-Disposition", "attachment; filename=" + UriUtils.encode( "自动生成VO代码", StandardCharsets.UTF_8 ) + "_" + dateFormat.format( SystemClock.nowDate() ) + ".zip" );
             OutputStream outputStream = response.getOutputStream();
             ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );
 
