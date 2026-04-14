@@ -20,15 +20,15 @@ public class DaoStringUtils {
     /**
      * 获取上一级路径。
      *
-     * @param path
+     * @param table
      * @return
      */
-    public static String getParentPath(String path) {
-        int pos = path.indexOf('_');
+    public static String getTableParent(String table) {
+        int pos = table.indexOf('_');
         if (pos > -1) {
-            return path.substring(0, pos);
+            return table.substring(0, pos);
         } else {
-            return path;
+            return table;
         }
     }
 
