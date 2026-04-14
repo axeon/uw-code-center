@@ -77,8 +77,8 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
                 MetaTableInfo meta = new MetaTableInfo();
                 meta.setTableName(rs.getString("TABLE_NAME").toLowerCase());
                 meta.setEntityName(DaoStringUtils.toUpperFirst(DaoStringUtils.toClearCase(meta.getTableName())));
+                meta.setEntityParent(meta.getTableName());
                 meta.setEntityPath(DaoStringUtils.toPathStyle(meta.getTableName()));
-                meta.setParentPath(DaoStringUtils.getParentPath(meta.getEntityPath()));
                 meta.setTableType(rs.getString("TABLE_TYPE").toLowerCase());
                 meta.setRemarks(rs.getString("REMARKS"));
                 if (meta.getRemarks() == null || "".equals(meta.getRemarks())) {

@@ -85,7 +85,7 @@ public class OracleDataMetaImpl implements DataMetaInterface {
                     dataSet.getString("TABLE_NAME");
                     meta.setEntityName(DaoStringUtils.toUpperFirst(DaoStringUtils.toClearCase(meta.getTableName())));
                     meta.setEntityPath(DaoStringUtils.toPathStyle(meta.getTableName()));
-                    meta.setParentPath(DaoStringUtils.getParentPath(meta.getEntityPath()));
+                    meta.setEntityParent(DaoStringUtils.getParentPath(meta.getTableName()));
                     meta.setTableType(dataSet.getString("TABLE_TYPE").toLowerCase());
                     meta.setRemarks(dataSet.getString("REMARKS"));
                     if (meta.getRemarks() == null || "".equals(meta.getRemarks())) {

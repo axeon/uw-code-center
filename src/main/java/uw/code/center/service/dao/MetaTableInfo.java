@@ -26,9 +26,9 @@ public class MetaTableInfo {
     private String entityPath;
 
     /**
-     * 上级路径。
+     * 上级。
      */
-    private String parentPath;
+    private String entityParent;
 
     /**
      * 表类型.
@@ -88,12 +88,12 @@ public class MetaTableInfo {
         this.entityPath = entityPath;
     }
 
-    public String getParentPath() {
-        return parentPath;
+    public String getEntityParent() {
+        return entityParent;
     }
 
-    public void setParentPath(String parentPath) {
-        this.parentPath = parentPath;
+    public void setEntityParent(String entityParent) {
+        this.entityParent = entityParent;
     }
 
     /**

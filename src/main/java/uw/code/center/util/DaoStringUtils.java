@@ -24,7 +24,7 @@ public class DaoStringUtils {
      * @return
      */
     public static String getParentPath(String path) {
-        int pos = path.lastIndexOf('/');
+        int pos = path.indexOf('_');
         if (pos > -1) {
             return path.substring(0, pos);
         } else {
