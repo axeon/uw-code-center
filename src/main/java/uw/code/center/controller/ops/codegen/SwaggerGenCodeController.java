@@ -79,6 +79,7 @@ public class SwaggerGenCodeController {
             map.put("date", SystemClock.nowDate());
             map.put("projectName", swaggerParser.getProjectName());
             map.put("apiName", swaggerParser.getApiName());
+            map.put("apiType", swaggerParser.getApiType());
             map.put("apiInfoList", swaggerParser.getApiInfoList());
             map.put("schemaInfoList", swaggerParser.getSchemaInfoList());
             map.put("apiGroupInfoList", swaggerParser.getApiGroupInfoList());

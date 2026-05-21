@@ -48,6 +48,12 @@ public class SwaggerParser {
      * API名，使用驼峰命名规则。
      */
     private String apiName;
+
+    /**
+     * api类型，使用驼峰命名规则。
+     */
+    private String apiType;
+
     /**
      * 错误消息列表。
      */
@@ -101,7 +107,7 @@ public class SwaggerParser {
         OpenAPI openAPI = result.getOpenAPI();
         projectName = openAPI.getInfo().getTitle();
         apiName = clearAppName(openAPI.getInfo().getTitle());
-
+        apiType = clearAppName(extractApiType(swaggerUrl));
         //开始处理数据类型。
         Map<String, Schema> schemaMap = openAPI.getComponents().getSchemas();
         if (schemaMap != null) {
@@ -244,6 +250,24 @@ public class SwaggerParser {
      */
     public String getApiName() {
         return apiName;
+    }
+
+    /**
+     * 获取apiType
+     *
+     * @return
+     */
+    public String getApiType() {
+        return apiType;
+    }
+
+    /**
+     * 设置apiType
+     *
+     * @param apiType
+     */
+    public void setApiType(String apiType) {
+        this.apiType = apiType;
     }
 
     /**
@@ -396,6 +420,24 @@ public class SwaggerParser {
         }
         return ref.substring(pos + 1);
     }
+
+    /**
+     * 从swaggerUrl中解析出apiType。
+     *
+     * @param swaggerUrl
+     * @return
+     */
+    private String extractApiType(String swaggerUrl) {
+        if (StringUtils.isBlank(swaggerUrl)) {
+            return "";
+        }
+        int pos = swaggerUrl.lastIndexOf('/');
+        if (pos < 1) {
+            return "";
+        }
+        return swaggerUrl.substring(pos + 1);
+    }
+
 
     /**
      * swagger类型转为ts类型。
@@ -576,7 +618,7 @@ public class SwaggerParser {
                 }
             }
             if (schemaType == null) {
-                fullType = (getSchemeName(schema.get$ref()));
+                fullType = getSchemeName(schema.get$ref());
             } else {
                 if (schemaType.equals("array")) {
                     fullType = "Array<" + getFullType(schema.getItems()) + ">";
