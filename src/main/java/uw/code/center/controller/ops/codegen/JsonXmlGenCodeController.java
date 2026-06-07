@@ -68,8 +68,9 @@ public class JsonXmlGenCodeController {
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public String genCode(@Parameter(description = "生成单个VO代码的请求体") @RequestBody JsonXmlRequestParam requestParam) throws Exception {
 
-        // 校验传入的是 json 或者 xml
-        if (StringUtils.isBlank( getTextType( requestParam.getText() ) )) {
+        // 使用getTextType()的返回值确定实际文本类型，避免大小写不一致
+        String actualType = getTextType( requestParam.getText() );
+        if (StringUtils.isBlank( actualType )) {
             return "传入的文本不是正确的json或者xml格式!";
         }
 
@@ -79,12 +80,10 @@ public class JsonXmlGenCodeController {
         // 内容
         generationConfig.setGenerationText( requestParam.getText() );
 
-        if ("json".equals( requestParam.getTextType() )) {
+        if ("JSON".equals( actualType )) {
             generationConfig.setGenerationType( GenerationType.JSON );
-        } else if ("xml".equals( requestParam.getTextType() )) {
-            generationConfig.setGenerationType( GenerationType.XML );
         } else {
-            return "传入的文本类型不正确!";
+            generationConfig.setGenerationType( GenerationType.XML );
         }
         // 生成的VO里面属性的注解风格
         generationConfig.setAnnotationStyle( AnnotationStyle.JACKSON2 );
@@ -112,74 +111,69 @@ public class JsonXmlGenCodeController {
 
         // 上传的文件是json 或者 xml 的文件的zip压缩包
         //获取ZIP输入流(一定要指定字符集Charset.forName("GBK")否则会报java.lang.IllegalArgumentException: MALFORMED)
-        ZipInputStream zipInputStream = new ZipInputStream( new BufferedInputStream( file.getInputStream() ), Charset.forName( "GBK" ) );
-        //定义ZipEntry置为null,避免由于重复调用zipInputStream.getNextEntry造成的不必要的问题
-        ZipEntry ze;
         Map<String, byte[]> fileMap = new HashMap<>();
-        //循环遍历
-        while ((ze = zipInputStream.getNextEntry()) != null) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            if (!ze.isDirectory() && (ze.toString().endsWith( "json" ) || ze.toString().endsWith( "xml" ))) {
-                //读取
-                byte[] buffer = new byte[1024];
-                int len;
-                while ((len = zipInputStream.read( buffer )) > -1) {
-                    outputStream.write( buffer, 0, len );
-                }
-                outputStream.flush();
-                // 读取到的单个文件流
-                InputStream stream = new ByteArrayInputStream( outputStream.toByteArray() );
+        try (ZipInputStream zipInputStream = new ZipInputStream( new BufferedInputStream( file.getInputStream() ), Charset.forName( "GBK" ) )) {
+            //定义ZipEntry置为null,避免由于重复调用zipInputStream.getNextEntry造成的不必要的问题
+            ZipEntry ze;
+            //循环遍历
+            while ((ze = zipInputStream.getNextEntry()) != null) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                if (!ze.isDirectory() && (ze.toString().endsWith( "json" ) || ze.toString().endsWith( "xml" ))) {
+                    //读取
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = zipInputStream.read( buffer )) > -1) {
+                        outputStream.write( buffer, 0, len );
+                    }
+                    outputStream.flush();
+                    // 读取到的单个文件流
+                    InputStream stream = new ByteArrayInputStream( outputStream.toByteArray() );
 
-                // 文件名称
-                // 去掉压缩包的前缀名字
-                String fullName = ze.getName().split( "/" )[1];
-                // 去掉后缀 得到最终的文件名字
-                String name = fullName.contains( "." ) ? fullName.split( "\\." )[0] : fullName;
+                    // 文件名称
+                    // 去掉压缩包的前缀名字
+                    String fullName = ze.getName().split( "/" )[1];
+                    // 去掉后缀 得到最终的文件名字
+                    String name = fullName.contains( "." ) ? fullName.split( "\\." )[0] : fullName;
 
-                GenerationConfig generationConfig = new GenerationConfig();
-                generationConfig.setGenerateJavaDoc( true );
-                generationConfig.setTakeSwagger( true );
-                generationConfig.setObjectName( name );
-                // 生成的VO里面属性的注解风格
-                generationConfig.setAnnotationStyle( AnnotationStyle.JACKSON2 );
-                //
-                if (ze.toString().endsWith( "json" )) {
-                    String text = objectMapper.writeValueAsString( objectMapper.readTree( stream ) );
-                    generationConfig.setGenerationText( text );
-                    generationConfig.setGenerationType( GenerationType.JSON );
-                } else if (ze.toString().endsWith( "xml" )) {
+                    GenerationConfig generationConfig = new GenerationConfig();
+                    generationConfig.setGenerateJavaDoc( true );
+                    generationConfig.setTakeSwagger( true );
+                    generationConfig.setObjectName( name );
+                    // 生成的VO里面属性的注解风格
+                    generationConfig.setAnnotationStyle( AnnotationStyle.JACKSON2 );
+                    //
+                    if (ze.toString().endsWith( "json" )) {
+                        String text = objectMapper.writeValueAsString( objectMapper.readTree( stream ) );
+                        generationConfig.setGenerationText( text );
+                        generationConfig.setGenerationType( GenerationType.JSON );
+                    } else if (ze.toString().endsWith( "xml" )) {
 //                    String text = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream).toString();
-                    String text = streamToString( stream );
-                    generationConfig.setGenerationText( text );
-                    generationConfig.setGenerationType( GenerationType.XML );
-                }
+                        String text = streamToString( stream );
+                        generationConfig.setGenerationText( text );
+                        generationConfig.setGenerationType( GenerationType.XML );
+                    }
 
-                StringBuilder generator = VoCodeGenTools.generator( generationConfig );
-                String fileName = name + ".java";
-                fileMap.put( fileName, generator.toString().getBytes( StandardCharsets.UTF_8 ) );
+                    StringBuilder generator = VoCodeGenTools.generator( generationConfig );
+                    String fileName = name + ".java";
+                    fileMap.put( fileName, generator.toString().getBytes( StandardCharsets.UTF_8 ) );
+                }
             }
         }
-        //一定记得关闭流
-        zipInputStream.closeEntry();
 
         // 完成VO生成 后面就是生成.java文件 打zip包下载
         if (fileMap.size() > 0) {
             //设置文件下载格式
             response.setContentType( "application/x-download; charset=utf-8" );
             response.setHeader( "Content-Disposition", "attachment; filename=" + UriUtils.encode( "自动生成VO代码", StandardCharsets.UTF_8 ) + "_" + dateFormat.format( SystemClock.nowDate() ) + ".zip" );
-            OutputStream outputStream = response.getOutputStream();
-            ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );
-
-            for (Map.Entry<String, byte[]> entry : fileMap.entrySet()) {
-                zipOutputStream.putNextEntry( new ZipEntry( entry.getKey() ) );
-                zipOutputStream.write( entry.getValue() );
-                zipOutputStream.closeEntry();
+            try (OutputStream outputStream = response.getOutputStream(); ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream )) {
+                for (Map.Entry<String, byte[]> entry : fileMap.entrySet()) {
+                    zipOutputStream.putNextEntry( new ZipEntry( entry.getKey() ) );
+                    zipOutputStream.write( entry.getValue() );
+                    zipOutputStream.closeEntry();
+                }
+                zipOutputStream.flush();
+                zipOutputStream.finish();
             }
-
-            zipOutputStream.flush();
-            zipOutputStream.finish();
-            zipOutputStream.close();
-            outputStream.close();
         }
     }
 
@@ -196,7 +190,13 @@ public class JsonXmlGenCodeController {
         } catch (IOException ignored) {
         }
         try {
-            DocumentBuilderFactory.newInstance().newDocumentBuilder().parse( new InputSource( new StringReader( text ) ) );
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setXIncludeAware(false);
+            factory.setExpandEntityReferences(false);
+            factory.newDocumentBuilder().parse(new InputSource(new StringReader(text)));
             return "XML";
         } catch (Exception ignored) {
         }

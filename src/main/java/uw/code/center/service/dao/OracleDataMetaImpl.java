@@ -74,11 +74,10 @@ public class OracleDataMetaImpl implements DataMetaInterface {
 
                 String sql = "SELECT\n" + "	c.TABLE_NAME,\n" + "	c.TABLE_TYPE,\n"
                         + "	DECODE(nvl(c.COMMENTS,'null'),'null','',c.COMMENTS) as REMARKS\n" + "FROM\n"
-                        + "	all_tables T,\n" + "	user_tab_comments c\n" + "WHERE\n" + "	T . OWNER = '" + schema
-                        + "'\n" + "AND c.table_name = T .table_name\n" + "AND c.table_name = upper('" + tableName
-                        + "')";
+                        + "	all_tables T,\n" + "	user_tab_comments c\n" + "WHERE\n" + "	T . OWNER = ?\n"
+                        + "AND c.table_name = T .table_name\n" + "AND c.table_name = upper(?)";
                 DaoFactory daoFactory = DaoFactory.getInstance();
-                DataSet dataSet = daoFactory.queryForDataSet(connName, sql);
+                DataSet dataSet = daoFactory.queryForDataSet(connName, sql, new Object[]{schema, tableName});
                 while (dataSet.next()) {
                     MetaTableInfo meta = new MetaTableInfo();
                     meta.setTableName(tableName.toLowerCase());
@@ -128,7 +127,7 @@ public class OracleDataMetaImpl implements DataMetaInterface {
             HashMap<String, String> remarkhs = new HashMap<String, String>();
             // 查询注释
             DaoFactory daoFactory = DaoFactory.getInstance();
-            DataSet dataSet = daoFactory.queryForDataSet(connName, "select  t.table_name,t.column_name,t.comments from USER_COL_COMMENTS t where t.TABLE_NAME=upper('" + tableName + "')");
+            DataSet dataSet = daoFactory.queryForDataSet(connName, "select  t.table_name,t.column_name,t.comments from USER_COL_COMMENTS t where t.TABLE_NAME=upper(?)", new Object[]{tableName});
             while (dataSet.next()) {
                 remarkhs.put(dataSet.getString("column_name"), dataSet.getString("comments"));
             }
@@ -235,13 +234,13 @@ public class OracleDataMetaImpl implements DataMetaInterface {
                     + "	AND \"SYS\".\"ALL_CONS_COLUMNS\".\"CONSTRAINT_NAME\" = \"SYS\".\"ALL_CONSTRAINTS\".\"CONSTRAINT_NAME\"\n"
                     + ")\n" + "WHERE\n" + "	(\n" + "		\"SYS\".\"ALL_CONSTRAINTS\".\"CONSTRAINT_TYPE\" = 'P'\n"
                     + "		AND \"SYS\".\"ALL_CONSTRAINTS\".\"CONSTRAINT_NAME\" NOT LIKE 'BIN$%'\n"
-                    + "		AND UPPER (\n" + "			\"SYS\".\"ALL_CONS_COLUMNS\".\"OWNER\"\n" + "		) IN ('"
-                    + schema + "')\n" + "		AND \"SYS\".\"ALL_CONS_COLUMNS\".\"TABLE_NAME\" = upper('" + tableName
-                    + "')\n" + "	)\n" + "ORDER BY\n" + "	\"SYS\".\"ALL_CONS_COLUMNS\".\"OWNER\" ASC,\n"
+                    + "		AND UPPER (\n" + "			\"SYS\".\"ALL_CONS_COLUMNS\".\"OWNER\"\n" + "		) IN (?)\n"
+                    + "		AND \"SYS\".\"ALL_CONS_COLUMNS\".\"TABLE_NAME\" = upper(?)\n"
+                    + "	)\n" + "ORDER BY\n" + "	\"SYS\".\"ALL_CONS_COLUMNS\".\"OWNER\" ASC,\n"
                     + "	\"SYS\".\"ALL_CONS_COLUMNS\".\"CONSTRAINT_NAME\" ASC,\n"
                     + "	\"SYS\".\"ALL_CONS_COLUMNS\".\"POSITION\" ASC";
             DaoFactory daoFactory = DaoFactory.getInstance();
-            DataSet dataSet = daoFactory.queryForDataSet(connName, sql);
+            DataSet dataSet = daoFactory.queryForDataSet(connName, sql, new Object[]{schema, tableName});
             while (dataSet.next()) {
                 MetaPrimaryKeyInfo meta = new MetaPrimaryKeyInfo();
                 meta.setTableName(dataSet.getString("TABLE_NAME").toLowerCase());

@@ -23,7 +23,7 @@ public class MetaColumnInfo {
     /**
      * 属性类型.
      */
-    private String PropertyType;
+    private String propertyType;
 
     /**
      * 属性对象类型。
@@ -83,14 +83,14 @@ public class MetaColumnInfo {
      * @return the propertyType
      */
     public String getPropertyType() {
-        return PropertyType;
+        return propertyType;
     }
 
     /**
      * @param propertyType the propertyType to set
      */
     public void setPropertyType(String propertyType) {
-        PropertyType = propertyType;
+        this.propertyType = propertyType;
     }
 
     public String getPropertyObject() {

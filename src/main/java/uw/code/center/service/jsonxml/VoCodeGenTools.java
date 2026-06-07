@@ -67,8 +67,6 @@ public class VoCodeGenTools {
      */
     private final static Splitter splitter = Splitter.on("$");
 
-    private static Date now = SystemClock.nowDate();
-
     private GenerationConfig generationConfig;
 
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON2;
@@ -155,7 +153,11 @@ public class VoCodeGenTools {
     public StringBuilder run() {
         Object curPoint = jsonTokener.nextValue();
         JSONObject next = null;
+        int skipCount = 0;
         while (!(curPoint instanceof JSONObject)) {
+            if (!jsonTokener.more() || ++skipCount > 1000) {
+                return null;
+            }
             try {
                 curPoint = jsonTokener.nextValue();
             } catch (JSONException e) {
@@ -267,8 +269,6 @@ public class VoCodeGenTools {
         if (StringUtils.isNotBlank(author)) {
             voText.append(String.format(" * @author %s %s", author, lineSeparator));
         }
-
-        voText.append(String.format(" * @since %s %s", DateFormatUtils.format(now, "yyyy-MM-dd"), lineSeparator));
 
         voText.append(" */");
     }
@@ -435,8 +435,8 @@ public class VoCodeGenTools {
                 }
                 break;
             case JAXB:
-                voText.append(String.format("import javax.xml.bind.annotation.XmlElement;%s", lineSeparator));
-                voText.append(String.format("import javax.xml.bind.annotation.XmlRootElement;%s", lineSeparator));
+                voText.append(String.format("import jakarta.xml.bind.annotation.XmlElement;%s", lineSeparator));
+                voText.append(String.format("import jakarta.xml.bind.annotation.XmlRootElement;%s", lineSeparator));
                 break;
             case XSTREAM:
                 voText.append(String.format("import com.thoughtworks.xstream.annotations.XStreamAlias;%s", lineSeparator));
@@ -490,11 +490,7 @@ public class VoCodeGenTools {
                 String schema = StringUtils.isNotBlank(javaType.getDescription()) ? javaType.getDescription() : name;
                 voText.append(String.format("%s@Schema(title = \"%s\", description = \"%s\")%s",propW,schema,schema, lineSeparator));
             }
-            if (javaType.isPrimitive()) {
-                voText.append(String.format("%sprivate %s %s;%s", propW, typeName, javaName, lineSeparator));
-            } else {
-                voText.append(String.format("%sprivate %s %s;%s", propW, typeName, javaName, lineSeparator));
-            }
+            voText.append(String.format("%sprivate %s %s;%s", propW, typeName, javaName, lineSeparator));
             voText.append(lineSeparator);
             isFirstLine = false;
         }
@@ -528,12 +524,7 @@ public class VoCodeGenTools {
                         String schema = StringUtils.isNotBlank(javaType.getDescription()) ? javaType.getDescription() : name;
                         voText.append(String.format("%s@Schema(title = \"%s\", description = \"%s\")%s",Strings.repeat(propW, indent),schema,schema, lineSeparator));
                     }
-                    if (javaType.isPrimitive()) {
-                        voText.append(String.format("%sprivate %s %s;%s", Strings.repeat(propW, indent), typeName, javaName, lineSeparator));
-                    } else {
-                        voText.append(String.format("%sprivate %s %s;%s", Strings.repeat(propW, indent),
-                                typeName, javaName, lineSeparator));
-                    }
+                    voText.append(String.format("%sprivate %s %s;%s", Strings.repeat(propW, indent), typeName, javaName, lineSeparator));
                     voText.append(lineSeparator);
                 }
                 writeGetterSetter(voText, propMap, indent);
@@ -557,7 +548,7 @@ public class VoCodeGenTools {
         if (str == null || (strLen = str.length()) == 0) {
             return str;
         }
-        return new StringBuffer(strLen)
+        return new StringBuilder(strLen)
                 .append(Character.toUpperCase(str.charAt(0)))
                 .append(str.substring(1))
                 .toString();
@@ -574,7 +565,7 @@ public class VoCodeGenTools {
         if (str == null || (strLen = str.length()) == 0) {
             return str;
         }
-        return new StringBuffer(strLen)
+        return new StringBuilder(strLen)
                 .append(Character.toLowerCase(str.charAt(0)))
                 .append(str.substring(1))
                 .toString();

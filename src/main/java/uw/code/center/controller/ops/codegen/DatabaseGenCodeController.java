@@ -116,36 +116,34 @@ public class DatabaseGenCodeController {
             response.setContentType( "application/x-download; charset=utf-8" );
             response.setHeader( "Content-Disposition",
                     "attachment; filename=" + UriUtils.encode( codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8 ) + "_" + dateFormat.format( SystemClock.nowDate() ) + ".zip" );
-            OutputStream outputStream = response.getOutputStream();
-            ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream );
-            //拼参数
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put( "author", "axeon" );
-            map.put( "date", SystemClock.nowDate() );
-            for (CodeTemplateInfo ct : ctList) {
-                //判定类型再输出。
+            try (OutputStream outputStream = response.getOutputStream(); ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream, StandardCharsets.UTF_8 )) {
+                //拼参数
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put( "author", "axeon" );
+                map.put( "date", SystemClock.nowDate() );
+                for (CodeTemplateInfo ct : ctList) {
+                    //判定类型再输出。
 //                if (ct.getTemplateType()) {
-                for (MetaTableInfo metaTableInfo : tablelist) {
-                    map.put( "tableMeta", metaTableInfo );
-                    // 获取主键列表
-                    List<MetaPrimaryKeyInfo> pklist = dataMetaInterface.getPrimaryKey( metaTableInfo.getTableName() );
-                    // 获取列列表
-                    List<MetaColumnInfo> columnlist = dataMetaInterface.getColumnList( metaTableInfo.getTableName(), pklist );
-                    map.put( "columnList", columnlist );
-                    //过滤生成主键
-                    map.put( "pkList", columnlist.stream().filter( x -> Boolean.parseBoolean( x.getIsPrimaryKey() ) ).toList() );
-                    String fileName = TemplateHelper.buildTemplate( ct.getId() + "#filename", map );
-                    String fileBody = TemplateHelper.buildTemplate( ct.getId() + "#body", map );
-                    zipOutputStream.putNextEntry( new ZipEntry( fileName ) );
-                    zipOutputStream.write( fileBody.getBytes() );
-                    zipOutputStream.closeEntry();
-                }
+                    for (MetaTableInfo metaTableInfo : tablelist) {
+                        map.put( "tableMeta", metaTableInfo );
+                        // 获取主键列表
+                        List<MetaPrimaryKeyInfo> pklist = dataMetaInterface.getPrimaryKey( metaTableInfo.getTableName() );
+                        // 获取列列表
+                        List<MetaColumnInfo> columnlist = dataMetaInterface.getColumnList( metaTableInfo.getTableName(), pklist );
+                        map.put( "columnList", columnlist );
+                        //过滤生成主键
+                        map.put( "pkList", columnlist.stream().filter( x -> Boolean.parseBoolean( x.getIsPrimaryKey() ) ).toList() );
+                        String fileName = TemplateHelper.buildTemplate( ct.getId() + "#filename", map );
+                        String fileBody = TemplateHelper.buildTemplate( ct.getId() + "#body", map );
+                        zipOutputStream.putNextEntry( new ZipEntry( fileName ) );
+                        zipOutputStream.write( fileBody.getBytes() );
+                        zipOutputStream.closeEntry();
+                    }
 //                }
+                }
+                zipOutputStream.flush();
+                zipOutputStream.finish();
             }
-            zipOutputStream.flush();
-            zipOutputStream.finish();
-            zipOutputStream.close();
-            outputStream.close();
         }
     }
 

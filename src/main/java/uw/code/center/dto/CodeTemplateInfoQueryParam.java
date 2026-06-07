@@ -14,15 +14,7 @@ import java.util.Map;
 @Schema(title = "代码模版列表查询参数", description = "代码模版列表查询参数")
 public class CodeTemplateInfoQueryParam extends PageQueryParam{
 
-    /**
-     * 允许的排序属性。
-     * key:排序名 value:排序字段
-     *
-     * @return
-     */
-    @Override
-    public Map<String, String> ALLOWED_SORT_PROPERTY() {
-        return new HashMap<>() {{
+    private static final Map<String, String> ALLOWED_SORT_PROPERTY = new HashMap<>() {{
             put( "id", "id" );
             put( "groupId", "group_id" );
             put( "templateType", "template_type" );
@@ -33,6 +25,15 @@ public class CodeTemplateInfoQueryParam extends PageQueryParam{
             put( "modifyDate", "modify_date" );
             put( "state", "state" );
         }};
+
+    /**
+     * 允许的排序属性。
+     *
+     * @return
+     */
+    @Override
+    public Map<String, String> ALLOWED_SORT_PROPERTY() {
+        return ALLOWED_SORT_PROPERTY;
     }
 
     /**
@@ -125,7 +126,6 @@ public class CodeTemplateInfoQueryParam extends PageQueryParam{
     @QueryMeta(expr = "state<=?")
     @Schema(title="小于等于状态。1正常-1标记删除", description = "小于等于状态。1正常-1标记删除")
     private Integer stateLte;
-
 
     /**
     * 获取id。

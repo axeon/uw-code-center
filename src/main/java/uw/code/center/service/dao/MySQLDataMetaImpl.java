@@ -135,7 +135,7 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
                 meta.setDataType(rs.getInt("DATA_TYPE")); // 字段数据类型(对应java.sql.Types中的常量)
                 meta.setTypeName(rs.getString("TYPE_NAME").toLowerCase()); // 字段类型名称(例如：VACHAR2)
                 meta.setColumnSize(rs.getInt("COLUMN_SIZE")); // 列的大小
-                meta.setRemarks(rs.getString("REMARKS").replaceAll("\"", "")); // 描述列的注释
+                meta.setRemarks(getSafeRemarks(rs.getString("REMARKS"))); // 描述列的注释
                 meta.setIsNullable(rs.getString("IS_NULLABLE").equals("YES") ? "true" : "false"); // 确定列是否包括
                 // null
                 meta.setIsAutoIncrement(rs.getString("IS_AUTOINCREMENT").equals("YES") ? "true" : null);// 确定列是否包括
@@ -201,8 +201,13 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
 
     }
 
+    private static String getSafeRemarks(String remarks) {
+        return remarks != null ? remarks.replaceAll("\"", "") : null;
+    }
+
     /**
-     * 获取主键名.
+     * 获取主键名。
+     * 使用了辅助方法getSafeRemarks来安全地处理REMARKS字段的null值。
      *
      * @param tableName 表名
      * @return 主键列表

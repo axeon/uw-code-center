@@ -35,11 +35,11 @@ public class SwaggerParser {
     /**
      * api分组列表。
      */
-    public Set<ApiGroupInfo> apiGroupInfoList = new LinkedHashSet<>();
+    private Set<ApiGroupInfo> apiGroupInfoList = new LinkedHashSet<>();
     /**
      * api分类信息。
      */
-    public Set<ApiCatalogInfo> apiCatalogInfoList = new LinkedHashSet<>();
+    private Set<ApiCatalogInfo> apiCatalogInfoList = new LinkedHashSet<>();
     /**
      * 项目名，使用-命名规则。
      */
@@ -89,6 +89,9 @@ public class SwaggerParser {
      * @return
      */
     private static String cleanPropertyName(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
         if (text.charAt(0) == '@') {
             text = text.substring(1);
         }
@@ -105,47 +108,55 @@ public class SwaggerParser {
         //设置信息列表
         this.messageList = result.getMessages();
         OpenAPI openAPI = result.getOpenAPI();
+        if (openAPI == null || openAPI.getInfo() == null) {
+            throw new IllegalArgumentException("Failed to parse swagger document from URL: " + swaggerUrl);
+        }
         projectName = openAPI.getInfo().getTitle();
         apiName = clearAppName(openAPI.getInfo().getTitle());
         apiType = clearAppName(extractApiType(swaggerUrl));
         //开始处理数据类型。
-        Map<String, Schema> schemaMap = openAPI.getComponents().getSchemas();
-        if (schemaMap != null) {
-            for (Map.Entry<String, Schema> skv : schemaMap.entrySet()) {
-                //对于封装结构体，不再重复输出。
-                if (skv.getKey().startsWith("ResponseData") || skv.getKey().startsWith("DataList") || skv.getKey().startsWith("ESDataListScroll") || skv.getKey().startsWith("ESDataList")) {
-                    continue;
-                }
-                SchemaInfo schemaInfo = new SchemaInfo();
-                this.schemaInfoList.add(schemaInfo);
-                //获取对象名和注释。
-                schemaInfo.setName(skv.getKey());
-                schemaNameSet.add(schemaInfo.getName());
-                schemaInfo.setTitle(skv.getValue().getTitle());
-                //获取属性列表。
-                List<SchemaInfo.PropertyInfo> propertyInfoList = new ArrayList<>();
-                schemaInfo.setPropertyList(propertyInfoList);
-                if (skv.getValue().getProperties() == null) {
-                    continue;
-                }
-                Set<Map.Entry<String, Schema>> pset = skv.getValue().getProperties().entrySet();
-                for (Map.Entry<String, Schema> pkv : pset) {
-                    SchemaInfo.PropertyInfo propertyInfo = new SchemaInfo.PropertyInfo();
-                    propertyInfoList.add(propertyInfo);
-                    propertyInfo.setName(cleanPropertyName(pkv.getKey()));
-                    propertyInfo.setTitle(pkv.getValue().getTitle());
-                    propertyInfo.setType(getFullType(pkv.getValue()));
-                    if (pkv.getValue().getMaxLength() != null) {
-                        propertyInfo.setMaxLength(pkv.getValue().getMaxLength());
+        if (openAPI.getComponents() != null) {
+            Map<String, Schema> schemaMap = openAPI.getComponents().getSchemas();
+            if (schemaMap != null) {
+                for (Map.Entry<String, Schema> skv : schemaMap.entrySet()) {
+                    //对于封装结构体，不再重复输出。
+                    if (skv.getKey().startsWith("ResponseData") || skv.getKey().startsWith("DataList") || skv.getKey().startsWith("ESDataListScroll") || skv.getKey().startsWith("ESDataList")) {
+                        continue;
                     }
-                    if (pkv.getValue().getNullable() != null) {
-                        propertyInfo.setNullable(pkv.getValue().getNullable());
+                    SchemaInfo schemaInfo = new SchemaInfo();
+                    this.schemaInfoList.add(schemaInfo);
+                    //获取对象名和注释。
+                    schemaInfo.setName(skv.getKey());
+                    schemaNameSet.add(schemaInfo.getName());
+                    schemaInfo.setTitle(skv.getValue().getTitle());
+                    //获取属性列表。
+                    List<SchemaInfo.PropertyInfo> propertyInfoList = new ArrayList<>();
+                    schemaInfo.setPropertyList(propertyInfoList);
+                    if (skv.getValue().getProperties() == null) {
+                        continue;
+                    }
+                    Set<Map.Entry<String, Schema>> pset = skv.getValue().getProperties().entrySet();
+                    for (Map.Entry<String, Schema> pkv : pset) {
+                        SchemaInfo.PropertyInfo propertyInfo = new SchemaInfo.PropertyInfo();
+                        propertyInfoList.add(propertyInfo);
+                        propertyInfo.setName(cleanPropertyName(pkv.getKey()));
+                        propertyInfo.setTitle(pkv.getValue().getTitle());
+                        propertyInfo.setType(getFullType(pkv.getValue()));
+                        if (pkv.getValue().getMaxLength() != null) {
+                            propertyInfo.setMaxLength(pkv.getValue().getMaxLength());
+                        }
+                        if (pkv.getValue().getNullable() != null) {
+                            propertyInfo.setNullable(pkv.getValue().getNullable());
+                        }
                     }
                 }
             }
         }
 
         //开始处理api。
+        if (openAPI.getPaths() == null) {
+            return;
+        }
         Set<Map.Entry<String, PathItem>> pathSet = openAPI.getPaths().entrySet();
         for (Map.Entry<String, PathItem> pathKv : pathSet) {
             Set<Map.Entry<PathItem.HttpMethod, Operation>> opKv = pathKv.getValue().readOperationsMap().entrySet();
@@ -162,7 +173,7 @@ public class SwaggerParser {
                     apiInfo.setGroup(tags.getFirst());
                 }
                 //对于一级菜单，采用特殊的处理办法。
-                if (apiInfo.getGroup().equalsIgnoreCase(PACKAGE_INFO)) {
+                if (apiInfo.getGroup() != null && apiInfo.getGroup().equalsIgnoreCase(PACKAGE_INFO)) {
                     ApiCatalogInfo catalogInfo = new ApiCatalogInfo(pathToFunctionName(apiInfo.getPath()), apiInfo.getPath(), apiInfo.getTitle());
                     this.apiCatalogInfoList.add(catalogInfo);
                     continue;
@@ -517,52 +528,68 @@ public class SwaggerParser {
             return "ResponseData<void>";
         }
         if (type.startsWith("ResponseData")) {
-            type = convertType(type.substring(12));
+            String subtype = type.substring(12);
+            type = subtype.isEmpty() ? "void" : convertType(subtype);
         }
         if (type.startsWith("DataList")) {
-            type = "DataList<" + type.substring(8) + ">";
+            String subtype = type.substring(8);
+            type = subtype.isEmpty() ? "DataList<void>" : "DataList<" + subtype + ">";
         } else if (type.startsWith("ESDataListScroll")) {
-            type = "ESDataListScroll<" + type.substring(16) + ">";
+            String subtype = type.substring(16);
+            type = subtype.isEmpty() ? "ESDataListScroll<void>" : "ESDataListScroll<" + subtype + ">";
         } else if (type.startsWith("ESDataList")) {
-            type = "ESDataList<" + type.substring(10) + ">";
-        } else if (type.startsWith("List")) {
-            String subtype = type.substring(4);
-            if (schemaNameSet.contains(subtype)) {
-                type = "Array<" + subtype + ">";
-            } else {
-                type = "Array<" + convertType(subtype) + ">";
-            }
+            String subtype = type.substring(10);
+            type = subtype.isEmpty() ? "ESDataList<void>" : "ESDataList<" + subtype + ">";
         } else if (type.startsWith("ArrayList")) {
             String subtype = type.substring(9);
-            if (schemaNameSet.contains(subtype)) {
+            if (subtype.isEmpty()) {
+                type = "Array<any>";
+            } else if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
             } else {
                 type = "Array<" + convertType(subtype) + ">";
             }
         } else if (type.startsWith("LinkedList")) {
             String subtype = type.substring(10);
-            if (schemaNameSet.contains(subtype)) {
+            if (subtype.isEmpty()) {
+                type = "Array<any>";
+            } else if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
             } else {
                 type = "Array<" + convertType(subtype) + ">";
             }
-        } else if (type.startsWith("Set")) {
-            String subtype = type.substring(3);
-            if (schemaNameSet.contains(subtype)) {
-                type = "Array<" + subtype + ">";
-            } else {
-                type = "Array<" + convertType(subtype) + ">";
-            }
-        } else if (type.startsWith("HashSet")) {
-            String subtype = type.substring(7);
-            if (schemaNameSet.contains(subtype)) {
+        } else if (type.startsWith("List")) {
+            String subtype = type.substring(4);
+            if (subtype.isEmpty()) {
+                type = "Array<any>";
+            } else if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
             } else {
                 type = "Array<" + convertType(subtype) + ">";
             }
         } else if (type.startsWith("LinkedHashSet")) {
             String subtype = type.substring(13);
-            if (schemaNameSet.contains(subtype)) {
+            if (subtype.isEmpty()) {
+                type = "Array<any>";
+            } else if (schemaNameSet.contains(subtype)) {
+                type = "Array<" + subtype + ">";
+            } else {
+                type = "Array<" + convertType(subtype) + ">";
+            }
+        } else if (type.startsWith("HashSet")) {
+            String subtype = type.substring(7);
+            if (subtype.isEmpty()) {
+                type = "Array<any>";
+            } else if (schemaNameSet.contains(subtype)) {
+                type = "Array<" + subtype + ">";
+            } else {
+                type = "Array<" + convertType(subtype) + ">";
+            }
+        } else if (type.startsWith("Set")) {
+            String subtype = type.substring(3);
+            if (subtype.isEmpty()) {
+                type = "Array<any>";
+            } else if (schemaNameSet.contains(subtype)) {
                 type = "Array<" + subtype + ">";
             } else {
                 type = "Array<" + convertType(subtype) + ">";
