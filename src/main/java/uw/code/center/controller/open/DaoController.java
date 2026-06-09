@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import uw.code.center.dto.CodeTemplateGroupQueryParam;
 import uw.code.center.entity.CodeTemplateGroup;
 import uw.code.center.entity.CodeTemplateInfo;
-import uw.common.dto.ResponseData;
+import uw.common.response.ResponseData;
 import uw.dao.DaoManager;
-import uw.dao.DataList;
+import uw.common.data.PageList;
 
 /**
  * 测试接口
@@ -25,7 +25,7 @@ public class DaoController {
     DaoManager dao = DaoManager.getInstance();
 
     @GetMapping("/list")
-    public ResponseData<DataList<CodeTemplateGroup>> list() {
+    public ResponseData<PageList<CodeTemplateGroup>> list() {
         return dao.list(CodeTemplateGroup.class, new CodeTemplateGroupQueryParam());
     }
 

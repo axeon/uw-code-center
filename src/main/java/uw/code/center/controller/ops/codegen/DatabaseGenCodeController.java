@@ -22,7 +22,7 @@ import uw.code.center.service.dao.*;
 import uw.code.center.template.TemplateHelper;
 import uw.common.util.SystemClock;
 import uw.dao.DaoManager;
-import uw.dao.DataList;
+import uw.common.data.PageList;
 import uw.dao.conf.DaoConfigManager;
 
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class DatabaseGenCodeController {
             required = false) @RequestParam long templateGroupId, @Parameter(description = "过滤表集合(set)", example = "filter_table_1,filter_table_2", schema = @Schema(type =
             "string")) @RequestParam() Set<String> filterTableNames) throws IOException {
         CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, templateGroupId).getData();
-        DataList<CodeTemplateInfo> ctList = dao.list(CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId}).getData();
+        PageList<CodeTemplateInfo> ctList = dao.list(CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId}).getData();
         if (codeTemplateGroup == null || ctList == null) {
             throw new RuntimeException("模板组或模板组下模板不存在！");
         }

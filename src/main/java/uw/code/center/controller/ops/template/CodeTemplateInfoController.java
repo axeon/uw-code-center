@@ -19,10 +19,10 @@ import uw.common.app.dto.SysDataHistoryQueryParam;
 import uw.common.app.entity.SysCritLog;
 import uw.common.app.entity.SysDataHistory;
 import uw.common.app.helper.SysDataHistoryHelper;
-import uw.common.dto.ResponseData;
+import uw.common.response.ResponseData;
 import uw.common.util.SystemClock;
 import uw.dao.DaoManager;
-import uw.dao.DataList;
+import uw.common.data.PageList;
 
 
 /**
@@ -45,7 +45,7 @@ public class CodeTemplateInfoController {
     @GetMapping("/list")
     @Operation(summary = "列表代码模版", description = "列表代码模版")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public ResponseData<DataList<CodeTemplateInfo>> list(CodeTemplateInfoQueryParam queryParam) {
+    public ResponseData<PageList<CodeTemplateInfo>> list(CodeTemplateInfoQueryParam queryParam) {
         AuthServiceHelper.logRef(CodeTemplateInfo.class);
         return dao.list(CodeTemplateInfo.class, queryParam);
     }
@@ -58,7 +58,7 @@ public class CodeTemplateInfoController {
     @GetMapping("/liteList")
     @Operation(summary = "轻量级列表代码模版", description = "轻量级列表代码模版，一般用于select控件。")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.USER, log = ActionLog.NONE)
-    public ResponseData<DataList<CodeTemplateInfo>> liteList(CodeTemplateInfoQueryParam queryParam) {
+    public ResponseData<PageList<CodeTemplateInfo>> liteList(CodeTemplateInfoQueryParam queryParam) {
         queryParam.SELECT_SQL("SELECT id,group_id,template_type,template_name,template_desc,template_filename,create_date,modify_date,state from code_template_info ");
         return dao.list(CodeTemplateInfo.class, queryParam);
     }
@@ -85,7 +85,7 @@ public class CodeTemplateInfoController {
     @GetMapping("/listDataHistory")
     @Operation(summary = "查询数据历史", description = "查询数据历史")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public ResponseData<DataList<SysDataHistory>> listDataHistory(SysDataHistoryQueryParam queryParam) {
+    public ResponseData<PageList<SysDataHistory>> listDataHistory(SysDataHistoryQueryParam queryParam) {
         AuthServiceHelper.logRef(CodeTemplateInfo.class, queryParam.getEntityId());
         queryParam.setEntityClass(CodeTemplateInfo.class);
         return dao.list(SysDataHistory.class, queryParam);
@@ -100,7 +100,7 @@ public class CodeTemplateInfoController {
     @GetMapping("/listCritLog")
     @Operation(summary = "查询操作日志", description = "查询操作日志")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
-    public ResponseData<DataList<SysCritLog>> listCritLog(SysCritLogQueryParam queryParam) {
+    public ResponseData<PageList<SysCritLog>> listCritLog(SysCritLogQueryParam queryParam) {
         AuthServiceHelper.logRef(CodeTemplateInfo.class, queryParam.getBizId());
         queryParam.setBizTypeClass(CodeTemplateInfo.class);
         return dao.list(SysCritLog.class, queryParam);

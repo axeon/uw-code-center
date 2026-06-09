@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uw.code.center.util.DaoStringUtils;
 import uw.dao.DaoFactory;
-import uw.dao.DataSet;
+import uw.common.data.PageRowSet;
 import uw.dao.TransactionException;
 import uw.dao.connectionpool.ConnectionManager;
 
@@ -77,7 +77,7 @@ public class OracleDataMetaImpl implements DataMetaInterface {
                         + "	all_tables T,\n" + "	user_tab_comments c\n" + "WHERE\n" + "	T . OWNER = ?\n"
                         + "AND c.table_name = T .table_name\n" + "AND c.table_name = upper(?)";
                 DaoFactory daoFactory = DaoFactory.getInstance();
-                DataSet dataSet = daoFactory.queryForDataSet(connName, sql, new Object[]{schema, tableName});
+                PageRowSet dataSet = daoFactory.queryForRowSet(connName, sql, new Object[]{schema, tableName});
                 while (dataSet.next()) {
                     MetaTableInfo meta = new MetaTableInfo();
                     meta.setTableName(tableName.toLowerCase());
@@ -127,7 +127,7 @@ public class OracleDataMetaImpl implements DataMetaInterface {
             HashMap<String, String> remarkhs = new HashMap<String, String>();
             // 查询注释
             DaoFactory daoFactory = DaoFactory.getInstance();
-            DataSet dataSet = daoFactory.queryForDataSet(connName, "select  t.table_name,t.column_name,t.comments from USER_COL_COMMENTS t where t.TABLE_NAME=upper(?)", new Object[]{tableName});
+            PageRowSet dataSet = daoFactory.queryForRowSet(connName, "select  t.table_name,t.column_name,t.comments from USER_COL_COMMENTS t where t.TABLE_NAME=upper(?)", new Object[]{tableName});
             while (dataSet.next()) {
                 remarkhs.put(dataSet.getString("column_name"), dataSet.getString("comments"));
             }
@@ -240,7 +240,7 @@ public class OracleDataMetaImpl implements DataMetaInterface {
                     + "	\"SYS\".\"ALL_CONS_COLUMNS\".\"CONSTRAINT_NAME\" ASC,\n"
                     + "	\"SYS\".\"ALL_CONS_COLUMNS\".\"POSITION\" ASC";
             DaoFactory daoFactory = DaoFactory.getInstance();
-            DataSet dataSet = daoFactory.queryForDataSet(connName, sql, new Object[]{schema, tableName});
+            PageRowSet dataSet = daoFactory.queryForRowSet(connName, sql, new Object[]{schema, tableName});
             while (dataSet.next()) {
                 MetaPrimaryKeyInfo meta = new MetaPrimaryKeyInfo();
                 meta.setTableName(dataSet.getString("TABLE_NAME").toLowerCase());

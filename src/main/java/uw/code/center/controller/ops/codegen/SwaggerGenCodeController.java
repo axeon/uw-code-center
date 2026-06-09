@@ -26,7 +26,7 @@ import uw.code.center.service.swagger.SwaggerParser;
 import uw.code.center.template.TemplateHelper;
 import uw.common.util.SystemClock;
 import uw.dao.DaoManager;
-import uw.dao.DataList;
+import uw.common.data.PageList;
 import uw.dao.TransactionException;
 
 import java.io.IOException;
@@ -59,7 +59,7 @@ public class SwaggerGenCodeController {
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public void downloadCodeForVue3(HttpServletResponse response, @Parameter(description = "模板组Id") @RequestParam long templateGroupId, String swaggerUrl) throws IOException {
         CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, templateGroupId).getData();
-        DataList<CodeTemplateInfo> ctList = dao.list(CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId}).getData();
+        PageList<CodeTemplateInfo> ctList = dao.list(CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId}).getData();
         if (codeTemplateGroup == null || ctList == null) {
             throw new RuntimeException("模板组或模板组下模板不存在！");
         }
@@ -122,13 +122,13 @@ public class SwaggerGenCodeController {
                                         if (responseType.startsWith("ResponseData<")) {
                                             responseType = responseType.substring(13, responseType.length() - 1);
                                         }
-                                        if (responseType.startsWith("DataList<")) {
+                                        if (responseType.startsWith("PageList<")) {
                                             responseType = responseType.substring(9, responseType.length() - 1);
                                         }
                                         if (responseType.startsWith("ESDataListScroll<")) {
                                             responseType = responseType.substring(17, responseType.length() - 1);
                                         }
-                                        if (responseType.startsWith("ESDataList<")) {
+                                        if (responseType.startsWith("PageList<")) {
                                             responseType = responseType.substring(11, responseType.length() - 1);
                                         }
                                         if (StringUtils.isNotBlank(responseType)) {
@@ -192,7 +192,7 @@ public class SwaggerGenCodeController {
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public void downloadCodeForJmeter(HttpServletResponse response, @Parameter(description = "模板组Id") @RequestParam long templateGroupId, String swaggerUrl) throws IOException, TransactionException {
         CodeTemplateGroup codeTemplateGroup = dao.load(CodeTemplateGroup.class, templateGroupId).getData();
-        DataList<CodeTemplateInfo> ctList = dao.list(CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId}).getData();
+        PageList<CodeTemplateInfo> ctList = dao.list(CodeTemplateInfo.class, "select * from code_template_info where group_id=? and state=1", new Object[]{templateGroupId}).getData();
         if (codeTemplateGroup == null || ctList == null) {
             throw new RuntimeException("模板组或模板组下模板不存在！");
         }
