@@ -9,25 +9,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
-* 代码模板组列表查询参数。
+* 代码模版组列表查询参数。
 */
-@Schema(title = "代码模板组列表查询参数", description = "代码模板组列表查询参数")
+@Schema(title = "代码模版组列表查询参数", description = "代码模版组列表查询参数")
 public class CodeTemplateGroupQueryParam extends PageQueryParam{
 
-    private static final Map<String, String> ALLOWED_SORT_PROPERTY = new HashMap<>() {{
-            put( "id", "id" );
-            put( "groupType", "group_type" );
-            put( "groupName", "group_name" );
-            put( "groupDesc", "group_desc" );
-            put( "createDate", "create_date" );
-            put( "modifyDate", "modify_date" );
-            put( "state", "state" );
-        }};
 
     /**
-     * 允许的排序属性。
+     * 允许排序的属性。
+     * key:排序名 value:排序字段
      *
-     * @return
+     */
+    private static final Map<String, String> ALLOWED_SORT_PROPERTY = Map.ofEntries(
+        Map.entry( "id", "id" ),
+        Map.entry( "createDate", "create_date" ),
+        Map.entry( "modifyDate", "modify_date" )
+        );
+
+    /**
+     * 获取允许排序的属性。
+     *
      */
     @Override
     public Map<String, String> ALLOWED_SORT_PROPERTY() {
@@ -110,6 +111,7 @@ public class CodeTemplateGroupQueryParam extends PageQueryParam{
     @QueryMeta(expr = "state<=?")
     @Schema(title="小于等于状态。1正常-1标记删除", description = "小于等于状态。1正常-1标记删除")
     private Integer stateLte;
+
 
     /**
     * 获取id。
