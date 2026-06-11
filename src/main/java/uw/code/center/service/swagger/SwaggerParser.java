@@ -120,7 +120,7 @@ public class SwaggerParser {
             if (schemaMap != null) {
                 for (Map.Entry<String, Schema> skv : schemaMap.entrySet()) {
                     //对于封装结构体，不再重复输出。
-                    if (skv.getKey().startsWith("ResponseData") || skv.getKey().startsWith("PageList") || skv.getKey().startsWith("ESDataListScroll") || skv.getKey().startsWith("PageList")) {
+                    if (skv.getKey().startsWith("ResponseData") || skv.getKey().startsWith("PageList")) {
                         continue;
                     }
                     SchemaInfo schemaInfo = new SchemaInfo();
@@ -533,12 +533,6 @@ public class SwaggerParser {
         }
         if (type.startsWith("PageList")) {
             String subtype = type.substring(8);
-            type = subtype.isEmpty() ? "PageList<void>" : "PageList<" + subtype + ">";
-        } else if (type.startsWith("ESDataListScroll")) {
-            String subtype = type.substring(16);
-            type = subtype.isEmpty() ? "ESDataListScroll<void>" : "ESDataListScroll<" + subtype + ">";
-        } else if (type.startsWith("PageList")) {
-            String subtype = type.substring(10);
             type = subtype.isEmpty() ? "PageList<void>" : "PageList<" + subtype + ">";
         } else if (type.startsWith("ArrayList")) {
             String subtype = type.substring(9);

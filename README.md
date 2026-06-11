@@ -90,7 +90,7 @@
   - `apiInfoList`：全量接口列表，含请求参数、请求体、响应体
   - `apiGroupInfoList`：按父路径分组的接口组
   - `apiCatalogInfoList`：顶层菜单目录（由 `$-package-info-$` 标记控制）
-- 自动剥离响应包装类型（`ResponseData`、`DataList`、`ESDataList`）
+- 自动剥离响应包装类型（`ResponseData`、`PageList`）
 - 路径到函数名转换规则：`/ops/template/group/list` → `opsTemplateGroupList`
 - 生成 Vue3 前端工程代码（API 客户端、Router、页面组件、i18n）
 - 生成 JMeter 压测脚本

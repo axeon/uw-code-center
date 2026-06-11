@@ -125,12 +125,6 @@ public class SwaggerGenCodeController {
                                         if (responseType.startsWith("PageList<")) {
                                             responseType = responseType.substring(9, responseType.length() - 1);
                                         }
-                                        if (responseType.startsWith("ESDataListScroll<")) {
-                                            responseType = responseType.substring(17, responseType.length() - 1);
-                                        }
-                                        if (responseType.startsWith("PageList<")) {
-                                            responseType = responseType.substring(11, responseType.length() - 1);
-                                        }
                                         if (StringUtils.isNotBlank(responseType)) {
                                             for (SchemaInfo schemaInfo : swaggerParser.getSchemaInfoList()) {
                                                 if (schemaInfo.getName().equals(responseType)) {
