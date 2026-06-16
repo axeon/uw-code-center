@@ -27,6 +27,9 @@ public class SwaggerParser {
      * package info
      */
     public static final String PACKAGE_INFO = "$-package-info-$";
+    /**
+     * log
+     */
     private static final Logger log = LoggerFactory.getLogger(SwaggerParser.class);
     /**
      * 用于检测排查的schemaNameSet。
@@ -69,7 +72,7 @@ public class SwaggerParser {
 
     public static void main(String[] args) {
         SwaggerParser swaggerParser = new SwaggerParser();
-        swaggerParser.parse("http://192.168.88.21:20000/v3/api-docs/guestApi");
+        swaggerParser.parse("http://192.168.88.21:10000/v3/api-docs/adminApi");
         System.out.println(swaggerParser.getApiName());
         for (ApiInfo apiInfo : swaggerParser.getApiInfoList()) {
             System.out.println(apiInfo);
@@ -633,7 +636,7 @@ public class SwaggerParser {
             if (schemaType == null) {
                 if (schema.getTypes() != null) {
                     Set<String> schemaTypes = schema.getTypes();
-                    if (schemaTypes.size() == 1) {
+                    if (!schemaTypes.isEmpty()) {
                         schemaType = schemaTypes.iterator().next();
                     }
                 }
