@@ -40,7 +40,7 @@ import java.util.zip.ZipOutputStream;
 
 @RestController
 @Tag(name = "swagger代码生成", description = "swagger代码生成")
-@RequestMapping("/ops/codegen/swaggerGenCode")
+@RequestMapping("/ops/codegen/swagger")
 @MscPermDeclare(user = UserType.OPS)
 public class SwaggerGenCodeController {
 

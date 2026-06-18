@@ -41,7 +41,7 @@ import java.util.zip.ZipOutputStream;
  */
 @RestController
 @Tag(name = "json和xml代码生成", description = "json和xml代码生成")
-@RequestMapping("/ops/codegen/jsonxmlGenCode")
+@RequestMapping("/ops/codegen/jsonxml")
 @MscPermDeclare(user = UserType.OPS)
 public class JsonXmlGenCodeController {
 

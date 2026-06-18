@@ -38,7 +38,7 @@ import java.util.zip.ZipOutputStream;
 
 @RestController
 @Tag(name = "数据库代码生成", description = "数据库代码生成")
-@RequestMapping("/ops/codegen/databaseGenCode")
+@RequestMapping("/ops/codegen/database")
 @MscPermDeclare(user = UserType.OPS)
 public class DatabaseGenCodeController {
 
