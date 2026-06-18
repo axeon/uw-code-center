@@ -24,9 +24,9 @@ import uw.code.center.service.swagger.ApiInfo;
 import uw.code.center.service.swagger.SchemaInfo;
 import uw.code.center.service.swagger.SwaggerParser;
 import uw.code.center.template.TemplateHelper;
+import uw.common.data.PageList;
 import uw.common.util.SystemClock;
 import uw.dao.DaoManager;
-import uw.common.data.PageList;
 import uw.dao.TransactionException;
 
 import java.io.IOException;
@@ -157,6 +157,9 @@ public class SwaggerGenCodeController {
                             }
                             String fileName = TemplateHelper.buildTemplate(ct.getId() + "#filename", map);
                             String fileBody = TemplateHelper.buildTemplate(ct.getId() + "#body", map);
+                            if (StringUtils.isBlank(fileName) || StringUtils.isBlank(fileBody)) {
+                                continue;
+                            }
                             zipOutputStream.putNextEntry(new ZipEntry(fileName));
                             zipOutputStream.write(fileBody.getBytes(StandardCharsets.UTF_8));
                             zipOutputStream.closeEntry();

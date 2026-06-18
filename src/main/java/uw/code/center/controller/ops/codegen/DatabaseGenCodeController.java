@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,14 +21,13 @@ import uw.code.center.entity.CodeTemplateGroup;
 import uw.code.center.entity.CodeTemplateInfo;
 import uw.code.center.service.dao.*;
 import uw.code.center.template.TemplateHelper;
+import uw.common.data.PageList;
 import uw.common.util.SystemClock;
 import uw.dao.DaoManager;
-import uw.common.data.PageList;
 import uw.dao.conf.DaoConfigManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +72,8 @@ public class DatabaseGenCodeController {
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
     public List<MetaTableInfo> getTableInfo(@Parameter(description = "connName", example = "test") @RequestParam String connName, @Parameter(description = "schemaName", example
             = "test") @RequestParam String schemaName, @Parameter(description = "过滤表名称", example = "filter_table_1,filter_table_2") @RequestParam Set<String> filterTableNames) {
-        DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface( connName, schemaName );
-        return dataMetaInterface.getTablesAndViews( filterTableNames );
+        DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface(connName, schemaName);
+        return dataMetaInterface.getTablesAndViews(filterTableNames);
     }
 
     /**
@@ -109,34 +109,37 @@ public class DatabaseGenCodeController {
         if (codeTemplateGroup == null || ctList == null) {
             throw new RuntimeException("模板组或模板组下模板不存在！");
         }
-        DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface( connName, schemaName );
-        List<MetaTableInfo> tablelist = dataMetaInterface.getTablesAndViews( filterTableNames );
+        DataMetaInterface dataMetaInterface = DatabaseMetaParser.getDataMetaInterface(connName, schemaName);
+        List<MetaTableInfo> tablelist = dataMetaInterface.getTablesAndViews(filterTableNames);
         if (ctList.size() > 0 && tablelist.size() > 0) {
             //设置文件下载格式
-            response.setContentType( "application/x-download; charset=utf-8" );
-            response.setHeader( "Content-Disposition",
-                    "attachment; filename=" + UriUtils.encode( codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8 ) + "_" + dateFormat.format( SystemClock.nowDate() ) + ".zip" );
-            try (OutputStream outputStream = response.getOutputStream(); ZipOutputStream zipOutputStream = new ZipOutputStream( outputStream, StandardCharsets.UTF_8 )) {
+            response.setContentType("application/x-download; charset=utf-8");
+            response.setHeader("Content-Disposition",
+                    "attachment; filename=" + UriUtils.encode(codeTemplateGroup.getGroupName(), StandardCharsets.UTF_8) + "_" + dateFormat.format(SystemClock.nowDate()) + ".zip");
+            try (OutputStream outputStream = response.getOutputStream(); ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream, StandardCharsets.UTF_8)) {
                 //拼参数
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put( "author", "axeon" );
-                map.put( "date", SystemClock.nowDate() );
+                map.put("author", "axeon");
+                map.put("date", SystemClock.nowDate());
                 for (CodeTemplateInfo ct : ctList) {
                     //判定类型再输出。
 //                if (ct.getTemplateType()) {
                     for (MetaTableInfo metaTableInfo : tablelist) {
-                        map.put( "tableMeta", metaTableInfo );
+                        map.put("tableMeta", metaTableInfo);
                         // 获取主键列表
-                        List<MetaPrimaryKeyInfo> pklist = dataMetaInterface.getPrimaryKey( metaTableInfo.getTableName() );
+                        List<MetaPrimaryKeyInfo> pklist = dataMetaInterface.getPrimaryKey(metaTableInfo.getTableName());
                         // 获取列列表
-                        List<MetaColumnInfo> columnlist = dataMetaInterface.getColumnList( metaTableInfo.getTableName(), pklist );
-                        map.put( "columnList", columnlist );
+                        List<MetaColumnInfo> columnlist = dataMetaInterface.getColumnList(metaTableInfo.getTableName(), pklist);
+                        map.put("columnList", columnlist);
                         //过滤生成主键
-                        map.put( "pkList", columnlist.stream().filter( x -> Boolean.parseBoolean( x.getIsPrimaryKey() ) ).toList() );
-                        String fileName = TemplateHelper.buildTemplate( ct.getId() + "#filename", map );
-                        String fileBody = TemplateHelper.buildTemplate( ct.getId() + "#body", map );
-                        zipOutputStream.putNextEntry( new ZipEntry( fileName ) );
-                        zipOutputStream.write( fileBody.getBytes() );
+                        map.put("pkList", columnlist.stream().filter(x -> Boolean.parseBoolean(x.getIsPrimaryKey())).toList());
+                        String fileName = TemplateHelper.buildTemplate(ct.getId() + "#filename", map);
+                        String fileBody = TemplateHelper.buildTemplate(ct.getId() + "#body", map);
+                        if (StringUtils.isBlank(fileName) || StringUtils.isBlank(fileBody)) {
+                            continue;
+                        }
+                        zipOutputStream.putNextEntry(new ZipEntry(fileName));
+                        zipOutputStream.write(fileBody.getBytes());
                         zipOutputStream.closeEntry();
                     }
 //                }
