@@ -487,7 +487,7 @@ ES 日志推送参数（可通过环境变量覆盖）：
 | 方法 | 路径 | 权限级别 | 说明 |
 |---|---|---|---|
 | GET | `/ops/template/group/list` | PERM | 分页查询模板分组列表 |
-| GET | `/ops/template/group/liteList` | USER | 轻量列表（用于下拉选择控件） |
+| GET | `/ops/template/group/listLite` | USER | 轻量列表（用于下拉选择控件） |
 | GET | `/ops/template/group/load` | PERM | 按 ID 加载单条记录 |
 | GET | `/ops/template/group/listDataHistory` | PERM | 查询数据变更历史 |
 | GET | `/ops/template/group/listCritLog` | PERM | 查询操作审计日志 |
@@ -514,7 +514,7 @@ ES 日志推送参数（可通过环境变量覆盖）：
 | 方法 | 路径 | 权限级别 | 说明 |
 |---|---|---|---|
 | GET | `/ops/template/info/list` | PERM | 分页查询模板列表 |
-| GET | `/ops/template/info/liteList` | USER | 轻量列表（不含 `templateBody` 字段） |
+| GET | `/ops/template/info/listLite` | USER | 轻量列表（不含 `templateBody` 字段） |
 | GET | `/ops/template/info/load` | PERM | 按 ID 加载单条记录 |
 | GET | `/ops/template/info/listDataHistory` | PERM | 查询数据变更历史 |
 | GET | `/ops/template/info/listCritLog` | PERM | 查询操作审计日志 |

@@ -59,9 +59,9 @@ public class CodeTemplateGroupController {
      * @throws TransactionException
      */
     @Operation(summary = "模板组select列表", description = "模板组select列表")
-    @GetMapping("/liteList")
+    @GetMapping("/listLite")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.USER, log = ActionLog.REQUEST)
-    public ResponseData<PageList<CodeTemplateGroup>> liteList(@Parameter(description = "模板组类型") @RequestParam int groupType){
+    public ResponseData<PageList<CodeTemplateGroup>> listLite(@Parameter(description = "模板组类型") @RequestParam int groupType){
         if (groupType > 0) {
             return dao.list( CodeTemplateGroup.class, "select id,group_name,group_type from code_template_group where group_type=? and state=1", new Object[]{groupType} );
         } else {

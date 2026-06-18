@@ -55,10 +55,10 @@ public class CodeTemplateInfoController {
      *
      * @return
      */
-    @GetMapping("/liteList")
+    @GetMapping("/listLite")
     @Operation(summary = "轻量级列表代码模版", description = "轻量级列表代码模版，一般用于select控件。")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.USER, log = ActionLog.NONE)
-    public ResponseData<PageList<CodeTemplateInfo>> liteList(CodeTemplateInfoQueryParam queryParam) {
+    public ResponseData<PageList<CodeTemplateInfo>> listLite(CodeTemplateInfoQueryParam queryParam) {
         queryParam.SELECT_SQL("SELECT id,group_id,template_type,template_name,template_desc,template_filename,create_date,modify_date,state from code_template_info ");
         return dao.list(CodeTemplateInfo.class, queryParam);
     }
