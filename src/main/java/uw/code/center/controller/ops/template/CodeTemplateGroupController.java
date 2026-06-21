@@ -40,9 +40,10 @@ public class CodeTemplateGroupController {
      * 列表代码模版组。
      *
      * @param queryParam
-     * @return
      * @throws TransactionException
-     */
+     
+     * @param queryParam 查询参数（分页、条件、排序）
+     * @return 分页结果*/
     @GetMapping("/list")
     @Operation(summary = "列表代码模版组", description = "列表代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
@@ -55,9 +56,10 @@ public class CodeTemplateGroupController {
      * 模板组select列表。
      *
      * @param groupType
-     * @return
      * @throws TransactionException
-     */
+     
+     * @param groupType 模板组类型
+     * @return 轻量级分页结果*/
     @Operation(summary = "模板组select列表", description = "模板组select列表")
     @GetMapping("/listLite")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.USER, log = ActionLog.REQUEST)
@@ -74,7 +76,9 @@ public class CodeTemplateGroupController {
      *
      * @param id
      * @throws TransactionException
-     */
+     
+     * @param id 主键 ID
+     * @return 模版组实体*/
     @GetMapping("/load")
     @Operation(summary = "加载代码模版组", description = "加载代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
@@ -87,9 +91,9 @@ public class CodeTemplateGroupController {
     /**
      * 查询数据历史。
      *
-     * @param
-     * @return
-     */
+     
+     * @param queryParam 历史查询参数
+     * @return 数据历史分页结果*/
     @GetMapping("/listDataHistory")
     @Operation(summary = "查询数据历史", description = "查询数据历史")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
@@ -102,9 +106,9 @@ public class CodeTemplateGroupController {
     /**
      * 查询操作日志。
      *
-     * @param
-     * @return
-     */
+     
+     * @param queryParam 日志查询参数
+     * @return 操作日志分页结果*/
     @GetMapping("/listCritLog")
     @Operation(summary = "查询操作日志", description = "查询操作日志")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)
@@ -119,9 +123,10 @@ public class CodeTemplateGroupController {
      * 新增代码模版组。
      *
      * @param codeTemplateGroup
-     * @return
      * @throws TransactionException
-     */
+     
+     * @param codeTemplateGroup 模版组实体（主键由序列生成）
+     * @return 新增后的模版组实体*/
     @PostMapping("/save")
     @Operation(summary = "新增代码模版组", description = "新增代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
@@ -142,9 +147,11 @@ public class CodeTemplateGroupController {
      * 修改代码模版组。
      *
      * @param codeTemplateGroup
-     * @return
      * @throws TransactionException
-     */
+     
+     * @param codeTemplateGroup 待更新的模版组实体
+     * @param remark 操作备注
+     * @return 更新后的模版组实体*/
     @PutMapping("/update")
     @Operation(summary = "修改代码模版组", description = "修改代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
@@ -166,7 +173,9 @@ public class CodeTemplateGroupController {
      *
      * @param id
      *
-     */
+     
+     * @param id 主键 ID
+     * @param remark 操作备注*/
     @PutMapping("/enable")
     @Operation(summary = "启用代码模版组", description = "启用代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
@@ -180,7 +189,9 @@ public class CodeTemplateGroupController {
      *
      * @param id
      *
-     */
+     
+     * @param id 主键 ID
+     * @param remark 操作备注*/
     @PutMapping("/disable")
     @Operation(summary = "禁用代码模版组", description = "禁用代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)
@@ -194,7 +205,9 @@ public class CodeTemplateGroupController {
      *
      * @param id
      *
-     */
+     
+     * @param id 主键 ID
+     * @param remark 操作备注*/
     @DeleteMapping("/delete")
     @Operation(summary = "删除代码模版组", description = "删除代码模版组")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.CRIT)

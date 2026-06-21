@@ -1,41 +1,45 @@
 package uw.code.center.service.dao;
 
 /**
- * 表的主键信息.
+ * 数据库表的主键列元数据。
+ * <p>
+ * 由 {@link DataMetaInterface#getPrimaryKey(String)} 产出。读取列信息时用于标注哪些列属于主键，
+ * 同时作为 {@code pkList} 变量供 FreeMarker 模板使用。
+ * </p>
  *
  * @author axeon
  */
 public class MetaPrimaryKeyInfo {
 
     /**
-     * 表名.
+     * 表名（小写）。
      */
     private String tableName;
 
     /**
-     * 列名.
+     * 主键列名（小写）。
      */
     private String columnName;
 
     /**
-     * 属性名.
+     * 由列名派生的 Java 属性名（camelCase）。
      */
     private String propertyName;
 
     /**
-     * 主键序列.
+     * 主键在复合主键中的序号（从 1 开始）。
      */
     private int keySeq;
 
     /**
-     * 主键名.
+     * 主键约束名称（小写）。
      */
     private String pkName;
 
     /**
-     * 转化成字符串形式.
+     * 返回表名、列名、序号与约束名的简明描述，便于日志输出。
      *
-     * @return String
+     * @return 主键元数据描述字符串
      */
     @Override
     public String toString() {
@@ -43,70 +47,90 @@ public class MetaPrimaryKeyInfo {
     }
 
     /**
-     * @return the propertyName
+     * 获取 Java 属性名。
+     *
+     * @return Java 属性名
      */
     public String getPropertyName() {
         return propertyName;
     }
 
     /**
-     * @param propertyName the propertyName to set
+     * 设置 Java 属性名。
+     *
+     * @param propertyName Java 属性名
      */
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
     }
 
     /**
-     * @return the tableName
+     * 获取表名。
+     *
+     * @return 表名
      */
     public String getTableName() {
         return tableName;
     }
 
     /**
-     * @param tableName the tableName to set
+     * 设置表名。
+     *
+     * @param tableName 表名
      */
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
 
     /**
-     * @return the columnName
+     * 获取主键列名。
+     *
+     * @return 主键列名
      */
     public String getColumnName() {
         return columnName;
     }
 
     /**
-     * @param columnName the columnName to set
+     * 设置主键列名。
+     *
+     * @param columnName 主键列名
      */
     public void setColumnName(String columnName) {
         this.columnName = columnName;
     }
 
     /**
-     * @return the keySeq
+     * 获取主键序号。
+     *
+     * @return 主键序号
      */
     public int getKeySeq() {
         return keySeq;
     }
 
     /**
-     * @param keySeq the keySeq to set
+     * 设置主键序号。
+     *
+     * @param keySeq 主键序号
      */
     public void setKeySeq(int keySeq) {
         this.keySeq = keySeq;
     }
 
     /**
-     * @return the pkName
+     * 获取主键约束名。
+     *
+     * @return 主键约束名
      */
     public String getPkName() {
         return pkName;
     }
 
     /**
-     * @param pkName the pkName to set
+     * 设置主键约束名。
+     *
+     * @param pkName 主键约束名
      */
     public void setPkName(String pkName) {
         this.pkName = pkName;

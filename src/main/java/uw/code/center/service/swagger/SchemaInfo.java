@@ -3,7 +3,11 @@ package uw.code.center.service.swagger;
 import java.util.List;
 
 /**
- * schema信息。
+ * OpenAPI components/schemas 中一个数据模型的解析结果。
+ * <p>
+ * 对应一条 DTO/VO 定义，包含模型名、标题与属性列表（{@link PropertyInfo}）。响应包装类型
+ * （{@code ResponseData}、{@code PageList}）会在解析阶段被跳过，不进入此列表。
+ * </p>
  */
 public class SchemaInfo {
 

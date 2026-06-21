@@ -8,31 +8,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * api目录组，作为一级菜单。
+ * API 目录（一级菜单），对应 OpenAPI 文档中以 {@code $-package-info-$} 标记的路径。
+ * <p>
+ * 一个目录下可包含多个 {@link ApiGroupInfo}（二级分组），用于在前端生成菜单/导航结构。
+ * </p>
  */
 public class ApiCatalogInfo {
 
     /**
-     * 名称
+     * 目录功能名（由路径派生的驼峰标识）。
      */
     private String function;
 
     /**
-     * 路径
+     * 目录路径。
      */
     private String path;
 
     /**
-     * 名字。
+     * 目录标题（取自 OpenAPI 文档的 summary）。
      */
     private String title;
 
     /**
-     * apiInfoList。
+     * 该目录下的 API 分组列表。
      */
     private List<ApiGroupInfo> apiGroupInfoList = new ArrayList<>();
 
 
+    /**
+     * 构造一个目录节点。
+     *
+     * @param function 功能名
+     * @param path     路径
+     * @param title    标题
+     */
     public ApiCatalogInfo(String function, String path, String title) {
         this.function = function;
         this.path = path;
@@ -97,6 +107,11 @@ public class ApiCatalogInfo {
         this.apiGroupInfoList = apiGroupInfoList;
     }
 
+    /**
+     * 向目录下追加一个 API 分组。
+     *
+     * @param apiGroupInfo API 分组
+     */
     public void addToApiGroupInfoList(ApiGroupInfo apiGroupInfo) {
         this.apiGroupInfoList.add(apiGroupInfo);
     }

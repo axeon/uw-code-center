@@ -8,31 +8,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * api功能组，类似权限菜单或者路由节点。
+ * API 功能组（二级分组），类似权限菜单或路由节点，按接口的父路径聚合。
+ * <p>
+ * 一个分组下包含若干 {@link ApiInfo}。Vue3 页面生成时会依据组内是否含 {@code /list} 接口来决定是否生成列表页。
+ * </p>
  */
 public class ApiGroupInfo {
 
     /**
-     * 名称
+     * 分组功能名（由父路径派生的驼峰标识）。
      */
     private String function;
 
     /**
-     * 路径
+     * 分组父路径。
      */
     private String path;
 
     /**
-     * 名字。
+     * 分组标题（取自 OpenAPI 文档的 tag）。
      */
     private String title;
 
     /**
-     * apiInfoList。
+     * 该分组下的接口列表。
      */
     private List<ApiInfo> apiInfoList = new ArrayList<>();
 
 
+    /**
+     * 构造一个分组。
+     *
+     * @param function 功能名
+     * @param path     父路径
+     * @param title    标题
+     */
     public ApiGroupInfo(String function, String path, String title) {
         this.function = function;
         this.path = path;
@@ -40,8 +50,9 @@ public class ApiGroupInfo {
     }
 
     /**
-     * 是否含有list函数。
-     * @return
+     * 判断分组内是否包含列表查询接口（路径以 {@code /list} 结尾）。
+     *
+     * @return 含列表接口返回 true
      */
     public boolean hasListFunction(){
         for (ApiInfo apiInfo:apiInfoList) {
@@ -110,6 +121,11 @@ public class ApiGroupInfo {
         this.apiInfoList = apiInfoList;
     }
 
+    /**
+     * 向分组内追加一个接口。
+     *
+     * @param apiInfo 接口信息
+     */
     public void addToApiInfoList(ApiInfo apiInfo) {
         this.apiInfoList.add(apiInfo);
     }

@@ -72,9 +72,8 @@
         </dependency>
         <!-- 这两个jar是用于自动成功VO功能使用 -->
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20240303</version>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>

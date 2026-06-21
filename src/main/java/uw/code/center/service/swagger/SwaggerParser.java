@@ -19,7 +19,13 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
- * swagger文档解析器。
+ * OpenAPI v3 文档解析器。
+ * <p>
+ * 基于 {@code swagger-parser-v3} 解析远程 OpenAPI 文档（{@link #parse(String)} 接收 URL，支持逗号分隔多个），
+ * 产出四类结构：{@code schemaInfoList}（模型定义）、{@code apiInfoList}（全量接口）、
+ * {@code apiGroupInfoList}（按父路径分组）、{@code apiCatalogInfoList}（一级菜单目录）。
+ * 类型映射面向 TypeScript（Vue3 前端代码生成场景），响应包装类型 {@code ResponseData}/{@code PageList} 会被剥离。
+ * </p>
  */
 public class SwaggerParser {
 

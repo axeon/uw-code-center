@@ -26,13 +26,13 @@
 
 | 生成类型 | 数据源 | 典型输出 |
 |---|---|---|
-| 数据库驱动 | MySQL / Oracle 元数据 | Entity、Controller、DTO、Mapper 等 |
+| 数据库驱动 | MySQL / PostgreSQL / Oracle 元数据 | Entity、Controller、DTO、Mapper 等 |
 | JSON/XML 驱动 | 原始 JSON 或 XML 文本 | Java VO（值对象）类文件 |
 | Swagger/OpenAPI 驱动 | OpenAPI v3 接口文档 URL | Vue3 前端代码、JMeter 测试脚本 |
 
 所有生成逻辑均由 **FreeMarker 模板**驱动，模板数据持久化在数据库中，可在线管理和热更新，无需重启服务。
 
-- **Maven 坐标**：`com.umtone:uw-code-center:1.1.6`
+- **Maven 坐标**：`com.umtone:uw-code-center:1.2.0`
 - **应用名称**：`uw-code-center`
 - **默认服务端口**：`10050`（CI 部署）/ `10030`（日志默认）
 
@@ -42,7 +42,7 @@
 
 ### 2.1 数据库驱动代码生成
 
-- 通过已注册的 JDBC 连接池名称（`connName`）接入 MySQL 或 Oracle 数据库
+- 通过已注册的 JDBC 连接池名称（`connName`）接入 MySQL、PostgreSQL 或 Oracle 数据库
 - 使用 `DatabaseMetaData` API（MySQL）或系统字典表（Oracle）自动读取：
   - 表/视图清单、字段信息、主键信息、注释
   - SQL 类型 → Java 类型的映射（见下表）
@@ -65,9 +65,21 @@
 | DATE / TIMESTAMP / DATETIME | `java.util.Date` |
 | BLOB / BINARY | `byte[]` |
 
+**PostgreSQL 特有类型映射：**
+
+| PG 类型 | Java 类型 |
+|---|---|
+| `serial` / `serial4` | `int` |
+| `bigserial` / `serial8` | `long` |
+| `uuid` / `json` / `jsonb` / `xml` / `bytea` / `inet` 等 | `String` |
+| `boolean` | `boolean` |
+| `timestamptz` | `java.util.Date` |
+
+> **Zip Slip 防护**：所有打包下载接口（数据库 / Swagger / JSON-XML 批量）在写入 ZIP 前都会通过 `uw.code.center.util.ZipUtils` 校验 entry 名称，拒绝包含 `..`、绝对路径或盘符的文件名，避免解压时路径穿越。批量 ZIP 上传的 entry 名同样会校验。
+
 ### 2.2 JSON/XML → Java VO 生成
 
-- 接受原始 JSON 文本或 XML 文本（XML 内部先转为 JSON 再处理）
+- 接受原始 JSON 文本或 XML 文本；XML 通过 Jackson `XmlMapper` 解析为 JSON 树后统一处理
 - 递归解析嵌套对象/数组，自动提取内层类为 **static inner class**
 - 字段命名支持 camelCase 及 `underscore_to_camel` 自动转换
 - 支持多种**注解风格**（通过 `AnnotationStyle` 枚举控制）：
@@ -114,7 +126,7 @@
 |---|---|
 | JDK | Java 25（BellSoft Liberica JRE 25 CDS） |
 | 构建工具 | Maven |
-| 父 BOM | `com.umtone:uw-base:2026.0301.0002` |
+| 父 BOM | `com.umtone:uw-base:2026.0601.0005` |
 | Spring Boot | 由父 BOM 管理 |
 | Spring Cloud | Bootstrap、LoadBalancer |
 | Spring Cloud Alibaba | Nacos Discovery + Nacos Config |
@@ -126,7 +138,7 @@
 | `org.freemarker:freemarker` | 由父 BOM 管理 | 代码模板渲染引擎 |
 | `org.springdoc:springdoc-openapi-starter-webmvc-ui` | 由父 BOM 管理 | OpenAPI/Swagger UI |
 | `io.swagger.parser.v3:swagger-parser-v3` | 2.1.29 | 解析远程 OpenAPI v3 文档 |
-| `org.json:json` | 20240303 | JSON 解析（VO 生成） |
+| `com.fasterxml.jackson.dataformat:jackson-dataformat-xml` | 由父 BOM 管理 | JSON/XML 解析（VO 生成，基于 Jackson） |
 | `javax.xml.bind:jaxb-api` | 2.4.0-b180830.0359 | XML VO 生成 JAXB 支持 |
 | `com.google.guava` | 由父 BOM 管理 | `CaseFormat`、`ImmutableMap` 等工具 |
 | `org.apache.commons:commons-lang3` | 由父 BOM 管理 | `StringUtils`、`FastDateFormat` |
@@ -145,7 +157,7 @@
 | 组件 | 用途 |
 |---|---|
 | Nacos | 服务注册与配置中心 |
-| MySQL / Oracle | 持久化存储（模板数据 + 元数据来源） |
+| MySQL / PostgreSQL / Oracle | 持久化存储（模板数据 + 元数据来源） |
 | Elasticsearch（可选） | 结构化日志存储 |
 | Docker | 容器化部署 |
 | Gitea Actions | CI/CD 流水线 |
@@ -200,11 +212,12 @@ uw-code-center/
     │   │   ├── service/
     │   │   │   ├── dao/                             # 数据库元数据解析
     │   │   │   │   ├── DataMetaInterface.java
-    │   │   │   │   ├── DatabaseMetaParser.java      # 工厂类（MySQL/Oracle 分发）
+    │   │   │   │   ├── DatabaseMetaParser.java      # 工厂类（按 Dialect 分发 MySQL/PG/Oracle）
     │   │   │   │   ├── MetaColumnInfo.java
     │   │   │   │   ├── MetaPrimaryKeyInfo.java
     │   │   │   │   ├── MetaTableInfo.java
     │   │   │   │   ├── MySQLDataMetaImpl.java
+    │   │   │   │   ├── PostgreSQLDataMetaImpl.java
     │   │   │   │   └── OracleDataMetaImpl.java
     │   │   │   ├── jsonxml/                         # JSON/XML → Java VO 生成
     │   │   │   │   ├── AnnotationStyle.java
@@ -223,7 +236,8 @@ uw-code-center/
     │   │   ├── template/
     │   │   │   └── TemplateHelper.java              # FreeMarker 模板引擎封装
     │   │   └── util/
-    │   │       └── DaoStringUtils.java              # 命名转换工具（camelCase、路径等）
+    │   │       ├── DaoStringUtils.java              # 命名转换工具（camelCase、路径等）
+    │   │       └── ZipUtils.java                    # Zip Slip 防护工具（entry 名校验）
     │   └── resources/
     │       ├── bootstrap.yml                        # 生产配置（Nacos 变量驱动）
     │       ├── bootstrap-debug.yml                  # 本地开发配置（硬编码连接信息）
@@ -241,7 +255,7 @@ uw-code-center/
 
 - JDK 25+
 - Maven 3.8+
-- MySQL 8.0+ 或 Oracle 19c+（用于持久化模板数据）
+- MySQL 8.0+ / PostgreSQL 12+ / Oracle 19c+（用于持久化模板数据与元数据来源）
 - Nacos 2.x 服务（用于配置中心和服务注册）
 
 ### 本地开发启动
@@ -324,7 +338,7 @@ JAR 文件输出至 `target/uw-code-center-*.jar`。
 ```yaml
 project:
   name: uw-code-center          # 应用名称（Maven filtering 自动填充）
-  version: 1.1.6                # 版本号（Maven filtering 自动填充）
+  version: 1.2.0                # 版本号（Maven filtering 自动填充）
 
 spring:
   application:
@@ -387,7 +401,7 @@ ES 日志推送参数（可通过环境变量覆盖）：
 |---|---|---|---|
 | `connName` | String | 是 | 连接池名称 |
 | `schemaName` | String | 否 | Schema 名称（Oracle 用户名/Schema） |
-| `filter` | String | 否 | 表名过滤关键字 |
+| `filterTableNames` | Set\<String\> | 否 | 表名过滤集合；为空则返回全部 |
 
 **响应**：`ResponseData<List<MetaTableInfo>>`
 
@@ -395,12 +409,12 @@ ES 日志推送参数（可通过环境变量覆盖）：
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| `tableName` | String | 原始表名（如 `user_info`） |
-| `tableType` | String | TABLE 或 VIEW |
-| `remarks` | String | 表注释 |
-| `entityName` | String | 实体类名（如 `UserInfo`） |
-| `lowerEntityName` | String | 首字母小写实体名（如 `userInfo`） |
-| `pathStyle` | String | 路径格式（如 `/user/info`） |
+| `tableName` | String | 原始表名（小写，如 `user_info`） |
+| `tableType` | String | TABLE 或 VIEW（小写） |
+| `remarks` | String | 表注释；为空时回退为表名 |
+| `entityName` | String | 实体类名（首字母大写驼峰，如 `UserInfo`） |
+| `entityParent` | String | 表名首段（如 `user_info` → `user`） |
+| `entityPath` | String | 路径格式（如 `/user/info`） |
 
 ---
 
@@ -429,8 +443,8 @@ ES 日志推送参数（可通过环境变量覆盖）：
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| `textType` | String | 是 | `json` 或 `xml` |
 | `text` | String | 是 | 原始 JSON 或 XML 内容 |
+| `textType` | String | 否 | 保留字段，当前未使用；文本类型由服务端自动探测（JSON 优先，其次 XML） |
 | `takeSwagger` | boolean | 否 | 是否添加 `@Schema` 注解，默认 false |
 
 **响应**：`ResponseData<String>`（Java 源代码字符串）
@@ -694,13 +708,13 @@ mvn clean package -Dmaven.test.skip=true
 mvn clean package
 ```
 
-构建产物 `target/uw-code-center-{version}.jar` 为 Spring Boot 可执行 Fat JAR（已启用分层 JAR）。
+构建产物 `target/uw-code-center-1.2.0.jar` 为 Spring Boot 可执行 Fat JAR（已启用分层 JAR）。
 
 ### 10.2 Docker 构建
 
 ```bash
 # 构建镜像
-docker build -t uw-code-center:1.1.6 .
+docker build -t uw-code-center:1.2.0 .
 
 # 运行容器（最小配置）
 docker run -d \
@@ -710,7 +724,7 @@ docker run -d \
   -e NACOS_PASSWORD=nacos888 \
   -e NACOS_NAMESPACE=prod \
   --name uw-code-center \
-  uw-code-center:1.1.6
+  uw-code-center:1.2.0
 ```
 
 Dockerfile 采用**多阶段构建**：
@@ -757,6 +771,11 @@ A：`OracleDataMetaImpl` 依赖以下 Oracle 系统视图权限：
 - `ALL_CONS_COLUMNS`
 
 确认连接的数据库用户具有上述视图的查询权限。
+
+---
+**Q：PostgreSQL 元数据读取为空或不全？**
+
+A：`PostgreSQLDataMetaImpl` 默认读取 `public` schema。如目标表在其他 schema 下，调用接口时需显式传入 `schemaName`；同时确认该 schema 在连接的 `search_path` 中可见。PG 特有类型（`uuid`/`jsonb`/`serial` 等）的类型映射见 [2.1 节](#21-数据库驱动代码生成)的类型表。
 
 ---
 

@@ -1,8 +1,6 @@
 package uw.code.center.service.dao;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uw.code.center.util.DaoStringUtils;
 import uw.dao.DaoFactory;
 import uw.common.data.PageRowSet;
@@ -15,15 +13,10 @@ import java.util.*;
 /**
  * Oracle表生成信息处理.
  *
- * 
+ *
  * @since 2017/9/11
  */
 public class OracleDataMetaImpl implements DataMetaInterface {
-
-    /**
-     * 日志.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(OracleDataMetaImpl.class);
 
     /**
      * 连接名.
@@ -99,7 +92,8 @@ public class OracleDataMetaImpl implements DataMetaInterface {
                     }
                 }
             } catch (TransactionException e) {
-                logger.error(e.getMessage(), e);
+                // 单表元数据读取失败时上抛，避免静默吞掉异常导致生成结果缺失却无提示
+                throw new RuntimeException("获取数据库表[" + tableName + "]信息失败: " + e.getMessage(), e);
             }
         }
 
@@ -115,8 +109,6 @@ public class OracleDataMetaImpl implements DataMetaInterface {
      */
     @Override
     public List<MetaColumnInfo> getColumnList(String tableName, List<MetaPrimaryKeyInfo> pklist) {
-        Connection conn = null;
-        ResultSet rs = null;
         List<MetaColumnInfo> list = new ArrayList<MetaColumnInfo>();
         // 加载主键列表
         HashSet<String> pset = new HashSet<String>();
@@ -131,85 +123,78 @@ public class OracleDataMetaImpl implements DataMetaInterface {
             while (dataSet.next()) {
                 remarkhs.put(dataSet.getString("column_name"), dataSet.getString("comments"));
             }
-            conn = getConnection();
-            DatabaseMetaData metaData = conn.getMetaData();
-            rs = metaData.getColumns(null, conn.getSchema(), tableName.toUpperCase(), null);
-            while (rs.next()) {
-                MetaColumnInfo meta = new MetaColumnInfo();
-                meta.setColumnName(rs.getString("COLUMN_NAME").toLowerCase()); // 列名
-                meta.setPropertyName(DaoStringUtils.toClearCase(meta.getColumnName()));
-                meta.setDataType(rs.getInt("DATA_TYPE")); // 字段数据类型(对应java.sql.Types中的常量)
-                meta.setTypeName(rs.getString("TYPE_NAME").toLowerCase()); // 字段类型名称(例如：VACHAR2)
-                meta.setColumnSize(rs.getInt("COLUMN_SIZE")); // 列的大小
-                meta.setRemarks(remarkhs.get(rs.getString("COLUMN_NAME"))); // 描述列的注释
-                meta.setIsNullable(rs.getString("IS_NULLABLE").equals("YES") ? "true" : "false"); // 确定列是否包括
-                // null
-                meta.setIsAutoIncrement(rs.getString("IS_AUTOINCREMENT").equals("YES") ? "true" : null); // 确定列是否包括
-                // null
-                if (pset.contains(meta.getColumnName())) {
-                    meta.setIsPrimaryKey("true");
-                }
-                switch (meta.getDataType()) {
-                    case Types.NUMERIC:
-                        if (rs.getInt("COLUMN_SIZE") < 10) {
-                            meta.setPropertyType("int");
-                            meta.setPropertyObject("Integer");
-                        } else if (rs.getInt("COLUMN_SIZE") < 18) {
-                            meta.setPropertyType("long");
-                            meta.setPropertyObject("Long");
-                        } else {
-                            meta.setPropertyType("java.math.BigDecimal");
-                            meta.setPropertyObject("java.math.BigDecimal");
+            try (Connection conn = getConnection()) {
+                DatabaseMetaData metaData = conn.getMetaData();
+                try (ResultSet rs = metaData.getColumns(null, conn.getSchema(), tableName.toUpperCase(), null)) {
+                    while (rs.next()) {
+                        MetaColumnInfo meta = new MetaColumnInfo();
+                        meta.setColumnName(rs.getString("COLUMN_NAME").toLowerCase()); // 列名
+                        meta.setPropertyName(DaoStringUtils.toClearCase(meta.getColumnName()));
+                        meta.setDataType(rs.getInt("DATA_TYPE")); // 字段数据类型(对应java.sql.Types中的常量)
+                        meta.setTypeName(rs.getString("TYPE_NAME").toLowerCase()); // 字段类型名称(例如：VACHAR2)
+                        meta.setColumnSize(rs.getInt("COLUMN_SIZE")); // 列的大小
+                        meta.setRemarks(remarkhs.get(rs.getString("COLUMN_NAME"))); // 描述列的注释
+                        meta.setIsNullable(rs.getString("IS_NULLABLE").equals("YES") ? "true" : "false"); // 确定列是否包括
+                        // null
+                        meta.setIsAutoIncrement(rs.getString("IS_AUTOINCREMENT").equals("YES") ? "true" : null); // 确定列是否包括
+                        // null
+                        if (pset.contains(meta.getColumnName())) {
+                            meta.setIsPrimaryKey("true");
                         }
-                        break;
-                    case Types.VARCHAR:
-                    case Types.CLOB:
-                        meta.setPropertyType("String");
-                        meta.setPropertyObject("String");
-                        break;
-                    case Types.DATE:
-                    case Types.TIME:
-                    case Types.TIMESTAMP:
-                        meta.setPropertyType("java.util.Date");
-                        meta.setPropertyObject("java.util.Date");
-                        break;
-                    case Types.BIGINT:
-                        meta.setPropertyType("long");
-                        meta.setPropertyObject("Long");
-                        break;
-                    case Types.INTEGER:
-                    case Types.SMALLINT:
-                    case Types.TINYINT:
-                    case Types.BIT:
-                        meta.setPropertyType("int");
-                        meta.setPropertyObject("Integer");
-                        break;
-                    case Types.FLOAT:
-                        meta.setPropertyType("float");
-                        meta.setPropertyObject("Float");
-                        break;
-                    case Types.DOUBLE:
-                        meta.setPropertyType("double");
-                        meta.setPropertyObject("Double");
-                        break;
+                        switch (meta.getDataType()) {
+                            case Types.NUMERIC:
+                                if (rs.getInt("COLUMN_SIZE") < 10) {
+                                    meta.setPropertyType("int");
+                                    meta.setPropertyObject("Integer");
+                                } else if (rs.getInt("COLUMN_SIZE") < 18) {
+                                    meta.setPropertyType("long");
+                                    meta.setPropertyObject("Long");
+                                } else {
+                                    meta.setPropertyType("java.math.BigDecimal");
+                                    meta.setPropertyObject("java.math.BigDecimal");
+                                }
+                                break;
+                            case Types.VARCHAR:
+                            case Types.CLOB:
+                                meta.setPropertyType("String");
+                                meta.setPropertyObject("String");
+                                break;
+                            case Types.DATE:
+                            case Types.TIME:
+                            case Types.TIMESTAMP:
+                                meta.setPropertyType("java.util.Date");
+                                meta.setPropertyObject("java.util.Date");
+                                break;
+                            case Types.BIGINT:
+                                meta.setPropertyType("long");
+                                meta.setPropertyObject("Long");
+                                break;
+                            case Types.INTEGER:
+                            case Types.SMALLINT:
+                            case Types.TINYINT:
+                            case Types.BIT:
+                                meta.setPropertyType("int");
+                                meta.setPropertyObject("Integer");
+                                break;
+                            case Types.FLOAT:
+                                meta.setPropertyType("float");
+                                meta.setPropertyObject("Float");
+                                break;
+                            case Types.DOUBLE:
+                                meta.setPropertyType("double");
+                                meta.setPropertyObject("Double");
+                                break;
 
-                    default:
-                        meta.setPropertyType("Object");
-                        meta.setPropertyObject("Object");
+                            default:
+                                meta.setPropertyType("Object");
+                                meta.setPropertyObject("Object");
+                        }
+                        list.add(meta);
+                    }
                 }
-                list.add(meta);
             }
-            rs.close();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
+            throw new RuntimeException("获取数据库表字段信息失败: " + e.getMessage(), e);
         }
         return list;
     }
@@ -251,7 +236,7 @@ public class OracleDataMetaImpl implements DataMetaInterface {
                 list.add(meta);
             }
         } catch (TransactionException e) {
-            logger.error(e.getMessage(), e);
+            throw new RuntimeException("获取数据库表主键信息失败: " + e.getMessage(), e);
         }
 
         return list;

@@ -24,6 +24,7 @@ import uw.code.center.service.swagger.ApiInfo;
 import uw.code.center.service.swagger.SchemaInfo;
 import uw.code.center.service.swagger.SwaggerParser;
 import uw.code.center.template.TemplateHelper;
+import uw.code.center.util.ZipUtils;
 import uw.common.data.PageList;
 import uw.common.util.SystemClock;
 import uw.dao.DaoManager;
@@ -38,6 +39,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 
+/**
+ * Swagger/OpenAPI 驱动的代码生成接口。
+ * <p>
+ * 通过 {@link SwaggerParser} 解析远程 OpenAPI v3 文档，结合 FreeMarker 模板生成 Vue3 前端代码或 JMeter 压测脚本，
+ * 打包为 ZIP 下载。
+ * </p>
+ */
 @RestController
 @Tag(name = "swagger代码生成", description = "swagger代码生成")
 @RequestMapping("/ops/codegen/swagger")
@@ -49,9 +57,12 @@ public class SwaggerGenCodeController {
     private final FastDateFormat dateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss");
 
     /**
-     * 批量下载vue3代码。
+     * 批量下载 Vue3 代码。
      *
-     * @param templateGroupId
+     * @param response        HTTP 响应，用于写入 ZIP 流
+     * @param templateGroupId 模板分组 ID（类型需为 SWAGGER）
+     * @param swaggerUrl      OpenAPI 文档 URL，多个以英文逗号分隔
+     * @throws IOException 写入响应流失败
      */
     @ResponseAdviceIgnore
     @GetMapping("/downloadCodeForVue3")
@@ -160,14 +171,25 @@ public class SwaggerGenCodeController {
                             if (StringUtils.isBlank(fileName) || StringUtils.isBlank(fileBody)) {
                                 continue;
                             }
-                            zipOutputStream.putNextEntry(new ZipEntry(fileName));
+                            ZipEntry zipEntry = ZipUtils.safeEntry(fileName);
+                            if (zipEntry == null) {
+                                continue;
+                            }
+                            zipOutputStream.putNextEntry(zipEntry);
                             zipOutputStream.write(fileBody.getBytes(StandardCharsets.UTF_8));
                             zipOutputStream.closeEntry();
                         }
                     } else {
                         String fileName = TemplateHelper.buildTemplate(ct.getId() + "#filename", map);
                         String fileBody = TemplateHelper.buildTemplate(ct.getId() + "#body", map);
-                        zipOutputStream.putNextEntry(new ZipEntry(fileName));
+                        if (StringUtils.isBlank(fileName) || StringUtils.isBlank(fileBody)) {
+                            continue;
+                        }
+                        ZipEntry zipEntry = ZipUtils.safeEntry(fileName);
+                        if (zipEntry == null) {
+                            continue;
+                        }
+                        zipOutputStream.putNextEntry(zipEntry);
                         zipOutputStream.write(fileBody.getBytes(StandardCharsets.UTF_8));
                         zipOutputStream.closeEntry();
                     }
@@ -179,9 +201,13 @@ public class SwaggerGenCodeController {
     }
 
     /**
-     * 批量下载代码。
+     * 批量下载 JMeter 压测脚本。
      *
-     * @param templateGroupId
+     * @param response        HTTP 响应，用于写入 ZIP 流
+     * @param templateGroupId 模板分组 ID（类型需为 SWAGGER）
+     * @param swaggerUrl      OpenAPI 文档 URL，多个以英文逗号分隔
+     * @throws IOException         写入响应流失败
+     * @throws TransactionException 模板查询失败（声明保留）
      */
     @ResponseAdviceIgnore
     @GetMapping("/downloadCodeForJmeter")
@@ -218,7 +244,14 @@ public class SwaggerGenCodeController {
                 for (CodeTemplateInfo ct : ctList) {
                     String fileName = TemplateHelper.buildTemplate(ct.getId() + "#filename", map);
                     String fileBody = TemplateHelper.buildTemplate(ct.getId() + "#body", map);
-                    zipOutputStream.putNextEntry(new ZipEntry(fileName));
+                    if (StringUtils.isBlank(fileName) || StringUtils.isBlank(fileBody)) {
+                        continue;
+                    }
+                    ZipEntry zipEntry = ZipUtils.safeEntry(fileName);
+                    if (zipEntry == null) {
+                        continue;
+                    }
+                    zipOutputStream.putNextEntry(zipEntry);
                     zipOutputStream.write(fileBody.getBytes(StandardCharsets.UTF_8));
                     zipOutputStream.closeEntry();
                 }

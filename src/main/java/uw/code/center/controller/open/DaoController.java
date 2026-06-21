@@ -24,11 +24,22 @@ public class DaoController {
 
     DaoManager dao = DaoManager.getInstance();
 
+    /**
+     * 测试查询模板分组列表。
+     *
+     * @return 模板分组分页结果
+     */
     @GetMapping("/list")
     public ResponseData<PageList<CodeTemplateGroup>> list() {
         return dao.list(CodeTemplateGroup.class, new CodeTemplateGroupQueryParam());
     }
 
+    /**
+     * 测试按 ID 加载模板内容。
+     *
+     * @param id 主键 ID
+     * @return 模板内容实体
+     */
     @GetMapping("/load")
     public ResponseData<CodeTemplateInfo> load(@RequestParam long id) {
         return dao.load(CodeTemplateInfo.class, id);

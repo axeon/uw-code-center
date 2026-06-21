@@ -11,6 +11,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+/**
+ * Springdoc OpenAPI 文档配置。
+ * <p>
+ * 仅在 {@code debug}/{@code dev} Profile 下生效。为 {@code uw.code.center.controller.ops} 包下的接口
+ * 生成 {@code opsApi} 分组文档，并注入基于 Bearer Token 的统一鉴权方案（{@code AuthToken}）。
+ * </p>
+ */
 @Configuration
 @Profile({"debug","dev"})
 public class SwaggerConfig {
@@ -27,6 +34,11 @@ public class SwaggerConfig {
     @Value("${project.version}")
     private String appVersion;
 
+    /**
+     * 注册 OpenApi 定制器：注入 Bearer Token 鉴权方案与文档基本信息（标题、版本、联系人）。
+     *
+     * @return OpenApiCustomizer
+     */
     @Bean
     public OpenApiCustomizer customOpenAPI() {
         return openApi -> openApi
@@ -38,9 +50,9 @@ public class SwaggerConfig {
     }
 
     /**
-     * opsApi接口。
+     * 注册 ops 接口分组，扫描 {@code uw.code.center.controller.ops} 包。
      *
-     * @return
+     * @return GroupedOpenApi
      */
     @Bean
     public GroupedOpenApi opsApi() {

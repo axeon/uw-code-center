@@ -21,6 +21,7 @@ import uw.code.center.entity.CodeTemplateGroup;
 import uw.code.center.entity.CodeTemplateInfo;
 import uw.code.center.service.dao.*;
 import uw.code.center.template.TemplateHelper;
+import uw.code.center.util.ZipUtils;
 import uw.common.data.PageList;
 import uw.common.util.SystemClock;
 import uw.dao.DaoManager;
@@ -36,6 +37,13 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * 数据库驱动的代码生成接口。
+ * <p>
+ * 基于 JDBC 元数据（通过 {@link DatabaseMetaParser} 选取 MySQL / PostgreSQL / Oracle 实现）读取表结构与主键，
+ * 结合 FreeMarker 模板批量生成 Entity/Controller/DTO 等源文件，打包为 ZIP 下载。
+ * </p>
+ */
 @RestController
 @Tag(name = "数据库代码生成", description = "数据库代码生成")
 @RequestMapping("/ops/codegen/database")
@@ -49,7 +57,7 @@ public class DatabaseGenCodeController {
     /**
      * 获取数据库连接列表。
      *
-     * @return
+     * @return 已注册的连接池名称列表
      */
     @GetMapping("/list")
     @Operation(summary = "获取数据库连接列表", description = "获取数据库连接列表")
@@ -62,10 +70,10 @@ public class DatabaseGenCodeController {
      * 获取数据库表列表。
      * 对于oracle数据库，还需要传入connName，
      *
-     * @param connName
-     * @param schemaName
-     * @param filterTableNames
-     * @return
+     * @param connName         连接池名称
+     * @param schemaName       schema 名称（Oracle 用户名 / PostgreSQL 默认 public）
+     * @param filterTableNames 过滤表名集合；为空时返回全部
+     * @return 表/视图元数据列表
      */
     @GetMapping("/tableInfoList")
     @Operation(summary = "获取数据库表列表", description = "获取数据库表列表")
@@ -77,11 +85,11 @@ public class DatabaseGenCodeController {
     }
 
     /**
-     * 生成代码。
+     * 生成代码（保留接口，当前未实现，固定返回 null）。
      *
-     * @param templateId
-     * @param tableName
-     * @return
+     * @param templateId 模板 ID
+     * @param tableName  表名称
+     * @return 生成的代码文本（当前实现返回 null）
      */
     @GetMapping("/genCode")
     @Operation(summary = "生成代码", description = "生成代码")
@@ -93,9 +101,17 @@ public class DatabaseGenCodeController {
 
     /**
      * 批量下载代码。
+     * <p>
+     * 根据模板分组与表集合，逐表渲染 FreeMarker 模板并打包为 ZIP 下载。
+     * 渲染出的文件名经 {@link ZipUtils#safeEntry(String)} 校验，防御 Zip Slip。
+     * </p>
      *
-     * @param templateGroupId
-     * @param filterTableNames
+     * @param response         HTTP 响应，用于写入 ZIP 流
+     * @param connName         连接池名称
+     * @param schemaName       schema 名称
+     * @param templateGroupId  模板分组 ID
+     * @param filterTableNames 过滤表名集合；为空时处理全部表
+     * @throws IOException 写入响应流失败
      */
     @ResponseAdviceIgnore
     @GetMapping("/downloadCode")
@@ -138,8 +154,13 @@ public class DatabaseGenCodeController {
                         if (StringUtils.isBlank(fileName) || StringUtils.isBlank(fileBody)) {
                             continue;
                         }
-                        zipOutputStream.putNextEntry(new ZipEntry(fileName));
-                        zipOutputStream.write(fileBody.getBytes());
+                        ZipEntry zipEntry = ZipUtils.safeEntry(fileName);
+                        if (zipEntry == null) {
+                            // 模板渲染出的文件名非法（含路径穿越等），跳过避免 Zip Slip
+                            continue;
+                        }
+                        zipOutputStream.putNextEntry(zipEntry);
+                        zipOutputStream.write(fileBody.getBytes(StandardCharsets.UTF_8));
                         zipOutputStream.closeEntry();
                     }
 //                }

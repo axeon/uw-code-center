@@ -8,7 +8,9 @@ import uw.auth.service.annotation.MscPermDeclare;
 import uw.auth.service.constant.UserType;
 
 /**
- * 主要是提供注解支持用。
+ * 包级菜单占位控制器。
+ * <p>定义该包对应的父级菜单节点（通过 {@code @GetMapping} 暴露的路径），
+ * 供 UW 平台权限/导航系统注册菜单，方法体本身无业务逻辑。</p>
  */
 @RestController
 public class $PackageInfo$ {

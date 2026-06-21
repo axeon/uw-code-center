@@ -33,9 +33,11 @@ public class SysCritLogController {
      * 列表OPS关键日志。
      *
      * @param queryParam
-     * @return
      * @throws TransactionException
-     */
+     
+     * @param queryParam 日志查询参数
+     * @return 关键日志分页结果
+     * @throws TransactionException 声明保留*/
     @GetMapping("/list")
     @Operation(summary = "关键日志查询", description = "列表关键日志")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)

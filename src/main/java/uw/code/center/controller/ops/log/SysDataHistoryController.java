@@ -33,9 +33,11 @@ public class SysDataHistoryController {
      * 列表数据历史。
      *
      * @param queryParam
-     * @return
      * @throws TransactionException
-     */
+     
+     * @param queryParam 历史查询参数
+     * @return 数据历史分页结果
+     * @throws TransactionException 声明保留*/
     @GetMapping("/list")
     @Operation(summary = "数据历史查询", description = "列表数据历史")
     @MscPermDeclare(user = UserType.OPS, auth = AuthType.PERM, log = ActionLog.REQUEST)

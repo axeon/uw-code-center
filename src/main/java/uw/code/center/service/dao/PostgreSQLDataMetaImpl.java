@@ -8,11 +8,23 @@ import java.sql.*;
 import java.util.*;
 
 /**
- * 数据库信息的工具类.
+ * PostgreSQL数据库信息的工具类.
+ *
+ * <p>与 {@link MySQLDataMetaImpl} 结构保持一致，差异点：</p>
+ * <ul>
+ *     <li>schema 默认值为 {@code public}（PG 默认 schema），而非连接名；</li>
+ *     <li>读取列/表元数据时统一传入 schema，避免跨 schema 混淆同名对象；</li>
+ *     <li>补充 PostgreSQL 特有类型映射：{@code serial/bigserial}（自增整型）、{@code uuid/jsonb/xml}（驱动报告为 OTHER）。</li>
+ * </ul>
  *
  * @author axeon
  */
-public class MySQLDataMetaImpl implements DataMetaInterface {
+public class PostgreSQLDataMetaImpl implements DataMetaInterface {
+
+    /**
+     * PostgreSQL默认schema。
+     */
+    private static final String DEFAULT_SCHEMA = "public";
 
     /**
      * 连接名.
@@ -20,7 +32,7 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
     private String connName = null;
 
     /**
-     * Oracle schema,默认等于连接名.
+     * PostgreSQL schema,默认为public.
      */
     private String schema = null;
 
@@ -29,11 +41,11 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
      * 构造函数.
      *
      * @param connName 连接名
-     * @param schema   Oracle schema
+     * @param schema   PostgreSQL schema，为空时默认 public
      */
-    public MySQLDataMetaImpl(String connName, String schema) {
+    public PostgreSQLDataMetaImpl(String connName, String schema) {
         this.connName = connName;
-        this.schema = StringUtils.isBlank(schema) ? connName : schema;
+        this.schema = StringUtils.isBlank(schema) ? DEFAULT_SCHEMA : schema;
     }
 
     /**
@@ -62,7 +74,7 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
         List<MetaTableInfo> list = new ArrayList<MetaTableInfo>();
         try (Connection conn = getConnection()) {
             DatabaseMetaData metaData = conn.getMetaData();
-            try (ResultSet rs = metaData.getTables(schema, null, null, new String[]{"TABLE", "VIEW"})) {
+            try (ResultSet rs = metaData.getTables(null, schema, null, new String[]{"TABLE", "VIEW"})) {
                 while (rs.next()) {
                     MetaTableInfo meta = new MetaTableInfo();
                     meta.setTableName(rs.getString("TABLE_NAME").toLowerCase());
@@ -107,13 +119,14 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
         }
         try (Connection conn = getConnection()) {
             DatabaseMetaData metaData = conn.getMetaData();
-            try (ResultSet rs = metaData.getColumns(schema, null, tableName, null)) {
+            try (ResultSet rs = metaData.getColumns(null, schema, tableName, null)) {
                 while (rs.next()) {
                     MetaColumnInfo meta = new MetaColumnInfo();
                     meta.setColumnName(rs.getString("COLUMN_NAME").toLowerCase()); // 列名
                     meta.setPropertyName(DaoStringUtils.toClearCase(meta.getColumnName()));
                     meta.setDataType(rs.getInt("DATA_TYPE")); // 字段数据类型(对应java.sql.Types中的常量)
-                    meta.setTypeName(rs.getString("TYPE_NAME").toLowerCase()); // 字段类型名称(例如：VACHAR2)
+                    String typeName = rs.getString("TYPE_NAME"); // 字段类型名称(例如：int4、varchar、timestamptz)
+                    meta.setTypeName(typeName != null ? typeName.toLowerCase() : null);
                     meta.setColumnSize(rs.getInt("COLUMN_SIZE")); // 列的大小
                     meta.setRemarks(getSafeRemarks(rs.getString("REMARKS"))); // 描述列的注释
                     meta.setIsNullable(rs.getString("IS_NULLABLE").equals("YES") ? "true" : "false"); // 确定列是否包括
@@ -123,46 +136,7 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
                     if (pset.contains(meta.getColumnName())) {
                         meta.setIsPrimaryKey("true");
                     }
-                    switch (meta.getDataType()) {
-                        case Types.NUMERIC:
-                            meta.setPropertyType("java.math.BigDecimal");
-                            meta.setPropertyObject("java.math.BigDecimal");
-                            break;
-                        case Types.VARCHAR:
-                        case Types.LONGVARCHAR:
-                        case Types.CLOB:
-                            meta.setPropertyType("String");
-                            meta.setPropertyObject("String");
-                            break;
-                        case Types.DATE:
-                        case Types.TIME:
-                        case Types.TIMESTAMP:
-                            meta.setPropertyType("java.util.Date");
-                            meta.setPropertyObject("java.util.Date");
-                            break;
-                        case Types.BIGINT:
-                            meta.setPropertyType("long");
-                            meta.setPropertyObject("Long");
-                            break;
-                        case Types.INTEGER:
-                        case Types.SMALLINT:
-                        case Types.TINYINT:
-                        case Types.BIT:
-                            meta.setPropertyType("int");
-                            meta.setPropertyObject("Integer");
-                            break;
-                        case Types.FLOAT:
-                            meta.setPropertyType("float");
-                            meta.setPropertyObject("Float");
-                            break;
-                        case Types.DOUBLE:
-                            meta.setPropertyType("double");
-                            meta.setPropertyObject("Double");
-                            break;
-                        default:
-                            meta.setPropertyType("Object");
-                            meta.setPropertyObject("Object");
-                    }
+                    mapJavaType(meta);
                     list.add(meta);
                 }
             }
@@ -170,7 +144,95 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
             throw new RuntimeException("获取数据库表字段信息失败: " + e.getMessage(), e);
         }
         return new ArrayList<>(new LinkedHashSet<>(list));
+    }
 
+    /**
+     * PostgreSQL列类型到Java类型的映射。
+     * 优先按具体类型名(serial/bigserial/uuid/json/jsonb/xml等PG特有类型)判定，退回jdbc标准类型常量。
+     */
+    private static void mapJavaType(MetaColumnInfo meta) {
+        String typeName = meta.getTypeName();
+        // PG特有类型优先处理（serial/bigserial 是自增整型；uuid/json/jsonb/xml 驱动报告为 OTHER，统一映射为 String）
+        if (typeName != null) {
+            switch (typeName) {
+                case "serial":
+                case "serial4":
+                    meta.setPropertyType("int");
+                    meta.setPropertyObject("Integer");
+                    return;
+                case "bigserial":
+                case "serial8":
+                    meta.setPropertyType("long");
+                    meta.setPropertyObject("Long");
+                    return;
+                case "uuid":
+                case "json":
+                case "jsonb":
+                case "xml":
+                case "tsvector":
+                case "citext":
+                case "inet":
+                case "cidr":
+                case "macaddr":
+                case "bytea":
+                    meta.setPropertyType("String");
+                    meta.setPropertyObject("String");
+                    return;
+                default:
+                    break;
+            }
+        }
+        switch (meta.getDataType()) {
+            case Types.NUMERIC:
+            case Types.DECIMAL:
+                meta.setPropertyType("java.math.BigDecimal");
+                meta.setPropertyObject("java.math.BigDecimal");
+                break;
+            case Types.VARCHAR:
+            case Types.LONGVARCHAR:
+            case Types.NVARCHAR:
+            case Types.LONGNVARCHAR:
+            case Types.CLOB:
+            case Types.CHAR:
+                meta.setPropertyType("String");
+                meta.setPropertyObject("String");
+                break;
+            case Types.DATE:
+            case Types.TIME:
+            case Types.TIMESTAMP:
+            case Types.TIMESTAMP_WITH_TIMEZONE:
+            case Types.TIME_WITH_TIMEZONE:
+                meta.setPropertyType("java.util.Date");
+                meta.setPropertyObject("java.util.Date");
+                break;
+            case Types.BIGINT:
+                meta.setPropertyType("long");
+                meta.setPropertyObject("Long");
+                break;
+            case Types.INTEGER:
+            case Types.SMALLINT:
+            case Types.TINYINT:
+                meta.setPropertyType("int");
+                meta.setPropertyObject("Integer");
+                break;
+            case Types.BIT:
+            case Types.BOOLEAN:
+                meta.setPropertyType("boolean");
+                meta.setPropertyObject("Boolean");
+                break;
+            case Types.REAL:
+            case Types.FLOAT:
+                meta.setPropertyType("float");
+                meta.setPropertyObject("Float");
+                break;
+            case Types.DOUBLE:
+                meta.setPropertyType("double");
+                meta.setPropertyObject("Double");
+                break;
+            default:
+                meta.setPropertyType("Object");
+                meta.setPropertyObject("Object");
+        }
     }
 
     private static String getSafeRemarks(String remarks) {
@@ -179,7 +241,6 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
 
     /**
      * 获取主键名。
-     * 使用了辅助方法getSafeRemarks来安全地处理REMARKS字段的null值。
      *
      * @param tableName 表名
      * @return 主键列表
@@ -190,14 +251,14 @@ public class MySQLDataMetaImpl implements DataMetaInterface {
         List<MetaPrimaryKeyInfo> list = new ArrayList<MetaPrimaryKeyInfo>();
         try (Connection conn = getConnection()) {
             DatabaseMetaData metaData = conn.getMetaData();
-            try (ResultSet rs = metaData.getPrimaryKeys(null, null, tableName)) {
+            try (ResultSet rs = metaData.getPrimaryKeys(null, schema, tableName)) {
                 while (rs.next()) {
                     MetaPrimaryKeyInfo meta = new MetaPrimaryKeyInfo();
                     meta.setTableName(rs.getString("TABLE_NAME").toLowerCase());
                     meta.setColumnName(rs.getString("COLUMN_NAME").toLowerCase());
                     meta.setPropertyName(DaoStringUtils.toClearCase(meta.getColumnName()));
                     meta.setKeySeq(rs.getInt("KEY_SEQ"));
-                    meta.setPkName(rs.getString("PK_NAME").toLowerCase());
+                    meta.setPkName(rs.getString("PK_NAME") != null ? rs.getString("PK_NAME").toLowerCase() : null);
                     list.add(meta);
                 }
             }

@@ -21,6 +21,11 @@ public class EnumController {
 
     private static final String BASE_PACKAGE = "uw.code.center.constant";
 
+    /**
+     * 获取 {@code uw.code.center.constant} 包下所有枚举的类型映射。
+     *
+     * @return 枚举类名 → 枚举值映射
+     */
     @GetMapping("/getAllEnumMap")
     @Operation(summary = "获取所有枚举", description = "获取所有枚举")
     public Map<String, Map<String, Enum<?>>> getAllEnumMap() {

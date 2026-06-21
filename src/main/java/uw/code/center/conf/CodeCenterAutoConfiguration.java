@@ -10,9 +10,12 @@ import uw.code.center.template.TemplateHelper;
 import uw.dao.conf.DaoAutoConfiguration;
 
 /**
- * SaasAppAutoConfiguration
+ * uw-code-center 自动配置。
+ * <p>
+ * 在 DAO 与认证自动配置就绪后，通过 {@link CommandLineRunner} 在启动完成时触发
+ * {@link TemplateHelper#init()} 加载 FreeMarker 模板缓存。
+ * </p>
  *
- * 
  * @since 2018-05-17
  */
 @Configuration
@@ -20,9 +23,9 @@ import uw.dao.conf.DaoAutoConfiguration;
 public class CodeCenterAutoConfiguration implements WebMvcConfigurer {
 
     /**
-     * 注册代码生成器。
+     * 注册启动后初始化模板缓存的 Runner。
      *
-     * @return
+     * @return CommandLineRunner
      */
     @Bean
     public CommandLineRunner configTemplateHelper() {

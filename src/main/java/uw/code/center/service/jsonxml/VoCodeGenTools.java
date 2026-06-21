@@ -1,5 +1,10 @@
 package uw.code.center.service.jsonxml;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
@@ -10,24 +15,29 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uw.common.util.SystemClock;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
- * 描述: 根据传入的xml 或者 json 生成VO对象
- *
+ * JSON/XML 转 Java VO 的核心生成引擎。
+ * <p>
+ * 解析输入文本（JSON 走 Jackson {@code ObjectMapper}，XML 走 {@code XmlMapper}），递归遍历对象/数组结构，
+ * 将每个对象节点登记为 {@link Json2JavaVo}（输出为 static inner class），最终按 {@link GenerationConfig}
+ * 的注解风格、命名规则、JavaDoc/Swagger 开关拼装出完整 Java 源码字符串。
+ * </p>
+ * <p>典型入口为 {@link #generator(GenerationConfig)}。</p>
  */
 public class VoCodeGenTools {
 
     private static final Logger logger = LoggerFactory.getLogger( VoCodeGenTools.class);
 
 
-    private JSONTokener jsonTokener;
+    private JsonNode rootNode;
 
     /**
      * 是否引入了List
@@ -78,11 +88,11 @@ public class VoCodeGenTools {
         }
     };
 
-    public VoCodeGenTools(GenerationConfig config, String objectName, String json) {
+    public VoCodeGenTools(GenerationConfig config, String objectName, JsonNode rootNode) {
         this.generationConfig = config;
         this.annotationStyle = config.getAnnotationStyle();
         this.objectName = objectName;
-        this.jsonTokener = new JSONTokener(json);
+        this.rootNode = rootNode;
     }
 
     /**
@@ -118,6 +128,16 @@ public class VoCodeGenTools {
 //    StringBuilder generator = VOCodeGenTools.generator(config);
 
     /**
+     * 共享的 JSON ObjectMapper。
+     */
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+
+    /**
+     * 共享的 XML XmlMapper，用于将 XML 文本解析为 JSON 树。
+     */
+    private static final com.fasterxml.jackson.dataformat.xml.XmlMapper XML_MAPPER = new com.fasterxml.jackson.dataformat.xml.XmlMapper();
+
+    /**
      * 生成式入口
      *
      * @param config 这个对象里面包含了 源数据的一些信息 以及对于生成的VO的对象的规范设置
@@ -129,12 +149,17 @@ public class VoCodeGenTools {
         logger.debug("开始生成VO...");
         VoCodeGenTools generator = null;
 
-        if (sourceType == GenerationType.JSON) {
-            generator = new VoCodeGenTools(config, config.getObjectName(), config.getGenerationText());
-        } else {
-            JSONObject xmlJSONObj = XML.toJSONObject(config.getGenerationText());
-            String json = xmlJSONObj.toString();
-            generator = new VoCodeGenTools(config, config.getObjectName(), json);
+        try {
+            if (sourceType == GenerationType.JSON) {
+                JsonNode rootNode = JSON_MAPPER.readTree(config.getGenerationText());
+                generator = new VoCodeGenTools(config, config.getObjectName(), rootNode);
+            } else {
+                // XML 转 JSON 树，使用 Jackson XmlMapper，保持与原 org.json.XML.toJSONObject 一致的语义
+                JsonNode rootNode = XML_MAPPER.readTree(config.getGenerationText());
+                generator = new VoCodeGenTools(config, config.getObjectName(), rootNode);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("解析输入文本失败: " + e.getMessage(), e);
         }
         StringBuilder text = generator.run();
         if (null == text || text.isEmpty()) {
@@ -151,68 +176,61 @@ public class VoCodeGenTools {
      * @return
      */
     public StringBuilder run() {
-        Object curPoint = jsonTokener.nextValue();
-        JSONObject next = null;
-        int skipCount = 0;
-        while (!(curPoint instanceof JSONObject)) {
-            if (!jsonTokener.more() || ++skipCount > 1000) {
-                return null;
-            }
-            try {
-                curPoint = jsonTokener.nextValue();
-            } catch (JSONException e) {
-                return null;
-            }
+        // 取第一个对象节点作为根：若根是数组则取首个元素，若根非对象则无法生成
+        JsonNode current = rootNode;
+        if (current == null) {
+            return null;
         }
-        next = (JSONObject) curPoint;
+        if (current.isArray()) {
+            if (current.isEmpty()) {
+                return null;
+            }
+            current = current.get(0);
+        }
+        if (!(current instanceof ObjectNode)) {
+            return null;
+        }
+        ObjectNode next = (ObjectNode) current;
         mainProp = Maps.newTreeMap();
         long rootId = 0;
-        while (next != JSONObject.NULL) {
-            JSONArray jsonArray = next.names();
-            String[] nameList = jsonArray.toList().toArray(new String[0]);
-            // XML响应头元素
-            if (generationConfig.getGenerationType() == GenerationType.XML) {
-                if (StringUtils.isBlank(mainProName) && nameList.length > 0) {
-                    mainProName = nameList[0];
-                    objectName = mainProName;// XML 默认就是Camel
-                }
+        List<String> names = new ArrayList<>();
+        next.fieldNames().forEachRemaining(names::add);
+        String[] nameList = names.toArray(new String[0]);
+        // XML响应头元素
+        if (generationConfig.getGenerationType() == GenerationType.XML) {
+            if (StringUtils.isBlank(mainProName) && nameList.length > 0) {
+                mainProName = nameList[0];
+                objectName = mainProName;// XML 默认就是Camel
             }
-            for (int i = 0; i < nameList.length; i++) {
-                String name = nameList[i];
-                Object prop = next.get(name);
-                JavaType javaType = null;
-                if (prop instanceof JSONObject) {// 对象
-                    // 继续迭代
-                    javaType = new JavaType(needCamel() ? firstUpperCaseCamel(name) : firstToUpper(name), "");
-                    mainProp.put(name, javaType);
-                    getJavaObject(name, javaType.getType(), rootId, (JSONObject) prop);
-                } else if (prop instanceof JSONArray) {//数组
-                    JSONArray array = (JSONArray) prop;
-                    if (array.length() == 0)
-                        javaType = new JavaType("Object", "");
-                    else {
-                        Object object = array.get(0);
-                        if (object instanceof JSONObject) {
-                            javaType = new JavaType(needCamel() ? firstUpperCaseCamel(name) : firstToUpper(name), "");
+        }
+        for (int i = 0; i < nameList.length; i++) {
+            String name = nameList[i];
+            JsonNode prop = next.get(name);
+            JavaType javaType = null;
+            if (prop instanceof ObjectNode) {// 对象
+                // 继续迭代
+                javaType = new JavaType(needCamel() ? firstUpperCaseCamel(name) : firstToUpper(name), "");
+                mainProp.put(name, javaType);
+                getJavaObject(name, javaType.getType(), rootId, (ObjectNode) prop);
+            } else if (prop instanceof ArrayNode) {//数组
+                ArrayNode array = (ArrayNode) prop;
+                if (array.isEmpty())
+                    javaType = new JavaType("Object", "");
+                else {
+                    JsonNode object = array.get(0);
+                    if (object instanceof ObjectNode) {
+                        javaType = new JavaType(needCamel() ? firstUpperCaseCamel(name) : firstToUpper(name), "");
 
-                            // 登记一个类型
-                            getJavaObject(name, javaType.getType(), rootId, (JSONObject) object);
-                        } else {
-                            javaType = getJavaType(object);
-                        }
+                        // 登记一个类型
+                        getJavaObject(name, javaType.getType(), rootId, (ObjectNode) object);
+                    } else {
+                        javaType = getJavaType(object);
                     }
-                    importList = true;
-                    mainProp.put(name, new JavaType(javaType.getType(), true, ""));
-                } else {
-                    mainProp.put(name, getJavaType(prop));
                 }
-            }
-
-            // 没到尾,接着跑
-            if (jsonTokener.more()) {
-                next = (JSONObject) jsonTokener.nextValue();
-            } else {
-                break;
+                importList = true;
+                mainProp.put(name, new JavaType(javaType.getType(), true, ""));
+            } else if (prop instanceof ValueNode) {
+                mainProp.put(name, getJavaType(prop));
             }
         }
         // 如果是生成XML,则直接以根节点做为Java的最外层类
@@ -630,6 +648,47 @@ public class VoCodeGenTools {
     }
 
     /**
+     * 将 Jackson 叶子节点转换为等价的 Java 包装值，用于复用 {@link #getJavaType(Object)} 的类型推断逻辑。
+     *
+     * @param node 叶子节点（ValueNode）
+     * @return 对应的 Java 包装类型值
+     */
+    private Object leafValue(JsonNode node) {
+        if (node.isBoolean()) {
+            return node.booleanValue();
+        }
+        if (node.isInt()) {
+            return node.intValue();
+        }
+        if (node.isLong()) {
+            return node.longValue();
+        }
+        if (node.isIntegralNumber()) {
+            // 大整数回退为 BigInteger，保持与原 org.json 行为一致
+            return node.bigIntegerValue();
+        }
+        if (node.isNumber()) {
+            // 浮点统一用 Double，与原 org.json 解析后的 Double 行为一致
+            return node.doubleValue();
+        }
+        if (node.isTextual()) {
+            return node.textValue();
+        }
+        // null、missing 等回退为空串描述
+        return "";
+    }
+
+    /**
+     * 转换属性类型
+     *
+     * @param prop
+     * @return
+     */
+    private JavaType getJavaType(JsonNode prop) {
+        return getJavaType(leafValue(prop));
+    }
+
+    /**
      * 转换属性类型
      *
      * @param prop
@@ -670,7 +729,7 @@ public class VoCodeGenTools {
      * @param jsonObject
      * @return
      */
-    private String getJavaObject(String propName, String className, long pId, JSONObject jsonObject) {
+    private String getJavaObject(String propName, String className, long pId, ObjectNode jsonObject) {
         String typeLabel = pId + className;
         if (typeSet.contains(typeLabel))
             return null;
@@ -678,33 +737,33 @@ public class VoCodeGenTools {
         Json2JavaVo json2JavaVo = new Json2JavaVo(propName, firstToUpper(className), pId);
         long psId = json2JavaVo.getId();
         Map<String, JavaType> propMap = Maps.newHashMap();
-        Iterator<String> key = jsonObject.keys();
+        Iterator<String> key = jsonObject.fieldNames();
         while (key.hasNext()) {
             String name = String.valueOf(key.next());
-            Object prop = jsonObject.get(name);
+            JsonNode prop = jsonObject.get(name);
             JavaType javaType = null;
-            if (prop instanceof JSONObject) {// 对象
+            if (prop instanceof ObjectNode) {// 对象
                 // 继续迭代
                 javaType = new JavaType(needCamel() ? firstUpperCaseCamel(name) : firstToUpper(name), "");
                 propMap.put(name, javaType);
-                getJavaObject(name, javaType.getType(), psId, (JSONObject) prop);
-            } else if (prop instanceof JSONArray) {//数组
-                JSONArray array = (JSONArray) prop;
-                if (array.length() == 0)
+                getJavaObject(name, javaType.getType(), psId, (ObjectNode) prop);
+            } else if (prop instanceof ArrayNode) {//数组
+                ArrayNode array = (ArrayNode) prop;
+                if (array.isEmpty())
                     javaType = new JavaType("Object", "");
                 else {
-                    Object object = array.get(0);
-                    if (object instanceof JSONObject) {
+                    JsonNode object = array.get(0);
+                    if (object instanceof ObjectNode) {
                         javaType = new JavaType(needCamel() ? firstUpperCaseCamel(name) : firstToUpper(name), "");
                         // 登记一个类型
-                        getJavaObject(name, javaType.getType(), psId, (JSONObject) object);
+                        getJavaObject(name, javaType.getType(), psId, (ObjectNode) object);
                     } else {
                         javaType = getJavaType(object);
                     }
                 }
                 importList = true;
                 propMap.put(name, new JavaType(javaType.getType(), true, ""));
-            } else {
+            } else if (prop instanceof ValueNode) {
                 propMap.put(name, getJavaType(prop));
             }
         }

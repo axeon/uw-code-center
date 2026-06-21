@@ -6,7 +6,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.util.List;
 
 /**
- * api信息
+ * 单个 API 接口的解析结果，对应 OpenAPI 文档中一条 path + method。
+ * <p>
+ * 包含方法名、HTTP 方法、分组、路径、标题，以及入参列表（{@link ParameterInfo}）、请求体（{@link RequestInfo}）、
+ * 响应体（{@link ResponseInfo}）。{@code function} 由路径按驼峰规则派生，供前端代码作为函数名使用。
+ * </p>
  */
 public class ApiInfo {
 
